@@ -9,6 +9,6 @@ def login(username, password):
     }
     res = post('login', data)
 
-    auth = res.get('auth')
+    header = res.get('auth')
     print(res["message"])
     return
