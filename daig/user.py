@@ -3,8 +3,6 @@ from .api.auth import header
 
 from tensorflow.keras import datasets, layers, models
 
-temporary_training_data # gonna be erased later.
-
 def login(username, password):
     data = {
         "username": username,
