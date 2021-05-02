@@ -1,4 +1,3 @@
-import sys
 from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QLabel
 
 
@@ -74,3 +73,7 @@ class sign_up(QWidget):
         self.id.adjustSize()
         self.pwd.setText(text)
         self.pwd.adjustSize()
+        self.email_id.setText(text)
+        self.email_id.adjustSize()
+        self.email_addr.setText(text)
+        self.email_addr.adjustSize()

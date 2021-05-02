@@ -10,7 +10,6 @@ def model_upload(path, data=None):
 
     #if res.status_code not in [200, 201, 204]:
     #raise exc.ResponseException(res)
-    print(data)
     return res.json()
 
 # 학습 시작 요청
