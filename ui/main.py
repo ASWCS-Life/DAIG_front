@@ -5,6 +5,7 @@ from signUp import sign_up
 from mode import modeChoice
 from PyQt5.QtWidgets import QApplication, QStackedWidget
 
+
 # 요청자 / 제공자 선택 화면
 class Mode(modeChoice):
     def __init__(self):
@@ -21,8 +22,17 @@ class Mode(modeChoice):
 class SignUp(sign_up):
     def __init__(self):
         super().__init__()
-        self.sign_submit.clicked.connect(self.openLoginClass)
+        ## 회원가입
+        # 가입완료 버튼눌렀을 경우
+        self.sign_submit.clicked.connect(self.onClickSignUpHandler)
+        # 돌아가기 버튼 눌렀을 경우
         self.go_back.clicked.connect(self.openLoginClass)
+
+    def onClickSignUpHandler(self):
+        result = self.onClickSignUp()
+        if(result):
+            self.openLoginClass()
+
 
     def openLoginClass(self):
         widget.setCurrentIndex(widget.currentIndex() - 1)
@@ -35,8 +45,10 @@ class Login(login):
     def __init__(self):
         super().__init__()
         self.initUI()
-        # 로그인 누른 후 넘어가기
-        self.login.clicked.connect(self.openModeClass)
+        ## 로그인
+        # 로그인 버튼 눌렀을 경우
+        self.login.clicked.connect(self.onClickLoginHandler)
+        # 회원가입 버튼 눌렀을 경우우
         self.sign_up.clicked.connect(self.openSignUpClass)
 
     def openSignUpClass(self):
@@ -44,6 +56,10 @@ class Login(login):
         widget.setCurrentIndex(widget.currentIndex()+1)
         widget.setGeometry(300, 300, 520, 300)
         center(widget)
+
+    def onClickLoginHandler(self):
+        result = self.onClickLogin()
+        if(result): self.openModeClass()
 
     def openModeClass(self):
         widget.setCurrentIndex(widget.currentIndex()+2)
@@ -59,12 +75,12 @@ if __name__ == '__main__':
     widget = QStackedWidget()
 
     #레이아웃 인스턴스 생성
-    login_ly = Login()
+    Login_ly = Login()
     SignUp_ly = SignUp()
     Mode_ly = Mode()
 
     #레이아웃 스택 추가
-    widget.addWidget(login_ly)
+    widget.addWidget(Login_ly)
     widget.addWidget(SignUp_ly)
     widget.addWidget(Mode_ly)
 

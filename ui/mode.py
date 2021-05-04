@@ -8,11 +8,11 @@ class modeChoice(QWidget):
 
     def init_ui(self):
     # 파일 객체 생성
-        req_pic = QPixmap('requester.png')
+        req_pic = QPixmap('./local_data/requester.png')
         req_pic = req_pic.scaledToHeight(200)
         req_pic = req_pic.scaledToWidth(200)
 
-        shr_pic = QPixmap('sharing.png')
+        shr_pic = QPixmap('./local_data/sharing.png')
         shr_pic = shr_pic.scaledToHeight(200)
         shr_pic = shr_pic.scaledToWidth(200)
 
