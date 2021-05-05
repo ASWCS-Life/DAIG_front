@@ -12,7 +12,7 @@ from tempfile import TemporaryFile
 
 import time
 
-base_url = 'http://localhost:8000'
+base_url = 'http://118.67.130.33:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
 
@@ -165,6 +165,7 @@ if __name__ == '__main__':
 
     while(result_learning('project/'+temporary_project_id+'/result')):
         start_learning('project/'+temporary_project_id+'/task/get')
+        time.sleep(1)
     
     print('total time spent')
     print(time.time()-start_time)
