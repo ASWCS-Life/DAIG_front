@@ -10,8 +10,6 @@ import numpy as np
 from auth import get_auth_header
 from tempfile import TemporaryFile
 
-import time
-
 base_url = 'http://localhost:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
@@ -41,6 +39,8 @@ def create_project(path, initial_weight,data=None):
 
 def get_avaiable_project(path, params=None):
     res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+    print(res.json())
+
     return res.json()['project_uid']
 
 def model_upload(path, data=None):
@@ -66,6 +66,9 @@ def start_learning(path, params=None):
     res_json = res.json()
 
     if(not(res_json['is_successful'])): return 'FAIL'
+
+    print(res_json)
+
     occupy_task('project/'+temporary_project_id+'/task/start',{'task_index':res_json['task_index']})
 
     model = get_model()
@@ -99,11 +102,11 @@ def update_learning(path, gradient, params = None):
 
 # 결과 요청
 def result_learning(path, params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+    res = requests.get(f'{base_url}/{path}', params=params, headers=get_auth_header())
 
     # if res.status_code not in [200, 201, 204]:
     # raise exc.ResponseException(res)
-    return res.status_code == 270
+    return res.json()
 
 # 중단 요청
 def stop_learning(path, params, data=None):
@@ -147,24 +150,7 @@ def get_train_data(task_index, total_task):
     return train_images[task_size*task_index:task_size*(task_index+1)],train_labels[task_size*task_index:task_size*(task_index+1)]
 
 if __name__ == '__main__':
-    initial_weight = get_model().get_weights()
-    rrs_url = 'some dummy url'
-    model_url = 'some dummy url'
-
-    project_create_result = create_project('project/create',initial_weight,data={
-        'rrs':rrs_url,
-        'model_url':model_url,
-        'total_task':30,
-        'step_size':6
-    })
-
     temporary_project_id = get_avaiable_project('project/get/project')
-
-    start_time = time.time()
-    print('start!')
 
     while(result_learning('project/'+temporary_project_id+'/result')):
         start_learning('project/'+temporary_project_id+'/task/get')
-    
-    print('total time spent')
-    print(time.time()-start_time)
