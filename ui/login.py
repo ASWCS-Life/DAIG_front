@@ -53,7 +53,7 @@ class login(QWidget):
         res = post("auth/login", sender_data)
         print(res)
         if(res["is_successful"] == True):
-            return True
+            return res["auth"]["key"]
         else:
             QMessageBox.about(self, 'DAIG', res["message"])
             return False
