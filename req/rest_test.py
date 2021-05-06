@@ -156,4 +156,4 @@ if __name__ == '__main__':
 
     while(result_learning('project/'+temporary_project_id+'/result')):
         start_learning('project/'+temporary_project_id+'/task/get')
-        time.sleep(1)
+        time.sleep(3)

@@ -155,7 +155,7 @@ if __name__ == '__main__':
         'rrs':rrs_url,
         'model_url':model_url,
         'total_task':30,
-        'step_size':6
+        'step_size':10
     })
 
     temporary_project_id = get_avaiable_project('project/get/project')
@@ -165,7 +165,7 @@ if __name__ == '__main__':
 
     while(result_learning('project/'+temporary_project_id+'/result')):
         start_learning('project/'+temporary_project_id+'/task/get')
-        time.sleep(1)
+        time.sleep(3)
     
     print('total time spent')
     print(time.time()-start_time)
