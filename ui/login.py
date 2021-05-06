@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QLabel
+from PyQt5.QtWidgets import QWidget, QMessageBox, QPushButton, QLineEdit, QLabel
+from req.rest import *
+
 
 class login(QWidget):
     def __init__(self):
@@ -41,3 +43,17 @@ class login(QWidget):
         self.id.adjustSize()
         self.pwd.setText(text)
         self.pwd.adjustSize()
+
+    def onClickLogin(self):
+        sender_data = {
+           "username" : self.id.text(),
+           "password" : self.pwd.text()
+        }
+        print(sender_data)
+        res = post("auth/login", sender_data)
+        print(res)
+        if(res["is_successful"] == True):
+            return res["auth"]["key"]
+        else:
+            QMessageBox.about(self, 'DAIG', res["message"])
+            return False
