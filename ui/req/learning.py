@@ -12,9 +12,10 @@ from tempfile import TemporaryFile
 
 import time
 
-base_url = 'http://118.67.130.33:8000'
+base_url = 'http://127.0.0.1:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
+auth = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
 
 ###########################################################
 # Dummy Train Data
@@ -35,12 +36,12 @@ def create_project(path, initial_weight,data=None):
     with TemporaryFile() as tf:
         np.save(tf, np.array(initial_weight,dtype=object))
         _ = tf.seek(0)
-        res = requests.post(f'{base_url}/{path}', files={'weight':tf},data=data, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+        res = requests.post(f'{base_url}/{path}', files={'weight':tf},data=data, headers={'AUTH':auth})
 
     return res.json()
 
 def get_avaiable_project(path, params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':auth})
     return res.json()['project_uid']
 
 def model_upload(path, data=None):
@@ -51,7 +52,7 @@ def model_upload(path, data=None):
     return res.json()
 
 def get_weight(path,params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':auth})
 
     with TemporaryFile() as tf:
         tf.write(res.content)
@@ -62,7 +63,7 @@ def get_weight(path,params=None):
 
 # 학습 시작 요청
 def start_learning(path, params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':auth})
     res_json = res.json()
 
     if(not(res_json['is_successful'])): return 'FAIL'
@@ -89,17 +90,17 @@ def start_learning(path, params=None):
 
 # 학습 Task 선점하기
 def occupy_task(path, params = None):
-    res = requests.post(f'{base_url}/{path}',data=params, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+    res = requests.post(f'{base_url}/{path}',data=params, headers={'AUTH':auth})
     return res.json()['is_successful']
 
 # 학습 결과 전송하기
 def update_learning(path, gradient, params = None):
-    res = requests.post(f'{base_url}/{path}',files = gradient, data=params, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+    res = requests.post(f'{base_url}/{path}',files = gradient, data=params, headers={'AUTH':auth})
     return res.json()['is_successful']
 
 # 결과 요청
 def result_learning(path, params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':'0054cebf-8d04-4fd6-b74b-90f7252720aa'})
+    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':auth})
 
     # if res.status_code not in [200, 201, 204]:
     # raise exc.ResponseException(res)
@@ -182,9 +183,7 @@ if __name__ == '__main__':
     model.compile(loss='categorical_crossentropy',
                     optimizer=opt,
                     metrics=['accuracy'])
-
-    model.fit(x_train, y_train, batch_size=256, epochs=25, validation_data=(x_test, y_test), shuffle=True)
-    '''
+ 
     initial_weight = get_model().get_weights()
     rrs_url = 'some dummy url'
     model_url = 'some dummy url'
@@ -192,20 +191,22 @@ if __name__ == '__main__':
     project_create_result = create_project('project/create',initial_weight,data={
         'rrs':rrs_url,
         'model_url':model_url,
-        'total_task':30,
+        'total_task':50,
         'step_size':10
     })
 
     temporary_project_id = get_avaiable_project('project/get/project')
 
-    '''
     start_time = time.time()
     print('start!')
 
     while(result_learning('project/'+temporary_project_id+'/result')):
         start_learning('project/'+temporary_project_id+'/task/get')
-        time.sleep(3)
+        time.sleep(1)
     
     print('total time spent')
     print(time.time()-start_time)
-    ''''
+
+    scores = model.evaluate(x_test, y_test, verbose=1)
+    print('Test loss:', scores[0])
+    print('Test accuracy:', scores[1])

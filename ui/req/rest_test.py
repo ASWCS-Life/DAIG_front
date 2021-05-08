@@ -152,7 +152,16 @@ def get_train_data(task_index, total_task):
     return train_images[task_size*task_index:task_size*(task_index+1)],train_labels[task_size*task_index:task_size*(task_index+1)]
 
 if __name__ == '__main__':
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
+    x_train = x_train.astype('float32') / 256
+    x_test = x_test.astype('float32') / 256
 
+    # Convert class vectors to binary class matrices.
+    y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
+    y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
+
+    train_images = x_train
+    train_labels = y_train
 
     temporary_project_id = get_avaiable_project('project/get/project')
 
