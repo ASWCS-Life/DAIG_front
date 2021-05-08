@@ -108,7 +108,7 @@ def result_learning(path, params=None):
 
     # if res.status_code not in [200, 201, 204]:
     # raise exc.ResponseException(res)
-    return res.json()
+    return res.status_code == 270
 
 # 중단 요청
 def stop_learning(path, params, data=None):
@@ -152,8 +152,10 @@ def get_train_data(task_index, total_task):
     return train_images[task_size*task_index:task_size*(task_index+1)],train_labels[task_size*task_index:task_size*(task_index+1)]
 
 if __name__ == '__main__':
+
+
     temporary_project_id = get_avaiable_project('project/get/project')
 
     while(result_learning('project/'+temporary_project_id+'/result')):
         start_learning('project/'+temporary_project_id+'/task/get')
-        time.sleep(3)
+        time.sleep(1)

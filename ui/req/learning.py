@@ -147,6 +147,44 @@ def get_train_data(task_index, total_task):
     return train_images[task_size*task_index:task_size*(task_index+1)],train_labels[task_size*task_index:task_size*(task_index+1)]
 
 if __name__ == '__main__':
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
+    x_train = x_train.astype('float32') / 256
+    x_test = x_test.astype('float32') / 256
+
+    # Convert class vectors to binary class matrices.
+    y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
+    y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
+    
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]),
+        tf.keras.layers.Activation('relu'),
+        tf.keras.layers.Conv2D(32, (3, 3)),
+        tf.keras.layers.Activation('relu'),
+        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+        tf.keras.layers.Dropout(0.25),
+
+        tf.keras.layers.Conv2D(64, (3, 3), padding='same'),
+        tf.keras.layers.Activation('relu'),
+        tf.keras.layers.Conv2D(64, (3, 3)),
+        tf.keras.layers.Activation('relu'),
+        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+        tf.keras.layers.Dropout(0.25),
+
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(512),
+        tf.keras.layers.Activation('relu'),
+        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Dense(10),
+        tf.keras.layers.Activation('softmax')
+    ])
+
+    opt = tf.keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
+    model.compile(loss='categorical_crossentropy',
+                    optimizer=opt,
+                    metrics=['accuracy'])
+
+    model.fit(x_train, y_train, batch_size=256, epochs=25, validation_data=(x_test, y_test), shuffle=True)
+    '''
     initial_weight = get_model().get_weights()
     rrs_url = 'some dummy url'
     model_url = 'some dummy url'
@@ -160,6 +198,7 @@ if __name__ == '__main__':
 
     temporary_project_id = get_avaiable_project('project/get/project')
 
+    '''
     start_time = time.time()
     print('start!')
 
@@ -169,3 +208,4 @@ if __name__ == '__main__':
     
     print('total time spent')
     print(time.time()-start_time)
+    ''''
