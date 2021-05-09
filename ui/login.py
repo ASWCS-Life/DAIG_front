@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import *
 from req.rest import *
-
+from req.auth import set_auth_header
 
 class login(QWidget):
     def __init__(self):
@@ -54,6 +54,8 @@ class login(QWidget):
         res = login_req(sender_data)
         print(res)
         if(res["is_successful"] == True):
+            set_auth_header(res["auth"])
+            print('set auth')
             return res["auth"]
         else:
             QMessageBox.about(self, 'DAIG', res["message"])

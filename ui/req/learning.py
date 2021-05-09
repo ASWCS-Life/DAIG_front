@@ -7,7 +7,7 @@ from tensorflow.keras import datasets, layers, models
 
 import numpy as np
 
-from auth import get_auth_header
+from .auth import get_auth_header
 from tempfile import TemporaryFile
 
 import time
@@ -15,33 +15,38 @@ import time
 base_url = 'http://127.0.0.1:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
-auth = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
-
-###########################################################
-# Dummy Train Data
-(train_images, train_labels), (test_images, test_labels) = datasets.mnist.load_data()
-
-train_images = train_images.reshape((60000, 28, 28, 1))
-test_images = test_images.reshape((10000, 28, 28, 1))
-
-# 픽셀 값을 0~1 사이로 정규화합니다.
-train_images, test_images = train_images / 255.0, test_images / 255.0
-
-train_images = np.concatenate((train_images, train_images, train_images, train_images), axis=0)
-train_labels = np.concatenate((train_labels, train_labels, train_labels, train_labels), axis=0)
-###########################################################
+auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
 
 # rest api
+
+# Login
+def login_req(data=None):
+    res = requests.post(f'{base_url}/auth/login', data=data, headers=get_auth_header())
+    print(base_url)
+    if res.status_code not in [200, 201, 204]:
+        raise SystemExit(requests.exceptions.HTTPError)
+    return res.json()
+
+
+# SignUp
+def sign_up_req(data=None):
+    res = requests.post(f'{base_url}/auth/signup', data=data, headers=get_auth_header())
+    print(base_url)
+    if res.status_code not in [200, 201, 204]:
+        raise SystemExit(requests.exceptions.HTTPError)
+    return res.json()
+
 def create_project(initial_weight,data=None):
     with TemporaryFile() as tf:
         np.save(tf, np.array(initial_weight,dtype=object))
         _ = tf.seek(0)
-        res = requests.post(f'{base_url}/project/create', files={'weight':tf},data=data, headers={'AUTH':auth})
+        res = requests.post(f'{base_url}/project/create', files={'weight':tf},data=data, headers={'AUTH':get_auth_header()})
 
+    print(res.json())
     return res.json()
 
 def get_avaiable_project(params=None):
-    res = requests.get(f'{base_url}/project/get/project', params=params, headers={'AUTH':auth})
+    res = requests.get(f'{base_url}/project/get/project', params=params, headers={'AUTH':get_auth_header()})
     return res.json()['project_uid']
 
 def model_upload(path, data=None):
@@ -52,7 +57,7 @@ def model_upload(path, data=None):
     return res.json()
 
 def get_weight(project_id,params=None):
-    res = requests.get(f'{base_url}/project/{project_id}/project/weight', params=params, headers={'AUTH':auth})
+    res = requests.get(f'{base_url}/project/{project_id}/project/weight', params=params, headers={'AUTH':get_auth_header()})
 
     with TemporaryFile() as tf:
         tf.write(res.content)
@@ -63,7 +68,7 @@ def get_weight(project_id,params=None):
 
 # 학습 시작 요청
 def start_learning(project_id, params=None):
-    res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':auth})
+    res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':get_auth_header()})
     res_json = res.json()
 
     if(not(res_json['is_successful'])): return 'FAIL'
@@ -90,17 +95,17 @@ def start_learning(project_id, params=None):
 
 # 학습 Task 선점하기
 def occupy_task(project_id, params = None):
-    res = requests.post(f'{base_url}/project/{project_id}/task/start',data=params, headers={'AUTH':auth})
+    res = requests.post(f'{base_url}/project/{project_id}/task/start',data=params, headers={'AUTH':get_auth_header()})
     return res.json()['is_successful']
 
 # 학습 결과 전송하기
 def update_learning(project_id, gradient, params = None):
-    res = requests.post(f'{base_url}/project/{project_id}/task/update',files = gradient, data=params, headers={'AUTH':auth})
+    res = requests.post(f'{base_url}/project/{project_id}/task/update',files = gradient, data=params, headers={'AUTH':get_auth_header()})
     return res.json()['is_successful']
 
 # 결과 요청
 def result_learning(project_id, params=None):
-    res = requests.get(f'{base_url}/project/{project_id}/result', params=params, headers={'AUTH':auth})
+    res = requests.get(f'{base_url}/project/{project_id}/result', params=params, headers={'AUTH':get_auth_header()})
 
     # if res.status_code not in [200, 201, 204]:
     # raise exc.ResponseException(res)
@@ -140,21 +145,18 @@ def get_model():
     return model
 
 # 학습 데이터 받아오기 (현재 더미 데이터 추후 S3)
-def get_train_data(task_index, total_task):
-    task_size = int(240000/total_task)
-
-
-
-    return train_images[task_size*task_index:task_size*(task_index+1)],train_labels[task_size*task_index:task_size*(task_index+1)]
-
-if __name__ == '__main__':
+def get_train_data():
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
     x_train = x_train.astype('float32') / 256
     x_test = x_test.astype('float32') / 256
 
-    # Convert class vectors to binary class matrices.
     y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
     y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
+
+    return (x_train, y_train), (x_test, y_test)
+
+if __name__ == '__main__':
+    (x_train, y_train), (x_test, y_test) = get_train_data()
     
     model = tf.keras.models.Sequential([
         tf.keras.layers.Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]),
