@@ -38,7 +38,7 @@ def set_file_name(info, num):
 
 # 데이터 분할
 def data_division(train_images, train_lables, num=100):
-    for i in range(5):
+    for i in range(num):
         img_div_pos = (len(train_images) // num) * i
         img_div_end = (len(train_images) // num) * (i + 1)
         lbl_div_pos = (len(train_lables) // num) * i

@@ -86,20 +86,24 @@ class data_upload(QWidget):
 
   # 데이터 파일 받아오기 / 복수의 npy 파일 선택 가능 - 선택된 파일들을 리스트로 리턴
   def file_btn_clicked(self):
-    self.d_file = QFileDialog.getOpenFileNames(self, filter="*.npy")
-    self.d_file_name.setText(str(self.d_file[0]))
+    self.d_file = QFileDialog.getExistingDirectory(self)
+    self.d_file_name.setText(str(self.d_file))
     print(self.d_file)
-    print(self.d_file[0])
-    set_train_data_path(self.d_file[0])
+    set_train_dir_path(self.d_file)
 
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
   def train_start_clicked(self):
     model = get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
-    train_data_list = get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
+    train_data_list = get_train_dir_path() #요청자가 올린 npy파일 path의 list가 들어감
     task_num = int(self.cho_task) # 분할할 task 수
     step_num = int(self.cho_step) # step내 task 수
+    train_img_mtrx, train_lbl_mtrx = data_division(task_num) # check dummyData.js
+    #train_img_mtrx, train_lbl_mtrx, valid_img_mtrx, valid_lbl_mtrx = data_division(task_num) # check dummyData.js
+
     '''
      res = #create_project()
     '''
     # set_p_id(res["project_id"])
+
+
