@@ -21,7 +21,7 @@ def create_project(initial_weight, data=None):
         _ = tf.seek(0)
         res = requests.post(f'{base_url}/project/create', files={'weight': tf}, data=data,
                             headers=get_auth_header()) # get_header
-
+    print(res.json())
     return res.json()
 
 # 프로젝트 아이디 받기
@@ -111,7 +111,7 @@ def get_train_data(task_index, total_task):
 
 # Login
 def login_req(data=None):
-    res = requests.post(f'{base_url}/auth/login', data=data, headers=get_auth_header())
+    res = requests.post(f'{base_url}/auth/login/', data=data)
     print(base_url)
     if res.status_code not in [200, 201, 204]:
         raise SystemExit(requests.exceptions.HTTPError)

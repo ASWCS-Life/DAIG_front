@@ -2,7 +2,7 @@ import sys
 from req.rest import *
 from component.dummyData import *
 from PyQt5.QtWidgets import *
-
+from req.learning import *
 
 class data_upload(QWidget):
   # don't touch
@@ -45,7 +45,7 @@ class data_upload(QWidget):
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
-    #self.train_start.clicked.connect(self.train_start_clicked)
+    self.train_start.clicked.connect(self.train_start_clicked)
 
     # 레이아웃 설정 및 출력
     layout = QGridLayout()
@@ -95,11 +95,14 @@ class data_upload(QWidget):
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
   def train_start_clicked(self):
-    model = get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
-    train_data_list = get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
-    task_num = int(self.cho_task) # 분할할 task 수
-    step_num = int(self.cho_step) # step내 task 수
-    '''
-     res = #create_project()
-    '''
+    model_path = 'test_path' # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
+    train_data_path = 'test_path' # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
+
+    model = get_model()
+
+    task_num = int(self.cho_task.currentText()) # 분할할 task 수
+    step_num = int(self.cho_step.currentText()) # step내 task 수
+
+    res = create_project(model.get_weights())
+
     # set_p_id(res["project_id"])
