@@ -32,16 +32,16 @@ train_labels = np.concatenate((train_labels, train_labels, train_labels, train_l
 ###########################################################
 
 # rest api
-def create_project(path, initial_weight,data=None):
+def create_project(initial_weight,data=None):
     with TemporaryFile() as tf:
         np.save(tf, np.array(initial_weight,dtype=object))
         _ = tf.seek(0)
-        res = requests.post(f'{base_url}/{path}', files={'weight':tf},data=data, headers={'AUTH':auth})
+        res = requests.post(f'{base_url}/project/create', files={'weight':tf},data=data, headers={'AUTH':auth})
 
     return res.json()
 
-def get_avaiable_project(path, params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':auth})
+def get_avaiable_project(params=None):
+    res = requests.get(f'{base_url}/project/get/project', params=params, headers={'AUTH':auth})
     return res.json()['project_uid']
 
 def model_upload(path, data=None):
@@ -51,8 +51,8 @@ def model_upload(path, data=None):
     #raise exc.ResponseException(res)
     return res.json()
 
-def get_weight(path,params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':auth})
+def get_weight(project_id,params=None):
+    res = requests.get(f'{base_url}/project/{project_id}/project/weight', params=params, headers={'AUTH':auth})
 
     with TemporaryFile() as tf:
         tf.write(res.content)
@@ -62,16 +62,16 @@ def get_weight(path,params=None):
     return weight
 
 # 학습 시작 요청
-def start_learning(path, params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':auth})
+def start_learning(project_id, params=None):
+    res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':auth})
     res_json = res.json()
 
     if(not(res_json['is_successful'])): return 'FAIL'
-    occupy_task('project/'+temporary_project_id+'/task/start',{'task_index':res_json['task_index']})
+    occupy_task(project_id,{'task_index':res_json['task_index']})
 
     model = get_model()
 
-    init_weight = get_weight('project/'+temporary_project_id+'/project/weight')
+    init_weight = get_weight(project_id)
 
     model.set_weights(init_weight.tolist())
     data, label = get_train_data(res_json['task_index'],res_json['total_task'])
@@ -80,27 +80,27 @@ def start_learning(path, params=None):
     with TemporaryFile() as tf:
         np.save(tf, np.array(model.get_weights(),dtype=object))
         _ = tf.seek(0)
-        update_success =  update_learning(path='project/'+temporary_project_id+'/task/update',
-            params={'task_index':res_json['task_index']},
-            gradient={'gradient':tf})
+        update_success =  update_learning(project_id = project_id,
+            params = {'task_index':res_json['task_index']},
+            gradient = {'gradient':tf})
 
     if(not(update_success)): return 'FAIL'
 
     return 'SUCCESS'
 
 # 학습 Task 선점하기
-def occupy_task(path, params = None):
-    res = requests.post(f'{base_url}/{path}',data=params, headers={'AUTH':auth})
+def occupy_task(project_id, params = None):
+    res = requests.post(f'{base_url}/project/{project_id}/task/start',data=params, headers={'AUTH':auth})
     return res.json()['is_successful']
 
 # 학습 결과 전송하기
-def update_learning(path, gradient, params = None):
-    res = requests.post(f'{base_url}/{path}',files = gradient, data=params, headers={'AUTH':auth})
+def update_learning(project_id, gradient, params = None):
+    res = requests.post(f'{base_url}/project/{project_id}/task/update',files = gradient, data=params, headers={'AUTH':auth})
     return res.json()['is_successful']
 
 # 결과 요청
-def result_learning(path, params=None):
-    res = requests.get(f'{base_url}/{path}', params=params, headers={'AUTH':auth})
+def result_learning(project_id, params=None):
+    res = requests.get(f'{base_url}/project/{project_id}/result', params=params, headers={'AUTH':auth})
 
     # if res.status_code not in [200, 201, 204]:
     # raise exc.ResponseException(res)
@@ -188,20 +188,20 @@ if __name__ == '__main__':
     rrs_url = 'some dummy url'
     model_url = 'some dummy url'
 
-    project_create_result = create_project('project/create',initial_weight,data={
+    project_create_result = create_project(initial_weight,data={
         'rrs':rrs_url,
         'model_url':model_url,
         'total_task':50,
         'step_size':10
     })
 
-    temporary_project_id = get_avaiable_project('project/get/project')
+    temporary_project_id = get_avaiable_project()
 
     start_time = time.time()
     print('start!')
 
-    while(result_learning('project/'+temporary_project_id+'/result')):
-        start_learning('project/'+temporary_project_id+'/task/get')
+    while(result_learning(temporary_project_id)):
+        start_learning(temporary_project_id)
         time.sleep(1)
     
     print('total time spent')
