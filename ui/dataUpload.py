@@ -2,7 +2,6 @@ import sys
 from req.rest import *
 from component.dummyData import *
 from PyQt5.QtWidgets import *
-from req.learning import *
 
 class data_upload(QWidget):
   # don't touch
@@ -98,11 +97,17 @@ class data_upload(QWidget):
     model_path = 'test_path' # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
     train_data_path = 'test_path' # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
 
+    # dummy model for test
     model = get_model()
 
     task_num = int(self.cho_task.currentText()) # 분할할 task 수
     step_num = int(self.cho_step.currentText()) # step내 task 수
 
-    res = create_project(model.get_weights())
+    res = create_project(model.get_weights(), data = {
+        'rrs':train_data_path,
+        'model_url':model_path,
+        'total_task':task_num,
+        'step_size':step_num
+      })
 
     # set_p_id(res["project_id"])

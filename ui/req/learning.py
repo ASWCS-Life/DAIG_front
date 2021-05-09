@@ -17,21 +17,25 @@ base_url = 'http://127.0.0.1:8000'
 temporary_project_id = '60926f7933f0b035a0591d1d'
 auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
 
-###########################################################
-# Dummy Train Data
-(train_images, train_labels), (test_images, test_labels) = datasets.mnist.load_data()
-
-train_images = train_images.reshape((60000, 28, 28, 1))
-test_images = test_images.reshape((10000, 28, 28, 1))
-
-# 픽셀 값을 0~1 사이로 정규화합니다.
-train_images, test_images = train_images / 255.0, test_images / 255.0
-
-train_images = np.concatenate((train_images, train_images, train_images, train_images), axis=0)
-train_labels = np.concatenate((train_labels, train_labels, train_labels, train_labels), axis=0)
-###########################################################
-
 # rest api
+
+# Login
+def login_req(data=None):
+    res = requests.post(f'{base_url}/auth/login', data=data, headers=get_auth_header())
+    print(base_url)
+    if res.status_code not in [200, 201, 204]:
+        raise SystemExit(requests.exceptions.HTTPError)
+    return res.json()
+
+
+# SignUp
+def sign_up_req(data=None):
+    res = requests.post(f'{base_url}/auth/signup', data=data, headers=get_auth_header())
+    print(base_url)
+    if res.status_code not in [200, 201, 204]:
+        raise SystemExit(requests.exceptions.HTTPError)
+    return res.json()
+
 def create_project(initial_weight,data=None):
     with TemporaryFile() as tf:
         np.save(tf, np.array(initial_weight,dtype=object))

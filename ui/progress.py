@@ -3,7 +3,25 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from component.dummyData import *
+from req.rest import *
 import time
+import threading
+from multiprocessing import Process
+from req.auth import get_auth_header
+
+class Worker(QThread):
+    def __init__(self, parent=None):
+        super(Worker, self).__init__(parent)
+
+    def run(self):
+      project_id = get_avaiable_project()
+      start_learning(project_id, get_auth_header())
+      start_learning(project_id, get_auth_header())
+    def stop(self):
+      #self.quit()
+      #self.wait()
+
+
 
 # create
 class on_progress(QWidget):
@@ -11,6 +29,9 @@ class on_progress(QWidget):
   def __init__(self):
     super().__init__()
     self.init_ui()
+    self.process_running = False
+
+    self.worker = Worker()
 
   # code
   def init_ui(self):
@@ -71,8 +92,10 @@ class on_progress(QWidget):
 
   # 학습 요청
   def onStartHandler(self):
-
+    self.process_running = True
     self.indicator.setText('분산학습 진행중..')
+    self.repeat_learning()
+
     #res = project_start() / req.rest
     #self.loading.start()
 
@@ -85,7 +108,10 @@ class on_progress(QWidget):
 
   #학습 중단
   def onStopHandler(self):
-    self.indicator.setText('분산학습이 중단되었습니다.')
+    self.prgs_info.setText('분산학습이 중단되었습니다.')
+    self.process_running = False
+    self.worker.stop()
+
     #res = project_status() / req.rest
     #self.loading.stop()
 
@@ -94,3 +120,28 @@ class on_progress(QWidget):
     #self.result_btn.setEnabled(True)
 
     #set_total_time(str(time.time() - self.start_time))
+
+  def repeat_learning(self):
+    project_id = get_avaiable_project()
+
+    if(project_id == -1):
+      print('learning stopped')
+      self.prgs_info.setText('현재 참여 가능한 프로젝트가 없습니다.')
+      self.process_running = False
+      return
+
+    self.prgs_info.setText('분산 학습이 진행중입니다...')
+    print('학습 시작')
+
+
+    self.worker.setTerminationEnabled(True)
+    self.worker.start()
+
+    #p = Process(target=start_learning, args=(project_id,get_auth_header(),))
+    #p.start()
+    #p.join()
+    print('학습 끝?')
+    #start_learning(project_id)
+
+    #if(self.process_running):
+      #threading.Timer(2,self.repeat_learning).start()
