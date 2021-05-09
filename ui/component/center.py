@@ -1,8 +1,11 @@
 from PyQt5.QtWidgets import QDesktopWidget
 
 # 화면 중앙 배치
-def center(w):
-    qr = w.frameGeometry()
+def onLayoutConvertCenter(win, wid, x, y):
+    win.toolBarTriggerHandler()
+    win.setGeometry(300, 300, x, y)
+    win.setCentralWidget(wid)
+    qr = win.frameGeometry()
     cp = QDesktopWidget().availableGeometry().center()
     qr.moveCenter(cp)
-    w.move(qr.topLeft())
+    win.move(qr.topLeft())
