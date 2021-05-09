@@ -31,19 +31,5 @@ class userFrame(QWidget):
 
     return user_box
 
-  # 프로젝트 생성
-  def createProject(self):
-    #create_project(path, initial_weight, data=None)
-    initial_weight = ''
-    data = ''
-    res = create_project("project/create", initial_weight, data)
-    if(res["is_successful" == True]):
-      QMessageBox.about(self, 'DAIG', res["message"], res["project_uid"])
-      p_id = res["project_uid"]
-      print(res)
-      return p_id
-    else:
-      QMessageBox.about(self, 'DAIG', res["message"])
-      return False
 
 

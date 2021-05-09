@@ -45,7 +45,7 @@ class data_upload(QWidget):
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
-    #self.train_start.clicked.connect(self.train_start_clicked)
+    self.train_start.clicked.connect(self.train_start_clicked)
 
     # 레이아웃 설정 및 출력
     layout = QGridLayout()
