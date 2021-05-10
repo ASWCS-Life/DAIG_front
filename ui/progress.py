@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton
 from PyQt5.QtCore import QThread, QTimer, Qt
-from daig.api.rest import get_avaiable_project
+from daig.api.rest import get_avaiable_project, start_learning
 import time
 from daig.api.auth import get_auth_header
 

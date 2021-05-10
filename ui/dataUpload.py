@@ -1,7 +1,6 @@
 import sys
 from daig.api.rest import *
-from daig.dummyData import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog
 
 class DataUploadWidget(QWidget):
   # don't touch
@@ -96,7 +95,7 @@ class DataUploadWidget(QWidget):
 
     task_num = int(self.cho_task) # 분할할 task 수
     step_num = int(self.cho_step) # step내 task 수
-    train_img_mtrx, train_lbl_mtrx = data_division(task_num) # check dummyData.js
+    train_img_mtrx, train_lbl_mtrx = self.data_division(task_num) # check dummyData.js
     model_path = 'test_path' # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
     train_data_path = 'test_path' # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
 
@@ -114,5 +113,37 @@ class DataUploadWidget(QWidget):
       })
 
     # set_p_id(res["project_id"])
+
+  def data_division(task_num=100):
+    # train_image, train_lable, validation_image, validation_lable
+    train_img_folder_name = 'train_img'
+    train_lbl_folder_name = 'train_lbl'
+    #valid_img_folder_name = ''
+    #valid_lbl_folder_name = ''
+    train_img_path = get_train_dir_path() + '/' + train_img_folder_name
+    train_lbl_path = get_train_dir_path() + '/' + train_lbl_folder_name
+    #valid_img_path = get_train_dir_path() + '/' + valid_img_folder_name
+    #valid_lbl_path = get_train_dir_path() + '/' + valid_lbl_folder_name
+
+    train_img_matrix = self.division_by_task(train_img_path, task_num)
+    train_lbl_matrix = self.division_by_task(train_lbl_path, task_num)
+    #valid_img_matrix = division_by_task(valid_img_path, task_num)
+    #valid_lbl_matrix = division_by_task(valid_lbl_list, task_num)
+    
+    #return train_img_matrix, train_lbl_matrix, valid_img_matrix, valid_lbl_matrix
+    return train_img_matrix, train_lbl_matrix
+
+
+# [[],[]] 2차원배열. task 0번째, 1번째 마다 총 파일의 개수를 task 수로 나눈만큼의 파일의 path들이 들어가 있도록.
+  def division_by_task(data_path, task_num):
+    file_list = os.listdir(data_path)
+
+    file_path_list = [[] for i in range(task_num)]
+    for i in range(task_num):
+        div_pos = (len(file_list) // task_num) * i
+        div_end = (len(file_list) // task_num) * (i + 1)
+        for j in range(div_pos, div_end+1):
+            file_path_list[i].append(data_path + '/' + file_list[j])
+    return file_path_list
 
 
