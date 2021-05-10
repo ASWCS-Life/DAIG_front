@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QPushButton
 from PyQt5.QtGui import QPixmap
 
-class modeChoice(QWidget):
+class ModeChoiceWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()

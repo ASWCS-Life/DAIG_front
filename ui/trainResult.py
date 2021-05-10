@@ -1,9 +1,9 @@
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from component.dummyData import *
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QGridLayout
+from PyQt5.QtCore import Qt
+from daig.dummyData import get_p_id, get_total_time
 
-class train_result(QWidget):
+class TrainResultWidget(QWidget):
   # don't touch
   def __init__(self):
     super().__init__()

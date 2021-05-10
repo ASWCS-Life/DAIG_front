@@ -1,13 +1,9 @@
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from component.dummyData import *
-from req.rest import *
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton
+from PyQt5.QtCore import QThread, QTimer, Qt
+from daig.api.rest import get_avaiable_project
 import time
-import threading
-from multiprocessing import Process
-from req.auth import get_auth_header
+from daig.api.auth import get_auth_header
 
 class Worker(QThread):
     def __init__(self, parent=None):
@@ -25,7 +21,7 @@ class Worker(QThread):
 
 
 # create
-class on_progress(QWidget):
+class ProgressWidget(QWidget):
   # don't touch
   def __init__(self):
     super().__init__()

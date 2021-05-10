@@ -1,9 +1,9 @@
 import sys
-from req.rest import *
-from component.dummyData import *
+from daig.api.rest import *
+from daig.dummyData import *
 from PyQt5.QtWidgets import *
 
-class data_upload(QWidget):
+class DataUploadWidget(QWidget):
   # don't touch
   def __init__(self):
     super().__init__()
