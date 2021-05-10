@@ -133,7 +133,6 @@ class MyMainWindow(QMainWindow):
     self.go_home.setStatusTip('Home')
     self.go_home.triggered.connect(
         self.onToolBarTriggeredHandler)  # 아이콘 클릭시 mode설정 화면으로 돌아감
-    # todo : 다시 되돌아 갔을 때 레이아웃 설정 해줘야함 (design part)
 
     self.toolbar = self.addToolBar('Home')
     self.toolbar.addAction(self.go_home)
