@@ -3,6 +3,7 @@ from req.rest import *
 from component.dummyData import *
 from PyQt5.QtWidgets import *
 
+
 class data_upload(QWidget):
   # don't touch
   def __init__(self):
@@ -12,7 +13,7 @@ class data_upload(QWidget):
   # code
   def init_ui(self):
 
-  # 파일 이름 출력
+    # 파일 이름 출력
     self.model = QLabel('모델: ')
     self.data = QLabel('데이터: ')
     self.p_task_div = QLabel('Task 분할 개수')
@@ -94,25 +95,24 @@ class data_upload(QWidget):
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
   def train_start_clicked(self):
 
-    task_num = int(self.cho_task) # 분할할 task 수
-    step_num = int(self.cho_step) # step내 task 수
-    train_img_mtrx, train_lbl_mtrx = data_division(task_num) # check dummyData.js
-    model_path = 'test_path' # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
-    train_data_path = 'test_path' # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
+    task_num = int(self.cho_task)  # 분할할 task 수
+    step_num = int(self.cho_step)  # step내 task 수
+    train_img_mtrx, train_lbl_mtrx = data_division(
+        task_num)  # check dummyData.js
+    model_path = 'test_path'  # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
+    train_data_path = 'test_path'  # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
 
     # dummy model for test
     model = get_model()
 
-    task_num = int(self.cho_task.currentText()) # 분할할 task 수
-    step_num = int(self.cho_step.currentText()) # step내 task 수
+    task_num = int(self.cho_task.currentText())  # 분할할 task 수
+    step_num = int(self.cho_step.currentText())  # step내 task 수
 
-    res = create_project(model.get_weights(), data = {
-        'rrs':train_data_path,
-        'model_url':model_path,
-        'total_task':task_num,
-        'step_size':step_num
-      })
+    res = create_project(model.get_weights(), data={
+        'rrs': train_data_path,
+        'model_url': model_path,
+        'total_task': task_num,
+        'step_size': step_num
+    })
 
     # set_p_id(res["project_id"])
-
-
