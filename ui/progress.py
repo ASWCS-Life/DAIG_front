@@ -18,6 +18,7 @@ class Worker(QThread):
       start_learning(project_id, get_auth_header())
       start_learning(project_id, get_auth_header())
     def stop(self):
+      pass
       #self.quit()
       #self.wait()
 
