@@ -7,7 +7,7 @@ from tensorflow.keras import datasets, layers, models
 
 import numpy as np
 
-from .auth import get_auth_header, set_auth_header
+from .auth import get_auth_header
 from tempfile import TemporaryFile
 
 import time
@@ -21,7 +21,7 @@ auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
 
 # Login
 def login_req(data=None):
-    res = requests.post(f'{base_url}/auth/login/', data=data)
+    res = requests.post(f'{base_url}/auth/login', data=data, headers=get_auth_header())
     print(base_url)
     if res.status_code not in [200, 201, 204]:
         raise SystemExit(requests.exceptions.HTTPError)
@@ -30,7 +30,7 @@ def login_req(data=None):
 
 # SignUp
 def sign_up_req(data=None):
-    res = requests.post(f'{base_url}/auth/signup/', data=data, headers=get_auth_header())
+    res = requests.post(f'{base_url}/auth/signup', data=data, headers=get_auth_header())
     print(base_url)
     if res.status_code not in [200, 201, 204]:
         raise SystemExit(requests.exceptions.HTTPError)
@@ -40,20 +40,17 @@ def create_project(initial_weight,data=None):
     with TemporaryFile() as tf:
         np.save(tf, np.array(initial_weight,dtype=object))
         _ = tf.seek(0)
-        res = requests.post(f'{base_url}/project/create/', files={'weight':tf},data=data, headers={'AUTH':get_auth_header()})
+        res = requests.post(f'{base_url}/project/create', files={'weight':tf},data=data, headers={'AUTH':get_auth_header()})
 
     print(res.json())
     return res.json()
 
 def get_avaiable_project(params=None):
     res = requests.get(f'{base_url}/project/get/project', params=params, headers={'AUTH':get_auth_header()})
-    if(res.json()['is_successful']):
-        return res.json()['project_uid']
-    else:
-        return -1
+    return res.json()['project_uid']
 
 def model_upload(path, data=None):
-    res = requests.post(f'{base_url}/{path}/', json=data, headers=get_auth_header())
+    res = requests.post(f'{base_url}/{path}', json=data, headers=get_auth_header())
 
     #if res.status_code not in [200, 201, 204]:
     #raise exc.ResponseException(res)
@@ -70,14 +67,10 @@ def get_weight(project_id,params=None):
     return weight
 
 # 학습 시작 요청
-def start_learning(project_id, auth, params=None):
-    set_auth_header({'key':auth})
-    print('shoot api')
-    print(auth)
-    res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':auth})
+def start_learning(project_id, params=None):
+    res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':get_auth_header()})
     res_json = res.json()
-    print('got json')
-    print(res_json)
+
     if(not(res_json['is_successful'])): return 'FAIL'
     occupy_task(project_id,{'task_index':res_json['task_index']})
 
@@ -86,12 +79,7 @@ def start_learning(project_id, auth, params=None):
     init_weight = get_weight(project_id)
 
     model.set_weights(init_weight.tolist())
-    task_index = int(res_json['task_index'])
-    task_size = int(50000/res_json['total_task'])
-
-    data = x_train[task_index*task_size:(task_index + 1)*task_size]
-    label = y_train[task_index*task_size:(task_index + 1)*task_size]
-
+    data, label = get_train_data(res_json['task_index'],res_json['total_task'])
     model.fit(data, label, epochs=5)
 
     with TemporaryFile() as tf:
@@ -107,12 +95,12 @@ def start_learning(project_id, auth, params=None):
 
 # 학습 Task 선점하기
 def occupy_task(project_id, params = None):
-    res = requests.post(f'{base_url}/project/{project_id}/task/start/',data=params, headers={'AUTH':get_auth_header()})
+    res = requests.post(f'{base_url}/project/{project_id}/task/start',data=params, headers={'AUTH':get_auth_header()})
     return res.json()['is_successful']
 
 # 학습 결과 전송하기
 def update_learning(project_id, gradient, params = None):
-    res = requests.post(f'{base_url}/project/{project_id}/task/update/',files = gradient, data=params, headers={'AUTH':get_auth_header()})
+    res = requests.post(f'{base_url}/project/{project_id}/task/update',files = gradient, data=params, headers={'AUTH':get_auth_header()})
     return res.json()['is_successful']
 
 # 결과 요청
@@ -141,33 +129,18 @@ def status_req(path, params):
 
 # 학습 모델 받아오기 (현재 더미 데이터 추후 S3)
 def get_model():
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Conv2D(32, (3, 3)),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-        tf.keras.layers.Dropout(0.25),
-
-        tf.keras.layers.Conv2D(64, (3, 3), padding='same'),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Conv2D(64, (3, 3)),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-        tf.keras.layers.Dropout(0.25),
-
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(512),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(10),
-        tf.keras.layers.Activation('softmax')
-    ])
-
-    opt = tf.keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
-    model.compile(loss='categorical_crossentropy',
-                    optimizer=opt,
-                    metrics=['accuracy'])
+    model = models.Sequential()
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dense(10, activation='softmax'))
+    model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
 
     return model
 
@@ -230,7 +203,7 @@ if __name__ == '__main__':
     print('start!')
 
     while(result_learning(temporary_project_id)):
-        start_learning(temporary_project_id,get_auth_header())
+        start_learning(temporary_project_id)
         time.sleep(1)
     
     print('total time spent')
@@ -239,6 +212,3 @@ if __name__ == '__main__':
     scores = model.evaluate(x_test, y_test, verbose=1)
     print('Test loss:', scores[0])
     print('Test accuracy:', scores[1])
-
-
-(x_train, y_train), (x_test, y_test) = get_train_data()
