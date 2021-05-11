@@ -1,13 +1,10 @@
 import requests
-import json
-
 import tensorflow as tf
 
-from tensorflow.keras import datasets, layers, models
-
 import numpy as np
+from tensorflow.python.ops.gen_math_ops import mod
 
-from .auth import get_auth_header, set_auth_header
+from daig.api.auth import get_auth_header
 from tempfile import TemporaryFile
 
 from sklearn.model_selection import train_test_split
@@ -224,9 +221,7 @@ def get_train_data():
     X = np.concatenate((x_train,x_test))
     y = np.concatenate((y_train,y_test))
 
-
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=10000, random_state=714)
-
 
     return (x_train, y_train), (x_test, y_test)
 
@@ -241,3 +236,7 @@ def validate(project_id):
     print(test_loss, test_acc)
 
 (x_train, y_train), (x_test, y_test) = get_train_data()
+
+if __name__ == '__main__':
+    model = tf.keras.models.load_model('test_model')
+    print(model.summary())

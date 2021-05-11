@@ -59,7 +59,7 @@ class ReqUserLayout(UserFrameWidget):
         self.p_id = self.project_create.clicked.connect(self.onProjectCreateHandler)
 
     def onProjectCreateHandler(self):
-        widget.setCurrentIndex(widget.currentIndex() + 1)
+        widget.setCurrentIndex(5)
         on_layout_convert_center(main_window, widget, 800, 500)
 
 # 요청자 / 제공자 선택 화면 - widget_index_num : 2

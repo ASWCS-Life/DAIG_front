@@ -74,10 +74,10 @@ class DataUploadWidget(QWidget):
     self.cho_step.setEditText(str(text))
     self.cho_step.adjustSize()
 
-  # 모델 파일 받아오기 / 하나의 py파일만 선택 가능
+  # 모델 파일 받아오기 / 하나의 디렉토리로 받아옵니다. Tensorflow Model Format 참조
   def model_btn_clicked(self):
-    self.m_file = QFileDialog.getOpenFileName(self, filter="*.py")
-    self.file_path.setText(self.m_file[0])
+    self.m_file = QFileDialog.getExistingDirectory(self)
+    self.file_path.setText(self.m_file)
 
   # 데이터 파일 받아오기 / 복수의 npy 파일 선택 가능 - 선택된 파일들을 리스트로 리턴
   def file_btn_clicked(self):
@@ -116,8 +116,8 @@ class DataUploadWidget(QWidget):
     # npy 파일 path 찾기
 def find_npy_path(dir_path):
     # train_image, train_lable, validation_image, validation_lable
-    train_img_dir_nm = 'train_img'
-    train_lbl_dir_nm = 'train_lbl'
+    train_img_dir_nm = 'train_data.npy'
+    train_lbl_dir_nm = 'train_label.npy'
     #valid_img_dir_nm = ''
     #valid_lbl_dir_nm = ''
     train_img_dir_path = dir_path + '/' + train_img_dir_nm
@@ -127,21 +127,6 @@ def find_npy_path(dir_path):
     #valid_img_dir_path = dir_path + '/' + valid_img_dir_nm
     #valid_lbl_dir_path = dir_path + '/' + valid_lbl_dir_nm
 
-    train_img_path = npy_file_path(train_img_dir_path)
-    print(train_img_path)
-    train_lbl_path = npy_file_path(train_lbl_dir_path)
-    print(train_lbl_path)
-    #valid_img_path = npy_file_path(valid_img_dir_path)
-    #valid_lbl_path = npy_file_path(valid_lbl_dir_list)
-
     #return train_img_path, train_lbl_path, valid_img_path, valid_lbl_path
-    return train_img_path, train_lbl_path
+    return train_img_dir_path, train_lbl_dir_path
 
-
-# 예를들어 10000개의 이미지라면 10000개의 이미지가 concatenated 된 npy파일 하나라고 가정
-def npy_file_path(data_path):
-    file = os.listdir(data_path)
-    print(file)
-
-    file_path = data_path + '/' + file[0]
-    return file_path

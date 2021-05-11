@@ -52,10 +52,10 @@ class ProgressWidget(QWidget):
 # 학습 진행중 - loading animation
     self.label = QLabel(self)
     self.label.setAlignment(Qt.AlignCenter)
-    self.movie = QtGui.QMovie("./local_data/loading.gif", QByteArray(), self)
-    self.movie.setCacheMode(QMovie.CacheAll)
-    self.movie.setSpeed(100)
-    self.label.setMovie(self.movie)
+    #self.movie = QtGui.QMovie("./local_data/loading.gif", QByteArray(), self)
+    #self.movie.setCacheMode(QMovie.CacheAll)
+    #self.movie.setSpeed(100)
+    #self.label.setMovie(self.movie)
     layout.addWidget(self.label, 2, 1)
 
   # 학습 시작, 중단 및 결과 확인 버튼
@@ -85,7 +85,7 @@ class ProgressWidget(QWidget):
 
   # 학습 요청
   def onStartHandler(self):
-    self.movie.start()
+    #self.movie.start()
     self.indicator.setText('분산학습 진행중..')
     self.repeat_learning()
 
@@ -101,7 +101,7 @@ class ProgressWidget(QWidget):
 
   #학습 중단
   def onStopHandler(self):
-    self.movie.stop()
+    #self.movie.stop()
     self.prgs_info.setText('분산학습이 중단되었습니다.')
     self.worker.stop()
 

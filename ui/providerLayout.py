@@ -2,10 +2,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QThread
 
-from req.main import *
-from req.rest import *
+from daig.api.main import *
+from daig.api.rest import *
 
-from req.auth import get_auth_header, set_auth_header
+from daig.api.auth import get_auth_header, set_auth_header
 
 class Worker(QThread):
   stop_learning = False
