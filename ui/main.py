@@ -47,7 +47,7 @@ class DataUploadLayout(data_upload):
 
 
 # 제공자 화면 - widget_index_num : 4
-class ProviderLayout(ProviderLayout):
+class ProviderWidget(ProviderWidget):
     def __init__(self):
         super().__init__()
 
@@ -59,7 +59,7 @@ class ReqUserLayout(userFrame):
             self.onProjectCreateHandler)
 
     def onProjectCreateHandler(self):
-        widget.setCurrentIndex(widget.currentIndex() + 1)
+        widget.setCurrentIndex(widget.currentIndex() + 2)
         onLayoutConvertCenter(main_window, widget, 800, 500)
 
 # 요청자 / 제공자 선택 화면 - widget_index_num : 2
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     SignUp_ly = SignUp()
     Mode_ly = Mode()
     User_ly = ReqUserLayout()
-    Prov_ly = ProviderLayout()
+    Prov_ly = ProviderWidget()
     DtUp_ly = DataUploadLayout()
     Progress_ly = Progress()
     TrainRslt_ly = TrainResult()

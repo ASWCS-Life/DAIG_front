@@ -1,9 +1,13 @@
 import requests
+import json
+
 import tensorflow as tf
+
+from tensorflow.keras import datasets, layers, models
 
 import numpy as np
 
-from .auth import get_auth_header
+from .auth import get_auth_header, set_auth_header
 from tempfile import TemporaryFile
 
 from sklearn.model_selection import train_test_split
@@ -59,7 +63,6 @@ def create_project(initial_weight,data=None):
         _ = tf.seek(0)
         res = requests.post(f'{base_url}/project/create/', files={'weight':tf},data=data, headers={'AUTH':get_auth_header()})
 
-    print(res.json())
     return res.json()
 
 def get_avaiable_project(params=None):
@@ -93,10 +96,6 @@ def start_learning(project_id, params=None):
 
     res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':get_auth_header()})
     res_json = res.json()
-    print('got json')
-    print(res_json)
-    if(not(res_json['is_successful'])): return 'FAIL'
-    occupy_task(project_id,{'task_index':res_json['task_index']})
 
     print(res_json)
 
@@ -225,10 +224,9 @@ def get_train_data():
     X = np.concatenate((x_train,x_test))
     y = np.concatenate((y_train,y_test))
 
+
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=10000, random_state=714)
 
-    y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
-    y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
 
     return (x_train, y_train), (x_test, y_test)
 
