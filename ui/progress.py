@@ -1,40 +1,26 @@
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from component.dummyData import *
-from req.rest import *
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton
+from PyQt5.QtCore import QThread, QTimer, Qt
+from daig.api.rest import get_avaiable_project, start_learning
 import time
-import threading
-from multiprocessing import Process
-from req.auth import get_auth_header
+from daig.api.auth import get_auth_header
 
 class Worker(QThread):
-  stop_learning = False
-
   def __init__(self, parent=None):
     super(Worker, self).__init__(parent)
-    set_auth_header({'key':get_auth_header()})
 
   def run(self):
-    self.stop_learning = False
-    start_learning_internal()
     project_id = get_avaiable_project()
-    if(project_id == -1): return
-    result = start_learning(project_id)
-    if((result == 'STOP') or (result == 'FAIL')):
-      return
-    time.sleep(2)
-    if(not(self.stop_learning)):
-      self.run()
-
+    start_learning(project_id, get_auth_header())
+    start_learning(project_id, get_auth_header())
   def stop(self):
-    self.stop_learning = True
-    stop_learning_internal()
+    pass
+    #self.quit()
+    #self.wait()
 
 
 # create
-class on_progress(QWidget):
+class ProgressWidget(QWidget):
   # don't touch
   def __init__(self):
     super().__init__()

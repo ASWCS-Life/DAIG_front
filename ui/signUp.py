@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox, QWidget, QPushButton, QLineEdit, QLabel
-from req.rest import *
+from daig.api.rest import sign_up_req
 
-class sign_up(QWidget):
+class SignUpWidget(QWidget):
     # don't touch
     def __init__(self):
         super().__init__()
