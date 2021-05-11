@@ -2,22 +2,32 @@ from PyQt5 import QtGui
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton
 from PyQt5.QtCore import QThread, QTimer, Qt
-from daig.api.rest import get_avaiable_project, start_learning
+from daig.api.rest import get_avaiable_project, start_learning, start_learning_internal, stop_learning_internal, is_project_finished
 import time
-from daig.api.auth import get_auth_header
+from daig.api.auth import get_auth_header, set_auth_header
 
 class Worker(QThread):
+  stop_learning = False
+
   def __init__(self, parent=None):
     super(Worker, self).__init__(parent)
+    set_auth_header({'key':get_auth_header()})
 
   def run(self):
+    self.stop_learning = False
+    start_learning_internal()
     project_id = get_avaiable_project()
-    start_learning(project_id, get_auth_header())
-    start_learning(project_id, get_auth_header())
+    if(project_id == -1): return
+    result = start_learning(project_id)
+    if((result == 'STOP') or (result == 'FAIL')):
+      return
+    time.sleep(2)
+    if(not(self.stop_learning)):
+      self.run()
+
   def stop(self):
-    pass
-    #self.quit()
-    #self.wait()
+    self.stop_learning = True
+    stop_learning_internal()
 
 
 # create
