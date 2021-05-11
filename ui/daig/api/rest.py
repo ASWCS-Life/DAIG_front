@@ -10,6 +10,8 @@ from tempfile import TemporaryFile
 from sklearn.model_selection import train_test_split
 
 import time
+import os
+from tqdm import tqdm
 
 base_url = 'http://127.0.0.1:8000'
 
@@ -48,7 +50,7 @@ def login_req(data=None):
 
 # SignUp
 def sign_up_req(data=None):
-    res = requests.post(f'{base_url}/auth/signup/', data=data, headers=get_auth_header())
+    res = requests.post(f'{base_url}/auth/signup/', data=data)
 
     if res.status_code not in [200, 201, 204]:
         raise SystemExit(requests.exceptions.HTTPError)
@@ -70,12 +72,48 @@ def get_avaiable_project(params=None):
     else:
         return -1
 
-def model_upload(path, data=None):
-    res = requests.post(f'{base_url}/{path}/', json=data, headers=get_auth_header())
+def upload_data(data_path, label_path, project_uid, task_num):
+    data=np.load(data_path, allow_pickle=True)
+    label=np.load(label_path, allow_pickle=True)
+    data_split=np.split(data,task_num)
+    label_split=np.split(label,task_num)
 
-    #if res.status_code not in [200, 201, 204]:
-    #raise exc.ResponseException(res)
-    return res.json()
+    for idx in tqdm(range(task_num)):
+        res=requests.post(f'{base_url}/project/data/upload',data={ # 업로드 url 요청
+            'project_uid':project_uid,
+            'data': f'train_data_{idx}',
+            'label': f'train_label_{idx}',
+        }, headers={'AUTH':get_auth_header()})
+
+        url=res.json()['label_url'] # presigned url
+        with TemporaryFile() as tf:
+            np.save(tf, label_split[idx])
+            requests.put(url=url,data=tf) # 라벨 업로드
+        print(f'label_{idx} uploaded')
+
+        url=res.json()['data_url'] # presigned url
+        with TemporaryFile() as tf:
+            np.save(tf, data_split[idx])
+            requests.put(url=url,data=tf) # 데이터 업로드
+        print(f'data_{idx} uploaded')
+
+    print('data uploading finished')
+
+def upload_model(model_path_, project_uid):
+    res=requests.post(f'{base_url}/project/model/upload',data={ # 업로드 url 요청
+        'project_uid':project_uid,
+        'model':'model.h5'
+    }, headers={'AUTH':get_auth_header()})
+    print(res.json())
+    url=res.json()['model_url'] # presigned url
+
+    filename='model.h5'
+    model=tf.keras.models.load_model(model_path_)
+    tf.keras.models.save_model(model,filename)
+    with open(filename, 'rb') as f:
+        requests.put(url=url,data=f) # 데이터 업로드
+        
+    print('model successfully uploaded')
 
 def get_weight(project_id,params=None):
     res = requests.get(f'{base_url}/project/{project_id}/project/weight', params=params, headers={'AUTH':get_auth_header()})
