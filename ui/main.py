@@ -9,6 +9,7 @@ from trainResult import *
 from progress import *
 from dataUpload import *
 from PyQt5.QtWidgets import *
+from providerLayout import *
 
 # 학습 결과 화면 - widget_index_num : 7
 
@@ -46,7 +47,9 @@ class DataUploadLayout(data_upload):
 
 
 # 제공자 화면 - widget_index_num : 4
-#class ProviderLayout(proFrame):
+class ProviderLayout(ProviderLayout):
+    def __init__(self):
+        super().__init__()
 
 # 요청자 화면 - widget_index_num : 3
 class ReqUserLayout(userFrame):
@@ -66,12 +69,14 @@ class Mode(modeChoice):
     def __init__(self):
         super().__init__()
         self.req_size.clicked.connect(self.openReqUserClass)
-        #self.shr_size.clicked.connect(self.openShrUserClass)
+        self.shr_size.clicked.connect(self.openShrUserClass)
 
     def openReqUserClass(self):
         widget.setCurrentIndex(widget.currentIndex() + 1)
         onLayoutConvertCenter(main_window, widget, 300, 600)
-    #def openShrUserClass(self):
+    def openShrUserClass(self):
+        widget.setCurrentIndex(widget.currentIndex() + 2)
+        onLayoutConvertCenter(main_window, widget, 300, 600)
 
 
 # 회원가입 화면 - widget_index_num : 1
@@ -161,6 +166,7 @@ if __name__ == '__main__':
     SignUp_ly = SignUp()
     Mode_ly = Mode()
     User_ly = ReqUserLayout()
+    Prov_ly = ProviderLayout()
     DtUp_ly = DataUploadLayout()
     Progress_ly = Progress()
     TrainRslt_ly = TrainResult()
@@ -170,7 +176,7 @@ if __name__ == '__main__':
     widget.addWidget(SignUp_ly)
     widget.addWidget(Mode_ly)
     widget.addWidget(User_ly)
-    widget.addWidget(User_ly)  # 나중에 ProviderLayout 으로 교체
+    widget.addWidget(Prov_ly)  # 나중에 ProviderLayout 으로 교체
     widget.addWidget(DtUp_ly)
     widget.addWidget(Progress_ly)
     widget.addWidget(TrainRslt_ly)
