@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e16cc33b-3748-4011-b1b6-d67f81872204" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ui/providerLayout.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/component/dummyData.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/component/dummyData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/daig/api/rest.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/daig/api/rest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/dataUpload.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/dataUpload.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/mode.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/progress.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/progress.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +33,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1620726132231</updated>
-      <workItem from="1620726133558" duration="677000" />
+      <workItem from="1620726133558" duration="1326000" />
     </task>
     <servers />
   </component>

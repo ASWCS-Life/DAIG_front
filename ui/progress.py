@@ -1,4 +1,5 @@
-import sys
+from PyQt5 import QtGui
+from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton
 from PyQt5.QtCore import QThread, QTimer, Qt
 from daig.api.rest import get_avaiable_project, start_learning
@@ -48,17 +49,14 @@ class ProgressWidget(QWidget):
     layout.addWidget(self.used_credit, 1, 1)
 
 
-    '''
-      # 학습 진행중
-        self.label = QLabel(self)
-        self.label.setGeometry(QRect(25,25,200,200))
-        self.label.setMinimumSize(QSize(100,100))
-        self.label.setMaximumSize(QSize(100,100))
-    
-        self.loading = QMovie('./local_data/loading.gif', self)
-        self.label.setMovie(self.loading)
-        self.loading.start()
-    '''
+# 학습 진행중 - loading animation
+    self.label = QLabel(self)
+    self.label.setAlignment(Qt.AlignCenter)
+    self.movie = QtGui.QMovie("./local_data/loading.gif", QByteArray(), self)
+    self.movie.setCacheMode(QMovie.CacheAll)
+    self.movie.setSpeed(100)
+    self.label.setMovie(self.movie)
+    layout.addWidget(self.label, 2, 1)
 
   # 학습 시작, 중단 및 결과 확인 버튼
     self.start_btn = QPushButton('학습 시작', self)  # bar button
@@ -87,6 +85,7 @@ class ProgressWidget(QWidget):
 
   # 학습 요청
   def onStartHandler(self):
+    self.movie.start()
     self.indicator.setText('분산학습 진행중..')
     self.repeat_learning()
 
@@ -102,6 +101,7 @@ class ProgressWidget(QWidget):
 
   #학습 중단
   def onStopHandler(self):
+    self.movie.stop()
     self.prgs_info.setText('분산학습이 중단되었습니다.')
     self.worker.stop()
 
