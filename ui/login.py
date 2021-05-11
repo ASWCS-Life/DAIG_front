@@ -1,9 +1,9 @@
 import sys
-from PyQt5.QtWidgets import *
-from req.rest import *
-from req.auth import set_auth_header
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QMessageBox
+from daig.api.rest import login_req
+from daig.api.auth import set_auth_header
 
-class login(QWidget):
+class LoginWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()

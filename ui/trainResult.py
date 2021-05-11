@@ -1,9 +1,9 @@
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from component.dummyData import *
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QGridLayout
+from PyQt5.QtCore import Qt
+from daig.requester import project
 
-class train_result(QWidget):
+class TrainResultWidget(QWidget):
   # don't touch
   def __init__(self):
     super().__init__()
@@ -20,13 +20,13 @@ class train_result(QWidget):
   # pID 출력
     self.p_pID_name = QLabel('pID: ')
     self.p_pID_name.setAlignment(Qt.AlignCenter)
-    self.pID = QLabel(get_p_id(), self)
+    self.pID = QLabel(project.uid, self)
     self.pID.setAlignment(Qt.AlignCenter)
 
   # 소요시간
     self.p_spent_time = QLabel('소요 시간: ')
     self.p_spent_time.setAlignment(Qt.AlignCenter)
-    self.spent_time = QLabel(get_total_time(), self)
+    self.spent_time = QLabel(project.spent_time, self)
     self.spent_time.setAlignment(Qt.AlignCenter)
 
   # loss / not yet
