@@ -1,9 +1,6 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from req.main import *
-from req.rest import *
+from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton, QHBoxLayout, QGroupBox, QLabel
 
-class userFrame(QWidget):
+class UserFrameWidget(QWidget):
   # don't touch
   def __init__(self):
     super().__init__()

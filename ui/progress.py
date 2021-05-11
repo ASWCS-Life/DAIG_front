@@ -1,39 +1,27 @@
-import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from component.dummyData import *
-from req.rest import *
+from PyQt5 import QtGui
+from PyQt5.QtGui import QMovie
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton
+from PyQt5.QtCore import QThread, QTimer, Qt
+from daig.api.rest import get_avaiable_project, start_learning
 import time
-
-from req.auth import get_auth_header, set_auth_header
+from daig.api.auth import get_auth_header
 
 class Worker(QThread):
-  stop_learning = False
-
   def __init__(self, parent=None):
     super(Worker, self).__init__(parent)
-    set_auth_header({'key':get_auth_header()})
 
   def run(self):
-    self.stop_learning = False
-    start_learning_internal()
     project_id = get_avaiable_project()
-    if(project_id == -1): return
-    result = start_learning(project_id)
-    if((result == 'STOP') or (result == 'FAIL')):
-      return
-    time.sleep(2)
-    if(not(self.stop_learning)):
-      self.run()
-
+    start_learning(project_id, get_auth_header())
+    start_learning(project_id, get_auth_header())
   def stop(self):
-    self.stop_learning = True
-    stop_learning_internal()
+    pass
+    #self.quit()
+    #self.wait()
 
 
 # create
-class on_progress(QWidget):
+class ProgressWidget(QWidget):
   # don't touch
   def __init__(self):
     super().__init__()
@@ -61,17 +49,14 @@ class on_progress(QWidget):
     layout.addWidget(self.used_credit, 1, 1)
 
 
-    '''
-      # 학습 진행중
-        self.label = QLabel(self)
-        self.label.setGeometry(QRect(25,25,200,200))
-        self.label.setMinimumSize(QSize(100,100))
-        self.label.setMaximumSize(QSize(100,100))
-    
-        self.loading = QMovie('./local_data/loading.gif', self)
-        self.label.setMovie(self.loading)
-        self.loading.start()
-    '''
+# 학습 진행중 - loading animation
+    self.label = QLabel(self)
+    self.label.setAlignment(Qt.AlignCenter)
+    self.movie = QtGui.QMovie("./local_data/loading.gif", QByteArray(), self)
+    self.movie.setCacheMode(QMovie.CacheAll)
+    self.movie.setSpeed(100)
+    self.label.setMovie(self.movie)
+    layout.addWidget(self.label, 2, 1)
 
   # 학습 시작, 중단 및 결과 확인 버튼
     self.start_btn = QPushButton('학습 시작', self)  # bar button
@@ -100,6 +85,7 @@ class on_progress(QWidget):
 
   # 학습 요청
   def onStartHandler(self):
+    self.movie.start()
     self.indicator.setText('분산학습 진행중..')
     self.repeat_learning()
 
@@ -115,6 +101,7 @@ class on_progress(QWidget):
 
   #학습 중단
   def onStopHandler(self):
+    self.movie.stop()
     self.prgs_info.setText('분산학습이 중단되었습니다.')
     self.worker.stop()
 
