@@ -173,12 +173,8 @@ def start_learning(project_id, params=None):
     if(task_index == -1): 
         validate(project_id)
         return 'STOP'
-
-    data = x_train[task_index*task_size:(task_index + 1)*task_size]
-    label = y_train[task_index*task_size:(task_index + 1)*task_size]
-
     
-    model.fit(train_data, train_label, batch_size=32, epochs=30, callbacks=[callback], validation_data=(x_test, y_test), verbose=2)
+    model.fit(train_data, train_label, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
     
 
     if callback.stop_learning_tok:
@@ -302,4 +298,5 @@ def validate(project_id):
 
 if __name__ == '__main__':
     model = get_model()
-    model.fit(x_train[0:25000], y_train[0:25000], batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    
