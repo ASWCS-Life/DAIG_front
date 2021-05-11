@@ -11,7 +11,6 @@ from sklearn.model_selection import train_test_split
 
 import time
 import os
-from tqdm import tqdm
 
 base_url = 'http://127.0.0.1:8000'
 
@@ -78,7 +77,7 @@ def upload_data(data_path, label_path, project_uid, task_num):
     data_split=np.split(data,task_num)
     label_split=np.split(label,task_num)
 
-    for idx in tqdm(range(task_num)):
+    for idx in range(2):
         res=requests.post(f'{base_url}/project/data/upload',data={ # 업로드 url 요청
             'project_uid':project_uid,
             'data': f'train_data_{idx}',
@@ -88,12 +87,14 @@ def upload_data(data_path, label_path, project_uid, task_num):
         url=res.json()['label_url'] # presigned url
         with TemporaryFile() as tf:
             np.save(tf, label_split[idx])
+            _ = tf.seek(0)
             requests.put(url=url,data=tf) # 라벨 업로드
         print(f'label_{idx} uploaded')
 
         url=res.json()['data_url'] # presigned url
         with TemporaryFile() as tf:
             np.save(tf, data_split[idx])
+            _ = tf.seek(0)
             requests.put(url=url,data=tf) # 데이터 업로드
         print(f'data_{idx} uploaded')
 
