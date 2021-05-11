@@ -47,7 +47,7 @@ class DataUploadLayout(data_upload):
 
 
 # 제공자 화면 - widget_index_num : 4
-class ProviderLayout(ProviderLayout):
+class ProviderLayout(ProviderWidget):
     def __init__(self):
         super().__init__()
 
