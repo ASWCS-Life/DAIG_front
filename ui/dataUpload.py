@@ -12,13 +12,13 @@ class data_upload(QWidget):
   # code
   def init_ui(self):
 
-  # 파일 이름 출력
+    # 파일 이름 출력
     self.model = QLabel('모델: ')
     self.data = QLabel('데이터: ')
     self.p_task_div = QLabel('Task 분할 개수')
     self.p_step_task = QLabel('Step별 task 개수')
-    self.m_file_name = QLabel('')
-    self.d_file_name = QLabel('')
+    self.file_path = QLabel('')
+    self.dir_path = QLabel('')
 
   # 파일 올리는 버튼
     self.model_btn = QPushButton('올리기')
@@ -49,10 +49,10 @@ class data_upload(QWidget):
     # 레이아웃 설정 및 출력
     layout = QGridLayout()
     layout.addWidget(self.model, 0, 0)
-    layout.addWidget(self.m_file_name, 0, 1)
+    layout.addWidget(self.file_path, 0, 1)
     layout.addWidget(self.model_btn, 0, 2)
     layout.addWidget(self.data, 1, 0)
-    layout.addWidget(self.d_file_name, 1, 1)
+    layout.addWidget(self.dir_path, 1, 1)
     layout.addWidget(self.data_btn, 1, 2)
 
     layout.addWidget(self.p_task_div, 3, 0)
@@ -78,17 +78,12 @@ class data_upload(QWidget):
   # 모델 파일 받아오기 / 하나의 py파일만 선택 가능
   def model_btn_clicked(self):
     self.m_file = QFileDialog.getOpenFileName(self, filter="*.py")
-    self.m_file_name.setText(self.m_file[0])
-    print(self.m_file)
-    print(self.m_file[0])
-    set_model_path(self.m_file[0])
+    self.file_path.setText(self.m_file[0])
 
   # 데이터 파일 받아오기 / 복수의 npy 파일 선택 가능 - 선택된 파일들을 리스트로 리턴
   def file_btn_clicked(self):
     self.d_file = QFileDialog.getExistingDirectory(self)
-    self.d_file_name.setText(str(self.d_file))
-    print(self.d_file)
-    set_train_dir_path(self.d_file)
+    self.dir_path.setText(str(self.d_file))
 
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
@@ -103,9 +98,6 @@ class data_upload(QWidget):
     # dummy model for test
     model = get_model()
 
-    task_num = int(self.cho_task.currentText()) # 분할할 task 수
-    step_num = int(self.cho_step.currentText()) # step내 task 수
-
     res = create_project(model.get_weights(), data = {
         'rrs':train_data_path,
         'model_url':model_path,
@@ -113,6 +105,11 @@ class data_upload(QWidget):
         'step_size':step_num
       })
 
+
     # set_p_id(res["project_id"])
 
-
+    # 5월 10일 실습시간에 추가한 내용
+    # dummy값이 아닌 ui에서 받아온 model과 npy파일들의 path
+    model_path_ = self.file_path.text()
+    #train_img_path, train_lbl_path, valid_img_path, valid_lbl_path = data_division(task_num) # check dummyData.js
+    train_img_path, train_lbl_path = find_npy_path(self.dir_path.text())  # check dummyData.js

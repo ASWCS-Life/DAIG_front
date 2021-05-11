@@ -11,6 +11,8 @@ from dataUpload import *
 from PyQt5.QtWidgets import *
 
 # 학습 결과 화면 - widget_index_num : 7
+
+
 class TrainResult(train_result):
     def __init__(self):
         super().__init__()
@@ -50,13 +52,16 @@ class DataUploadLayout(data_upload):
 class ReqUserLayout(userFrame):
     def __init__(self):
         super().__init__()
-        self.p_id = self.project_create.clicked.connect(self.onProjectCreateHandler)
+        self.p_id = self.project_create.clicked.connect(
+            self.onProjectCreateHandler)
 
     def onProjectCreateHandler(self):
         widget.setCurrentIndex(widget.currentIndex() + 1)
         onLayoutConvertCenter(main_window, widget, 800, 500)
 
 # 요청자 / 제공자 선택 화면 - widget_index_num : 2
+
+
 class Mode(modeChoice):
     def __init__(self):
         super().__init__()
@@ -84,12 +89,13 @@ class SignUp(sign_up):
         if(result):
             self.openLoginClass()
 
-
     def openLoginClass(self):
         widget.setCurrentIndex(widget.currentIndex() - 1)
         onLayoutConvertCenter(main_window, widget, 300, 300)
 
 # 로그인 화면 - widget_index_num : 0
+
+
 class Login(login):
     # don't touch
     def __init__(self):
@@ -107,13 +113,15 @@ class Login(login):
         onLayoutConvertCenter(main_window, widget, 200, 200)
 
     def onClickLoginHandler(self):
-        user_key = self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
-        if(user_key): self.openModeClass()
-        set_auth_header(user_key) # 로그인 할때 받은 키로 ({"key" : "~"}) 헤더 설정
+        user_key = self.onClickLogin()  # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        if(user_key):
+            self.openModeClass()
+        set_auth_header(user_key)  # 로그인 할때 받은 키로 ({"key" : "~"}) 헤더 설정
 
     def openModeClass(self):
         widget.setCurrentIndex(widget.currentIndex()+2)
         onLayoutConvertCenter(main_window, widget, 520, 300)
+
 
 class MyMainWindow(QMainWindow):
   def __init__(self):
@@ -123,8 +131,8 @@ class MyMainWindow(QMainWindow):
     # 툴바 아이콘 지정 및 헹동 지정
     self.go_home = QAction(QIcon('./local_data/home.png'), 'Home', self)
     self.go_home.setStatusTip('Home')
-    self.go_home.triggered.connect(lambda : widget.setCurrentIndex(2)) # 아이콘 클릭시 mode설정 화면으로 돌아감
-    # todo : 다시 되돌아 갔을 때 레이아웃 설정 해줘야함 (design part)
+    self.go_home.triggered.connect(
+        self.onToolBarTriggeredHandler)  # 아이콘 클릭시 mode설정 화면으로 돌아감
 
     self.toolbar = self.addToolBar('Home')
     self.toolbar.addAction(self.go_home)
@@ -134,6 +142,11 @@ class MyMainWindow(QMainWindow):
         self.go_home.setEnabled(False)
     else:
         self.go_home.setEnabled(True)
+
+  def onToolBarTriggeredHandler(self):
+    widget.setCurrentIndex(2)
+    onLayoutConvertCenter(self, widget, 520, 300)
+
 
 # don't touch
 if __name__ == '__main__':
@@ -157,11 +170,10 @@ if __name__ == '__main__':
     widget.addWidget(SignUp_ly)
     widget.addWidget(Mode_ly)
     widget.addWidget(User_ly)
-    widget.addWidget(User_ly) # 나중에 ProviderLayout 으로 교체
+    widget.addWidget(User_ly)  # 나중에 ProviderLayout 으로 교체
     widget.addWidget(DtUp_ly)
     widget.addWidget(Progress_ly)
     widget.addWidget(TrainRslt_ly)
-
 
     #윈도우 객체 생성 및 타이틀 설정
     main_window = MyMainWindow()
