@@ -1,13 +1,9 @@
 import requests
-import json
-
 import tensorflow as tf
-
-from tensorflow.keras import datasets, layers, models
 
 import numpy as np
 
-from .auth import get_auth_header, set_auth_header
+from .auth import get_auth_header
 from tempfile import TemporaryFile
 
 from sklearn.model_selection import train_test_split

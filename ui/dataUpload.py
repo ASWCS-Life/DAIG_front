@@ -107,9 +107,3 @@ class data_upload(QWidget):
 
 
     # set_p_id(res["project_id"])
-
-    # 5월 10일 실습시간에 추가한 내용
-    # dummy값이 아닌 ui에서 받아온 model과 npy파일들의 path
-    model_path_ = self.file_path.text()
-    #train_img_path, train_lbl_path, valid_img_path, valid_lbl_path = data_division(task_num) # check dummyData.js
-    train_img_path, train_lbl_path = find_npy_path(self.dir_path.text())  # check dummyData.js
