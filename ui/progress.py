@@ -7,7 +7,7 @@ from req.rest import *
 import time
 import threading
 from multiprocessing import Process
-from req.auth import get_auth_header
+from req.auth import get_auth_header, set_auth_header
 
 class Worker(QThread):
   stop_learning = False
