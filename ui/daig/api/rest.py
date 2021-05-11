@@ -1,10 +1,13 @@
+import h5py
 import requests
 import tensorflow as tf
+
+import tensorflow.keras as keras
 
 import numpy as np
 from tensorflow.python.ops.gen_math_ops import mod
 
-from daig.api.auth import get_auth_header
+from auth import get_auth_header
 from tempfile import TemporaryFile
 
 from sklearn.model_selection import train_test_split
@@ -77,11 +80,13 @@ def upload_data(data_path, label_path, project_uid, task_num):
     data_split=np.split(data,task_num)
     label_split=np.split(label,task_num)
 
-    for idx in range(2):
+    init_time = time.time()
+    for idx in range(1):
         res=requests.post(f'{base_url}/project/data/upload',data={ # 업로드 url 요청
             'project_uid':project_uid,
             'data': f'train_data_{idx}',
             'label': f'train_label_{idx}',
+            'index': idx
         }, headers={'AUTH':get_auth_header()})
 
         url=res.json()['label_url'] # presigned url
@@ -89,29 +94,26 @@ def upload_data(data_path, label_path, project_uid, task_num):
             np.save(tf, label_split[idx])
             _ = tf.seek(0)
             requests.put(url=url,data=tf) # 라벨 업로드
-        print(f'label_{idx} uploaded')
 
         url=res.json()['data_url'] # presigned url
         with TemporaryFile() as tf:
             np.save(tf, data_split[idx])
             _ = tf.seek(0)
             requests.put(url=url,data=tf) # 데이터 업로드
-        print(f'data_{idx} uploaded')
+        print('{idx} uploaded')
 
     print('data uploading finished')
+    print(time.time() - init_time)
 
-def upload_model(model_path_, project_uid):
+def upload_model(model_path, project_uid):
     res=requests.post(f'{base_url}/project/model/upload',data={ # 업로드 url 요청
         'project_uid':project_uid,
-        'model':'model.h5'
+        'model':'model.json'
     }, headers={'AUTH':get_auth_header()})
-    print(res.json())
+
     url=res.json()['model_url'] # presigned url
 
-    filename='model.h5'
-    model=tf.keras.models.load_model(model_path_)
-    tf.keras.models.save_model(model,filename)
-    with open(filename, 'rb') as f:
+    with open(model_path, 'rb') as f:
         requests.put(url=url,data=f) # 데이터 업로드
         
     print('model successfully uploaded')
@@ -133,12 +135,34 @@ def start_learning(project_id, params=None):
     res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':get_auth_header()})
     res_json = res.json()
 
-    print(res_json)
 
     if(not(res_json['is_successful'])): return 'FAIL'
     occupy_task(project_id,{'task_index':res_json['task_index']})
 
-    model = get_model()
+    model_url = res_json['model_url']
+    data_url = res_json['data_url']
+    label_url = res_json['label_url']
+
+    start_time = time.time()
+
+    with TemporaryFile() as tf:
+        tf.write(requests.get(url=model_url).content)
+        _ = tf.seek(0)
+        model = keras.models.load_model(h5py.File(tf,mode='r'))
+
+    with TemporaryFile() as tf:
+        tf.write(requests.get(url=data_url).content)
+        _ = tf.seek(0)
+        train_data = np.asarray(np.load(tf,allow_pickle=True)).astype(np.float32)
+
+    with TemporaryFile() as tf:
+        tf.write(requests.get(url=label_url).content)
+        _ = tf.seek(0)
+        train_label = np.asarray(np.load(tf,allow_pickle=True)).astype(np.float32)
+    spent_time = time.time() - start_time
+
+    print('loading time')
+    print(spent_time)
 
     init_weight = get_weight(project_id)
 
@@ -153,9 +177,9 @@ def start_learning(project_id, params=None):
     data = x_train[task_index*task_size:(task_index + 1)*task_size]
     label = y_train[task_index*task_size:(task_index + 1)*task_size]
 
-    start_time = time.time()
-    model.fit(data, label, batch_size=32, epochs=30, callbacks=[callback], validation_data=(x_test, y_test), verbose=2)
-    spent_time = time.time() - start_time
+    
+    model.fit(train_data, train_label, batch_size=32, epochs=30, callbacks=[callback], validation_data=(x_test, y_test), verbose=2)
+    
 
     if callback.stop_learning_tok:
         return 'STOP'
@@ -277,5 +301,5 @@ def validate(project_id):
 (x_train, y_train), (x_test, y_test) = get_train_data()
 
 if __name__ == '__main__':
-    model = tf.keras.models.load_model('test_model')
-    print(model.summary())
+    model = get_model()
+    model.fit(x_train[0:25000], y_train[0:25000], batch_size=32, epochs=30, callbacks=[callback], verbose=2)

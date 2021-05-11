@@ -77,8 +77,8 @@ class DataUploadWidget(QWidget):
 
   # 모델 파일 받아오기 / 하나의 디렉토리로 받아옵니다. Tensorflow Model Format 참조
   def model_btn_clicked(self):
-    self.m_file = QFileDialog.getExistingDirectory(self)
-    self.file_path.setText(self.m_file)
+    self.m_file = QFileDialog.getOpenFileName(self, filter="*.h5")
+    self.file_path.setText(self.m_file[0])
 
   # 데이터 파일 받아오기 / 복수의 npy 파일 선택 가능 - 선택된 파일들을 리스트로 리턴
   def file_btn_clicked(self):
@@ -105,7 +105,6 @@ class DataUploadWidget(QWidget):
         'step_size':step_num
       })
 
-
     # set_p_id(res["project_id"])
     project.uid=res["project_uid"]
 
@@ -117,7 +116,6 @@ class DataUploadWidget(QWidget):
 
     upload_model(model_path_,project.uid)
     upload_data(train_img_path,train_lbl_path,project.uid,task_num)
-    exit()
 
     # npy 파일 path 찾기
 def find_npy_path(dir_path):
