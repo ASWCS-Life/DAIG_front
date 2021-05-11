@@ -94,9 +94,9 @@ class data_upload(QWidget):
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
   def train_start_clicked(self):
 
-    task_num = int(self.cho_task) # 분할할 task 수
-    step_num = int(self.cho_step) # step내 task 수
-    train_img_mtrx, train_lbl_mtrx = data_division(task_num) # check dummyData.js
+    task_num = int(self.cho_task.currentText()) # 분할할 task 수
+    step_num = int(self.cho_step.currentText()) # step내 task 수
+    # train_img_mtrx, train_lbl_mtrx = data_division(task_num) # check dummyData.js
     model_path = 'test_path' # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
     train_data_path = 'test_path' # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
 

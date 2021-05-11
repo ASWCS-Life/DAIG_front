@@ -10,17 +10,27 @@ from multiprocessing import Process
 from req.auth import get_auth_header
 
 class Worker(QThread):
-    def __init__(self, parent=None):
-        super(Worker, self).__init__(parent)
+  stop_learning = False
 
-    def run(self):
-      project_id = get_avaiable_project()
-      start_learning(project_id, get_auth_header())
-      start_learning(project_id, get_auth_header())
-    def stop(self):
-      #self.quit()
-      #self.wait()
+  def __init__(self, parent=None):
+    super(Worker, self).__init__(parent)
+    set_auth_header({'key':get_auth_header()})
 
+  def run(self):
+    self.stop_learning = False
+    start_learning_internal()
+    project_id = get_avaiable_project()
+    if(project_id == -1): return
+    result = start_learning(project_id)
+    if((result == 'STOP') or (result == 'FAIL')):
+      return
+    time.sleep(2)
+    if(not(self.stop_learning)):
+      self.run()
+
+  def stop(self):
+    self.stop_learning = True
+    stop_learning_internal()
 
 
 # create
@@ -29,8 +39,7 @@ class on_progress(QWidget):
   def __init__(self):
     super().__init__()
     self.init_ui()
-    self.process_running = False
-
+    self.project_id = -1
     self.worker = Worker()
 
   # code
@@ -92,7 +101,6 @@ class on_progress(QWidget):
 
   # 학습 요청
   def onStartHandler(self):
-    self.process_running = True
     self.indicator.setText('분산학습 진행중..')
     self.repeat_learning()
 
@@ -109,7 +117,6 @@ class on_progress(QWidget):
   #학습 중단
   def onStopHandler(self):
     self.prgs_info.setText('분산학습이 중단되었습니다.')
-    self.process_running = False
     self.worker.stop()
 
     #res = project_status() / req.rest
@@ -122,26 +129,18 @@ class on_progress(QWidget):
     #set_total_time(str(time.time() - self.start_time))
 
   def repeat_learning(self):
-    project_id = get_avaiable_project()
+    if(self.project_id != -1):
+      if is_project_finished(self.project_id):
+        validate(self.project_id)
 
-    if(project_id == -1):
-      print('learning stopped')
+    self.project_id = get_avaiable_project()
+
+    if(self.project_id == -1):
       self.prgs_info.setText('현재 참여 가능한 프로젝트가 없습니다.')
-      self.process_running = False
+      self.worker.stop()
       return
 
     self.prgs_info.setText('분산 학습이 진행중입니다...')
-    print('학습 시작')
-
 
     self.worker.setTerminationEnabled(True)
     self.worker.start()
-
-    #p = Process(target=start_learning, args=(project_id,get_auth_header(),))
-    #p.start()
-    #p.join()
-    print('학습 끝?')
-    #start_learning(project_id)
-
-    #if(self.process_running):
-      #threading.Timer(2,self.repeat_learning).start()
