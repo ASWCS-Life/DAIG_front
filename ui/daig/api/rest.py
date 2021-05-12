@@ -81,7 +81,7 @@ def upload_data(data_path, label_path, project_uid, task_num):
     label_split=np.split(label,task_num)
 
     init_time = time.time()
-    for idx in range(1):
+    for idx in range(task_num):
         res=requests.post(f'{base_url}/project/data/upload',data={ # 업로드 url 요청
             'project_uid':project_uid,
             'data': f'train_data_{idx}',
@@ -100,7 +100,7 @@ def upload_data(data_path, label_path, project_uid, task_num):
             np.save(tf, data_split[idx])
             _ = tf.seek(0)
             requests.put(url=url,data=tf) # 데이터 업로드
-        print('{idx} uploaded')
+        print(f'{idx} uploaded')
 
     print('data uploading finished')
     print(time.time() - init_time)
