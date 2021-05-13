@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QThread
+import time
 
 from daig.api.main import *
 from daig.api.rest import get_avaiable_project, start_learning, start_learning_internal, stop_learning_internal, is_project_finished
@@ -29,6 +30,7 @@ class Worker(QThread):
   def stop(self):
     self.stop_learning = True
     stop_learning_internal()
+
 
 class ProviderWidget(QWidget):
   # don't touch
@@ -79,16 +81,10 @@ class ProviderWidget(QWidget):
       self.worker.stop()
 
   def repeat_learning(self):
-    if(self.project_id != -1):
-      if is_project_finished(self.project_id):
-        validate(self.project_id)
-
     self.project_id = get_avaiable_project()
 
     if(self.project_id == -1):
       self.worker.stop()
-      self.train_start.setEnabled(True)
-      self.train_stop.setEnabled(False)
       return
 
     self.worker.setTerminationEnabled(True)
