@@ -1,20 +1,21 @@
+import h5py
 import requests
-import json
-
 import tensorflow as tf
 
-from tensorflow.keras import datasets, layers, models
+import tensorflow.keras as keras
 
 import numpy as np
+from tensorflow.python.ops.gen_math_ops import mod
 
-from .auth import get_auth_header, set_auth_header
+from .auth import get_auth_header
 from tempfile import TemporaryFile
 
 from sklearn.model_selection import train_test_split
 
 import time
+import os
 
-base_url = 'http://127.0.0.1:8000'
+base_url = 'http://118.67.130.33:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
 auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
@@ -51,7 +52,7 @@ def login_req(data=None):
 
 # SignUp
 def sign_up_req(data=None):
-    res = requests.post(f'{base_url}/auth/signup/', data=data, headers=get_auth_header())
+    res = requests.post(f'{base_url}/auth/signup/', data=data)
 
     if res.status_code not in [200, 201, 204]:
         raise SystemExit(requests.exceptions.HTTPError)
@@ -63,7 +64,6 @@ def create_project(initial_weight,data=None):
         _ = tf.seek(0)
         res = requests.post(f'{base_url}/project/create/', files={'weight':tf},data=data, headers={'AUTH':get_auth_header()})
 
-    print(res.json())
     return res.json()
 
 def get_avaiable_project(params=None):
@@ -74,12 +74,49 @@ def get_avaiable_project(params=None):
     else:
         return -1
 
-def model_upload(path, data=None):
-    res = requests.post(f'{base_url}/{path}/', json=data, headers=get_auth_header())
+def upload_data(data_path, label_path, project_uid, task_num):
+    data=np.load(data_path, allow_pickle=True)
+    label=np.load(label_path, allow_pickle=True)
+    data_split=np.split(data,task_num)
+    label_split=np.split(label,task_num)
 
-    #if res.status_code not in [200, 201, 204]:
-    #raise exc.ResponseException(res)
-    return res.json()
+    init_time = time.time()
+    for idx in range(task_num):
+        res=requests.post(f'{base_url}/project/data/upload',data={ # 업로드 url 요청
+            'project_uid':project_uid,
+            'data': f'train_data_{idx}',
+            'label': f'train_label_{idx}',
+            'index': idx
+        }, headers={'AUTH':get_auth_header()})
+
+        url=res.json()['label_url'] # presigned url
+        with TemporaryFile() as tf:
+            np.save(tf, label_split[idx])
+            _ = tf.seek(0)
+            requests.put(url=url,data=tf) # 라벨 업로드
+
+        url=res.json()['data_url'] # presigned url
+        with TemporaryFile() as tf:
+            np.save(tf, data_split[idx])
+            _ = tf.seek(0)
+            requests.put(url=url,data=tf) # 데이터 업로드
+        print(f'{idx} uploaded')
+
+    print('data uploading finished')
+    print(time.time() - init_time)
+
+def upload_model(model_path, project_uid):
+    res=requests.post(f'{base_url}/project/model/upload',data={ # 업로드 url 요청
+        'project_uid':project_uid,
+        'model':'model.json'
+    }, headers={'AUTH':get_auth_header()})
+
+    url=res.json()['model_url'] # presigned url
+
+    with open(model_path, 'rb') as f:
+        requests.put(url=url,data=f) # 데이터 업로드
+        
+    print('model successfully uploaded')
 
 def get_weight(project_id,params=None):
     res = requests.get(f'{base_url}/project/{project_id}/project/weight', params=params, headers={'AUTH':get_auth_header()})
@@ -97,17 +134,35 @@ def start_learning(project_id, params=None):
 
     res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':get_auth_header()})
     res_json = res.json()
-    print('got json')
-    print(res_json)
-    if(not(res_json['is_successful'])): return 'FAIL'
-    occupy_task(project_id,{'task_index':res_json['task_index']})
 
-    print(res_json)
 
     if(not(res_json['is_successful'])): return 'FAIL'
     occupy_task(project_id,{'task_index':res_json['task_index']})
 
-    model = get_model()
+    model_url = res_json['model_url']
+    data_url = res_json['data_url']
+    label_url = res_json['label_url']
+
+    start_time = time.time()
+
+    with TemporaryFile() as tf:
+        tf.write(requests.get(url=model_url).content)
+        _ = tf.seek(0)
+        model = keras.models.load_model(h5py.File(tf,mode='r'))
+
+    with TemporaryFile() as tf:
+        tf.write(requests.get(url=data_url).content)
+        _ = tf.seek(0)
+        train_data = np.asarray(np.load(tf,allow_pickle=True)).astype(np.float32)
+
+    with TemporaryFile() as tf:
+        tf.write(requests.get(url=label_url).content)
+        _ = tf.seek(0)
+        train_label = np.asarray(np.load(tf,allow_pickle=True)).astype(np.float32)
+    spent_time = time.time() - start_time
+
+    print('loading time')
+    print(spent_time)
 
     init_weight = get_weight(project_id)
 
@@ -118,13 +173,9 @@ def start_learning(project_id, params=None):
     if(task_index == -1): 
         validate(project_id)
         return 'STOP'
-
-    data = x_train[task_index*task_size:(task_index + 1)*task_size]
-    label = y_train[task_index*task_size:(task_index + 1)*task_size]
-
-    start_time = time.time()
-    model.fit(data, label, batch_size=32, epochs=30, callbacks=[callback], validation_data=(x_test, y_test), verbose=2)
-    spent_time = time.time() - start_time
+    
+    model.fit(train_data, train_label, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    
 
     if callback.stop_learning_tok:
         return 'STOP'
@@ -231,9 +282,6 @@ def get_train_data():
 
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=10000, random_state=714)
 
-    y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
-    y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
-
     return (x_train, y_train), (x_test, y_test)
 
 def validate(project_id):
@@ -246,63 +294,9 @@ def validate(project_id):
     print('result is...')
     print(test_loss, test_acc)
 
-if __name__ == '__main__':
-    (x_train, y_train), (x_test, y_test) = get_train_data()
-    
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Conv2D(32, (3, 3)),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-        tf.keras.layers.Dropout(0.25),
-
-        tf.keras.layers.Conv2D(64, (3, 3), padding='same'),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Conv2D(64, (3, 3)),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-        tf.keras.layers.Dropout(0.25),
-
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(512),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(10),
-        tf.keras.layers.Activation('softmax')
-    ])
-
-    opt = tf.keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
-    model.compile(loss='categorical_crossentropy',
-                    optimizer=opt,
-                    metrics=['accuracy'])
- 
-    initial_weight = get_model().get_weights()
-    rrs_url = 'some dummy url'
-    model_url = 'some dummy url'
-
-    project_create_result = create_project(initial_weight,data={
-        'rrs':rrs_url,
-        'model_url':model_url,
-        'total_task':50,
-        'step_size':10
-    })
-
-    temporary_project_id = get_avaiable_project()
-
-    start_time = time.time()
-    print('start!')
-
-    while(result_learning(temporary_project_id)):
-        start_learning(temporary_project_id,get_auth_header())
-        time.sleep(1)
-    
-    print('total time spent')
-    print(time.time()-start_time)
-
-    scores = model.evaluate(x_test, y_test, verbose=1)
-    print('Test loss:', scores[0])
-    print('Test accuracy:', scores[1])
-
-
 (x_train, y_train), (x_test, y_test) = get_train_data()
+
+if __name__ == '__main__':
+    model = get_model()
+    model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    

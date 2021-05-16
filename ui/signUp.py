@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox, QWidget, QPushButton, QLineEdit, QLabel
 from daig.api.rest import sign_up_req
+from component.constant import *
 
 class SignUpWidget(QWidget):
     # don't touch
@@ -12,10 +13,12 @@ class SignUpWidget(QWidget):
     # 가입완료 버튼
         self.sign_submit = QPushButton('가입완료', self)
         self.sign_submit.move(95, 150)
+        setButtonStyle(self.sign_submit)
 
     # 돌아가기 버튼
         self.go_back = QPushButton('돌아가기', self)
         self.go_back.move(195, 150)
+        setButtonStyle(self.go_back)
 
     # 아이디, 비밀번호, 이름, 이메일 알리기
         sign_id = QLabel('ID', self)
@@ -23,12 +26,14 @@ class SignUpWidget(QWidget):
         font_id = sign_id.font()
         font_id.setBold(True)
         font_id.setPointSize(20)
+        setLabelStyle(sign_id)
 
         sign_pwd = QLabel('Password', self)
         sign_pwd.move(20, 75)
         font_pwd = sign_pwd.font()
         font_pwd.setBold(True)
         font_pwd.setPointSize(20)
+        setLabelStyle(sign_pwd)
 
 
     # 아이디, 비밀번호, 이름, 이메일 작성

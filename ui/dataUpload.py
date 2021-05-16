@@ -1,6 +1,8 @@
 import os
 from daig.api.rest import *
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog
+from daig.requester import project
+from component.constant import *
 
 class DataUploadWidget(QWidget):
   # don't touch
@@ -12,48 +14,61 @@ class DataUploadWidget(QWidget):
   def init_ui(self):
 
     # 파일 이름 출력
-    self.model = QLabel('모델: ')
-    self.data = QLabel('데이터: ')
+    self.model = QLabel('model')
+    self.train_img = QLabel('train image')
+    self.train_lbl = QLabel('train label')
+    #self.valid_img = QLabel('valid image')
+    #self.valid_lbl = QLabel('valid label')
+    self.p_contributer = QLabel('max contributer : ')
     self.p_task_div = QLabel('Task 분할 개수')
     self.p_step_task = QLabel('Step별 task 개수')
-    self.file_path = QLabel('')
-    self.dir_path = QLabel('')
+    self.model_path = QLabel('')
+    self.model_path.setMinimumSize(250, 20)
+    self.train_img_path = QLabel('')
+    self.train_lbl_path = QLabel('')
+    #self.valid_img_path = QLabel('')
+    #self.valid_lbl_path = QLabel('')
+
+    setLabelStyle(self.model)
+    setLabelStyle(self.train_img)
+    setLabelStyle(self.train_lbl)
+    setLabelStyle(self.p_task_div)
+    setLabelStyle(self.p_step_task)
 
   # 파일 올리는 버튼
     self.model_btn = QPushButton('올리기')
     self.model_btn.clicked.connect(self.model_btn_clicked)
-    self.data_btn = QPushButton('올리기')
-    self.data_btn.clicked.connect(self.file_btn_clicked)
+    self.train_img_btn = QPushButton('올리기')
+    self.train_img_btn.clicked.connect(self.train_img_btn_clicked)
+    self.train_lbl_btn = QPushButton('올리기')
+    self.train_lbl_btn.clicked.connect(self.train_lbl_btn_clicked)
+    #self.valid_img_btn = QPushButton('올리기')
+    #self.valid_img_btn.clicked.connect(self.train_img_btn_clicked)
+    #self.valid_img_btn = QPushButton('올리기')
+    #self.valid_img_btn.clicked.connect(self.train_lbl_btn_cliked)
 
-  # task 분할 개수 출력
-    self.cho_task = QComboBox()
-    task_num = 10
-    while task_num <= 100:
-      self.cho_task.addItem(str(task_num))
-      task_num += 1
-    self.cho_task.activated.connect(self.print_choice_task)
+ # task 분할 개수 출력
+    self.cho_task = QLineEdit(self)
 
   # step별 task 개수
-    self.cho_step = QComboBox()
-    step_num = 1
-    while step_num <= 10:
-      self.cho_step.addItem(str(step_num))
-      step_num += 1
-    self.cho_step.activated.connect(self.print_choice_step)
+    self.cho_step = QLineEdit(self)
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
     self.train_start.clicked.connect(self.train_start_clicked)
+    setButtonStyle(self.train_start)
 
     # 레이아웃 설정 및 출력
     layout = QGridLayout()
     layout.addWidget(self.model, 0, 0)
-    layout.addWidget(self.file_path, 0, 1)
+    layout.addWidget(self.model_path, 0, 1)
     layout.addWidget(self.model_btn, 0, 2)
-    layout.addWidget(self.data, 1, 0)
-    layout.addWidget(self.dir_path, 1, 1)
-    layout.addWidget(self.data_btn, 1, 2)
-
+    layout.addWidget(self.train_img, 1, 0)
+    layout.addWidget(self.train_img_path, 1, 1)
+    layout.addWidget(self.train_img_btn, 1, 2)
+    layout.addWidget(self.train_lbl, 2, 0)
+    layout.addWidget(self.train_lbl_path, 2, 1)
+    layout.addWidget(self.train_lbl_btn, 2, 2)
     layout.addWidget(self.p_task_div, 3, 0)
     layout.addWidget(self.cho_task, 3, 2)
     layout.addWidget(self.p_step_task, 4, 0)
@@ -62,34 +77,37 @@ class DataUploadWidget(QWidget):
 
     self.setLayout(layout)
 
-    # task 분할 개수 출력
+  # task 분할 개수 출력
+  def onChanged(self, text):
+    self.cho_task.setText(text)
+    self.id.adjustSize()
+    self.cho_step.setText(text)
+    self.pwd.adjustSize()
 
-  def print_choice_task(self, text):
-    self.cho_task.setEditText(str(text))
-    self.cho_task.adjustSize()
-
-    # step별 task 분할 개수 출력
-
-  def print_choice_step(self, text):
-    self.cho_step.setEditText(str(text))
-    self.cho_step.adjustSize()
-
-  # 모델 파일 받아오기 / 하나의 py파일만 선택 가능
+  # 모델 파일 받아오기 / 하나의 디렉토리로 받아옵니다. Tensorflow Model Format 참조
   def model_btn_clicked(self):
-    self.m_file = QFileDialog.getOpenFileName(self, filter="*.py")
-    self.file_path.setText(self.m_file[0])
+    self.m_file = QFileDialog.getOpenFileName(self, './', filter="*.h5")
+    self.model_path.setText(self.m_file[0])
 
-  # 데이터 파일 받아오기 / 복수의 npy 파일 선택 가능 - 선택된 파일들을 리스트로 리턴
-  def file_btn_clicked(self):
-    self.d_file = QFileDialog.getExistingDirectory(self)
-    self.dir_path.setText(str(self.d_file))
+  # train img 파일 받아오기
+  def train_img_btn_clicked(self):
+    self.train_img_file = QFileDialog.getOpenFileName(self, './', filter="*.npy")
+    self.train_img_path.setText(self.train_img_file[0])
+
+    #self.train_img_path.text() : 받아온 학습 이미지 경로
+  # train lbl 파일 받아오기
+  def train_lbl_btn_clicked(self):
+    self.train_lbl_file = QFileDialog.getOpenFileName(self, './', filter="*.py")
+    self.train_lbl_path.setText(self.train_lbl_file[0])
+
+    #self.train_lbl_path.text() : 받아온 학습 레이블 경로
 
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
   def train_start_clicked(self):
 
-    task_num = int(self.cho_task.currentText()) # 분할할 task 수
-    step_num = int(self.cho_step.currentText()) # step내 task 수
+    task_num = int(self.cho_task.text()) # 분할할 task 수
+    step_num = int(self.cho_step.text()) # step내 task 수
     # train_img_mtrx, train_lbl_mtrx = data_division(task_num) # check dummyData.js
     model_path = 'test_path' # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
     train_data_path = 'test_path' # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
@@ -104,44 +122,6 @@ class DataUploadWidget(QWidget):
         'step_size':step_num
       })
 
-
     # set_p_id(res["project_id"])
+    project.uid=res["project_uid"]
 
-    # 5월 10일 실습시간에 추가한 내용
-    # dummy값이 아닌 ui에서 받아온 model과 npy파일들의 path
-    model_path_ = self.file_path.text()
-    #train_img_path, train_lbl_path, valid_img_path, valid_lbl_path = data_division(task_num)
-    train_img_path, train_lbl_path = find_npy_path(self.dir_path.text())
-
-    # npy 파일 path 찾기
-def find_npy_path(dir_path):
-    # train_image, train_lable, validation_image, validation_lable
-    train_img_dir_nm = 'train_img'
-    train_lbl_dir_nm = 'train_lbl'
-    #valid_img_dir_nm = ''
-    #valid_lbl_dir_nm = ''
-    train_img_dir_path = dir_path + '/' + train_img_dir_nm
-    print(train_img_dir_path)
-    train_lbl_dir_path = dir_path + '/' + train_lbl_dir_nm
-    print(train_lbl_dir_path)
-    #valid_img_dir_path = dir_path + '/' + valid_img_dir_nm
-    #valid_lbl_dir_path = dir_path + '/' + valid_lbl_dir_nm
-
-    train_img_path = npy_file_path(train_img_dir_path)
-    print(train_img_path)
-    train_lbl_path = npy_file_path(train_lbl_dir_path)
-    print(train_lbl_path)
-    #valid_img_path = npy_file_path(valid_img_dir_path)
-    #valid_lbl_path = npy_file_path(valid_lbl_dir_list)
-
-    #return train_img_path, train_lbl_path, valid_img_path, valid_lbl_path
-    return train_img_path, train_lbl_path
-
-
-# 예를들어 10000개의 이미지라면 10000개의 이미지가 concatenated 된 npy파일 하나라고 가정
-def npy_file_path(data_path):
-    file = os.listdir(data_path)
-    print(file)
-
-    file_path = data_path + '/' + file[0]
-    return file_path
