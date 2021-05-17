@@ -1,8 +1,8 @@
 import os
 from daig.api.rest import *
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog
+from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog
 from daig.requester import project
-from component.constant import *
+from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
 
 class DataUploadWidget(QWidget):
   # don't touch
@@ -125,3 +125,7 @@ class DataUploadWidget(QWidget):
     # set_p_id(res["project_id"])
     project.uid=res["project_uid"]
 
+    # dummy값이 아닌 ui에서 받아온 model과 npy파일들의 path
+    # model_path = self.file_path.text()
+    upload_model(self.model_path.text(),project.uid)
+    upload_data(self.train_img_path.text(),self.train_lbl_path.text(),project.uid,task_num)

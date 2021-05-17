@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QMessageBox
 from PyQt5.QtGui import QPixmap
 from daig.api.rest import login_req
 from daig.api.auth import set_auth_header
-from component.constant import *
+from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
 
 class LoginWidget(QWidget):
     def __init__(self):

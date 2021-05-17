@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from component.constant import *
+from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
 from tensorflow import keras
 
 class UserFrameWidget(QWidget):
