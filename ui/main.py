@@ -14,6 +14,7 @@ from providerLayout import ProviderWidget
 from trainResult import TrainResultWidget
 from progress import ProgressWidget
 from dataUpload import DataUploadWidget
+from daig.api.rest import get_current_credit
 
 
 # 학습 결과 화면 - widget_index_num : 7
@@ -126,9 +127,9 @@ class Login(LoginWidget):
         on_layout_convert_center(main_window, widget, 320, 250)
 
     def onClickLoginHandler(self):
-        user_key = self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        user_key = self.onClickLogin()["key"] # 서버로 로그인 req... 결과로 res["auth"] 리턴
         self.openModeClass()
-        main_window.addUserInfoOnToolBar(self.id.text(), "0")
+        main_window.addUserInfoOnToolBar()
 
     def openModeClass(self):
         widget.setCurrentIndex(widget.currentIndex()+2)
@@ -166,9 +167,10 @@ class MyMainWindow(QMainWindow):
       on_layout_convert_center(self, widget, 500, 500)
 
     # 로그인 시 툴바에 id와 credit 정보 추가
-  def addUserInfoOnToolBar(self, id, credit):
-    self.id_lbl.setText("ID : " + id)
-    self.crdt_lbl.setText("Credit : " + credit)
+  def addUserInfoOnToolBar(self):
+    res_data=get_current_credit()
+    self.id_lbl.setText(f'ID : {res_data["id"]}')
+    self.crdt_lbl.setText(f'Credit : {res_data["credit"]}')
     self.toolbar.addWidget(self.center_space) #
     self.toolbar.addWidget(self.id_lbl) #
     self.toolbar.addWidget(self.space)

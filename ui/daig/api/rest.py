@@ -297,6 +297,10 @@ def validate(project_id):
 
 (x_train, y_train), (x_test, y_test) = get_train_data()
 
+def get_current_credit():
+    res = requests.get(f'{base_url}/credit/remains/', headers={'AUTH':get_auth_header()})
+    return res.json()
+
 if __name__ == '__main__':
     model = get_model()
     model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
