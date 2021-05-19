@@ -11,13 +11,12 @@ class ModeChoiceWidget(QWidget):
     def init_ui(self):
         # 파일 객체 생성
         req_pic = QPixmap('./local_data/user.png')
-        #req_pic.scaledToWidth(100)
         shr_pic = QPixmap('./local_data/cloud.png')
-        #shr_pic.scaled(80, 80)
+
     # 이미지 설정
         self.req_img = QLabel(self)
-        self.req_img.setMaximumSize(100, 100)
-        self.req_img.setMinimumSize(100, 100)
+        self.req_img.setMaximumSize(113, 100)
+        self.req_img.setMinimumSize(113, 100)
         self.req_img.setPixmap(QPixmap(req_pic))
         self.req_img.setScaledContents(True)
         self.req_size = QPushButton('학습 요청자')
@@ -26,8 +25,8 @@ class ModeChoiceWidget(QWidget):
         setButtonStyle(self.req_size)
 
         self.shr_img = QLabel(self)
-        self.shr_img.setMaximumSize(100, 100)
-        self.req_img.setMinimumSize(100, 100)
+        self.shr_img.setMaximumSize(100, 115)
+        self.shr_img.setMinimumSize(100, 115)
         self.shr_img.setPixmap(QPixmap(shr_pic))
         self.shr_img.setScaledContents(True)
         self.shr_size = QPushButton('리소스 제공자')

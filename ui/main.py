@@ -1,11 +1,15 @@
 import sys
 from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplication, QStackedWidget, QAction
 from PyQt5.QtGui import QIcon
+from component.constants import enterPressedHandler
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 
 from component.center import on_layout_convert_center
 
+from pwdInit import PwdInitWidget
+from findPwd import FindPwdWidget
+from findId import FindIdWidget
 from login import LoginWidget
 from signUp import SignUpWidget
 from mode import ModeChoiceWidget
@@ -15,27 +19,60 @@ from trainResult import TrainResultWidget
 from progress import ProgressWidget
 from dataUpload import DataUploadWidget
 
-
-# 학습 결과 화면 - widget_index_num : 7
-class TrainResult(TrainResultWidget):
+class PwdInitLayout(PwdInitWidget):
     def __init__(self):
         super().__init__()
-        #self.get_model.clicked.connet(self.openModelInfoHandler)
 
-    def openModelInfoHandler(self):
-        return
+        self.pwd_init_btn.clicked.connect(self.onPwdInitHandler)
+        self.go_back.clicked.connect(self.openFindPwdClass)
+        enterPressedHandler(self.pwd, self.onPwdInitHandler)
+        enterPressedHandler(self.check_pwd, self.onPwdInitHandler)
 
+    def onPwdInitHandler(self):
+        if(self.onPwdInitAlert() == True):
+            widget.setCurrentIndex(0)
+            on_layout_convert_center(main_window, widget, 420, 180)
 
-# 진행 상황 - widget_index_num : 6
-class Progress(ProgressWidget):
+    def openFindPwdClass(self):
+        widget.setCurrentIndex(widget.currentIndex() - 1)
+        on_layout_convert_center(main_window, widget, 420, 180)
+
+# 비밀번호 찾기 화면 - widget_index_num : 7
+class FindPwdLayout(FindPwdWidget):
     def __init__(self):
         super().__init__()
-        self.result_btn.clicked.connect(self.openProgressClassHandler)
+        self.find_btn.clicked.connect(self.onFindPwdHandler)
+        self.go_back.clicked.connect(self.openLoginClass)
+        enterPressedHandler(self.id, self.onFindPwdHandler)
+        enterPressedHandler(self.email_front, self.onFindPwdHandler)
+        enterPressedHandler(self.email_back, self.onFindPwdHandler)
 
-    def openProgressClassHandler(self):
-        widget.setCurrentIndex(widget.currentIndex() + 1)
-        on_layout_convert_center(main_window, widget, 500, 500)
+    def onFindPwdHandler(self):
+        if(self.onUserInfoAlert() == True):
+            widget.setCurrentIndex(widget.currentIndex() + 1)
+            on_layout_convert_center(main_window, widget, 370, 180)
 
+    def openLoginClass(self):
+        widget.setCurrentIndex(0)
+        on_layout_convert_center(main_window, widget, 400, 430)
+
+# 아이디 찾기 화면 - widget_index_num : 6
+class FindIdLayout(FindIdWidget):
+    def __init__(self):
+        super().__init__()
+        self.find_btn.clicked.connect(self.onFindIdHandler)
+        self.go_back.clicked.connect(self.openLoginClass)
+        enterPressedHandler(self.email_front, self.onFindIdHandler)
+        enterPressedHandler(self.email_back, self.onFindIdHandler)
+
+    def onFindIdHandler(self):
+        if(self.onEmailAlert() == True):
+            widget.setCurrentIndex(0)
+            on_layout_convert_center(main_window, widget, 420, 180)
+
+    def openLoginClass(self):
+        widget.setCurrentIndex(0)
+        on_layout_convert_center(main_window, widget, 400, 430)
 
 # 데이터 업로드 화면 - widget_index_num : 5
 class DataUploadLayout(DataUploadWidget):
@@ -44,10 +81,10 @@ class DataUploadLayout(DataUploadWidget):
         self.train_start.clicked.connect(self.onRequestTrainHandler)
 
     def onRequestTrainHandler(self):
-        # 만약 task, step수가 유효하지 않다면 return
-        if(self.train_start_clicked() == False): return
-        widget.setCurrentIndex(widget.currentIndex() + 1)
-        on_layout_convert_center(main_window, widget, 500, 500)
+        # 성공적으로 프로젝트가 생성되면
+        if(self.train_start_clicked() == True):
+            widget.setCurrentIndex(3)
+            on_layout_convert_center(main_window, widget, 700, 500)
 
 
 # 제공자 화면 - widget_index_num : 4
@@ -63,11 +100,11 @@ class ReqUserLayout(UserFrameWidget):
 
     def onProjectCreateHandler(self):
         widget.setCurrentIndex(4)
-        Prov_ly.onAttendHandler(self.attend_learning())
+        Prov_ly.onAttendHandler(self.attend_learning()) # 요청자가 프로젝트에 참여버튼을 누르면 제공자에 해당 p_id 전송
         print(Prov_ly.self_attend_p_id)
-        on_layout_convert_center(main_window, widget, 500, 500)
+        on_layout_convert_center(main_window, widget, 700, 500)
 
-# 요청자 / 제공자 선택 화면 - widget_index_num : 2
+# 요청자 / 제공자 모드 선택 화면 - widget_index_num : 2
 class Mode(ModeChoiceWidget):
     def __init__(self):
         super().__init__()
@@ -94,6 +131,12 @@ class SignUp(SignUpWidget):
         # 돌아가기 버튼 눌렀을 경우
         self.go_back.clicked.connect(self.openLoginClass)
         self.pwd.returnPressed.connect(self.onClickSignUpHandler)
+
+        # enter 키 눌렀을 때의 동작
+        enterPressedHandler(self.id, self.onClickSignUpHandler) ######
+        enterPressedHandler(self.pwd, self.onClickSignUpHandler) ######
+        enterPressedHandler(self.email_front, self.onClickSignUpHandler) ####
+        enterPressedHandler(self.email_back, self.onClickSignUpHandler) #####
     def onClickSignUpHandler(self):
         result = self.onClickSignUp()
         if(result):
@@ -102,7 +145,7 @@ class SignUp(SignUpWidget):
 
     def openLoginClass(self):
         widget.setCurrentIndex(widget.currentIndex() - 1)
-        on_layout_convert_center(main_window, widget, 400, 350)
+        on_layout_convert_center(main_window, widget, 400, 430) ##########
 
 # 로그인 화면 - widget_index_num : 0
 class Login(LoginWidget):
@@ -114,19 +157,33 @@ class Login(LoginWidget):
         # 로그인 버튼 눌렀을 경우
         self.login.clicked.connect(self.onClickLoginHandler)
 
-        # pwd 입력 창에 커서를 두고 엔터 키 눌렀을 시 로그인 할 수 있도록
-        self.pwd.returnPressed.connect(self.onClickLoginHandler)
+        # id, pwd 입력 창에 커서를 두고 엔터 키 눌렀을 시 로그인 할 수 있도록
+        # self.pwd.returnPressed.connect(self.onClickLoginHandler)
+        enterPressedHandler(self.id, self.onClickLoginHandler) #####
+        enterPressedHandler(self.pwd, self.onClickLoginHandler)# ####
 
-        # 회원가입 버튼 눌렀을 경우우
+        # 회원가입 버튼 눌렀을 경우
         self.sign_up.clicked.connect(self.openSignUpClass)
+        # 아이디 찾기 눌렀을 경우
+        self.find_id.clicked.connect(self.openFindIdClass)
+        # 비밀번호 찾기 눌렀을 경우
+        self.find_pwd.clicked.connect(self.openFindPwdClass)
+
+    def openFindPwdClass(self):
+        widget.setCurrentIndex(7)
+        on_layout_convert_center(main_window, widget, 420, 180)
+
+    def openFindIdClass(self):
+        widget.setCurrentIndex(6)
+        on_layout_convert_center(main_window, widget, 420, 150)
 
     def openSignUpClass(self):
         # currentIndex를 +- 해주면서 스택 레이아웃 전환
         widget.setCurrentIndex(widget.currentIndex()+1)
-        on_layout_convert_center(main_window, widget, 320, 250)
+        on_layout_convert_center(main_window, widget, 500, 250)
 
     def onClickLoginHandler(self):
-        user_key = self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        #user_key = self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
         self.openModeClass()
         main_window.addUserInfoOnToolBar(self.id.text(), "0")
 
@@ -152,12 +209,14 @@ class MyMainWindow(QMainWindow):
     self.go_home = QAction(QIcon('./local_data/home.png'), 'Home', self)
     self.create_project = QAction(QIcon('./local_data/create.png'), 'New Project', self)
     self.refresh = QAction(QIcon('./local_data/refresh.png'), 'Refresh', self)
+    self.credit = QAction(QIcon('./local_data/credit.png'), 'Credit Info', self)
     self.go_home.setStatusTip('Home')
     self.go_home.triggered.connect(self.onToolBarTriggeredHandler) # 아이콘 클릭시 mode설정 화면으로 돌아감
     self.toolbar = self.addToolBar('Home')
     self.toolbar.addAction(self.go_home)
     self.toolbar.addAction(self.create_project)
     self.toolbar.addAction(self.refresh)
+    self.toolbar.addAction(self.credit)
 
     self.create_project.triggered.connect(self.openDataUploadClass)
     self.refresh.triggered.connect(User_ly.refresh_learning)
@@ -176,10 +235,12 @@ class MyMainWindow(QMainWindow):
     self.toolbar.addWidget(self.space_)
 
   def toolBarTriggerHandler(self):
-    if (widget.currentIndex() < 2 or (widget.currentIndex() > 5 and widget.currentIndex() < 7)):
+    if (widget.currentIndex() < 2 or (widget.currentIndex() > 5 and widget.currentIndex() < 9)):
         self.go_home.setEnabled(False)
+        self.credit.setEnabled(False)
     else:
         self.go_home.setEnabled(True)
+        self.credit.setEnabled(True)
     if (widget.currentIndex() == 3):
         self.create_project.setEnabled(True)
         self.refresh.setEnabled(True)
@@ -205,20 +266,26 @@ if __name__ == '__main__':
     SignUp_ly = SignUp()
     Mode_ly = Mode()
     User_ly = ReqUserLayout()
-    Prov_ly = ProviderWidget()
+    Prov_ly = ProviderLayout()
     DtUp_ly = DataUploadLayout()
-    Progress_ly = Progress()
-    TrainRslt_ly = TrainResult()
+    FdId_ly = FindIdLayout()
+    FdPwd_ly = FindPwdLayout()
+    PwdInit_ly = PwdInitLayout()
+    #Progress_ly = Progress()
+    #TrainRslt_ly = TrainResult()
 
     #레이아웃 스택 추가
-    widget.addWidget(Login_ly)
-    widget.addWidget(SignUp_ly)
-    widget.addWidget(Mode_ly)
-    widget.addWidget(User_ly)
-    widget.addWidget(Prov_ly)
-    widget.addWidget(DtUp_ly)
-    widget.addWidget(Progress_ly)
-    #widget.addWidget(TrainRslt_ly)
+    widget.addWidget(Login_ly) #0
+    widget.addWidget(SignUp_ly) #1
+    widget.addWidget(Mode_ly) #2
+    widget.addWidget(User_ly) #3
+    widget.addWidget(Prov_ly) #4
+    widget.addWidget(DtUp_ly) #5
+    widget.addWidget(FdId_ly) #6
+    widget.addWidget(FdPwd_ly) #7
+    widget.addWidget(PwdInit_ly) #8
+    #widget.addWidget(Progress_ly) - 진행상황 ui 따로 필요 x (요청자 화면에서 진행상황을 보여줄 것임)
+    #widget.addWidget(TrainRslt_ly) - 결과확인 ui 따로 필요 x (결과 모델을 따로 다운받을 수 있도록)
 
 
     #윈도우 객체 생성 및 타이틀 설정
@@ -226,7 +293,7 @@ if __name__ == '__main__':
     main_window.setWindowTitle("DAIG")
 
     # 윈도우 크기 설정 -> 화면 중앙 배치 -> 윈도우 열기
-    on_layout_convert_center(main_window, widget, 400, 350)
+    on_layout_convert_center(main_window, widget, 400, 430) ##########
     main_window.toolBarTriggerHandler()
     main_window.show()
 

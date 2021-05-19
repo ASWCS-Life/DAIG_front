@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e16cc33b-3748-4011-b1b6-d67f81872204" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/ui/temp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/component/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/component/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/dataUpload.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/dataUpload.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/login.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/mode.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/providerLayout.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/providerLayout.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/signUp.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/signUp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/userLayout.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/userLayout.py" afterDir="false" />
     </list>
@@ -14,6 +16,13 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -71,13 +80,27 @@
       <updated>1620726132231</updated>
       <workItem from="1620726133558" duration="1326000" />
       <workItem from="1621236865948" duration="1435000" />
+      <workItem from="1621244135733" duration="2026000" />
+      <workItem from="1621431641844" duration="179000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ASWCS_front$main.coverage" NAME="main Coverage Results" MODIFIED="1621238602435" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ui" />
+    <SUITE FILE_PATH="coverage/ASWCS_front$main.coverage" NAME="main Coverage Results" MODIFIED="1621431767241" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ui" />
   </component>
 </project>

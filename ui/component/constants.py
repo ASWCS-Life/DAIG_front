@@ -32,3 +32,14 @@ def setButtonStyle(bt):
 
 def setLabelStyle(lb):
     lb.setStyleSheet('color: rgb(251, 86, 7)')
+
+# 엔터 눌렀을 때의 동작
+def enterPressedHandler(edit, action):
+    edit.returnPressed.connect(action)
+
+# lineEdit 기본설정
+def setEditStandard(edit ,x_val, y_val, place_holder):
+    if(x_val > 0): edit.move(x_val, y_val)
+    edit.setPlaceholderText(place_holder)
+    edit.setStyleSheet('border: 1px solid gray;'
+                       'border-radius: 5px')

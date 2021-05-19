@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
+from component.constants import setLabelStyle, setButtonStyle, setEditStandard
 from tensorflow import keras
 
 class UserFrameWidget(QWidget):
@@ -20,12 +20,13 @@ class UserFrameWidget(QWidget):
     # 프로젝트 테이블 바
     self.pro_tab.layout = QVBoxLayout()
     self.pro_table = QTableWidget()
-    self.pro_table.setColumnCount(3)  # column 설정
-    self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', '진행도', '비고'])
-
+    self.pro_table.setColumnCount(4)  # column 설정
+    self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', '진행도', '누계 시간', '비고'])
+    
     # test
     self.p_id = '123'
     self.prog = '12/13'
+    self.accum_time = '493'
     self.remark = '정상'
 
     # 테이블 전체 너비와 컨텐츠들의 비율에 따라 자동으로 컬럼 너비 조정
@@ -96,22 +97,24 @@ class UserFrameWidget(QWidget):
 
     # 프로젝트 테이블 동적 생성
 
-  def project_addItem(self, p_id, progression, remark):
-    row = self.pro_table.rowCount()
-    self.pro_table.insertRow(row)
-    self.pro_table.setItem(row, 0, QTableWidgetItem(p_id))
-    self.pro_table.setItem(row, 1, QTableWidgetItem(progression))
-    self.pro_table.setItem(row, 2, QTableWidgetItem(remark))
-    '''
-    # json 형식의 res 데이터에 진행중인 프로젝트 정보가 여러개 올때 -> 받아오는 파라미터를 변경해줘야함
-    for item in res:
-      row = self.pro_table.rowCount() 출력
+    def project_addItem(self, p_id, progression, accum_time,remark):
+      row = self.pro_table.rowCount()
       self.pro_table.insertRow(row)
-      self.pro_table.setItem(row, 0, QTableWidgetItem(item['p_id']))
-      self.pro_table.setItem(row, 1, QTableWidgetItem(item['progression']))
-      self.pro_table.setItem(row, 2, QTableWidgetItem(item['remark']))
+      self.pro_table.setItem(row, 0, QTableWidgetItem(p_id))
+      self.pro_table.setItem(row, 1, QTableWidgetItem(progression))
+      self.pro_table.setItem(row, 2, QTableWidgetItem(accum_time + 's')) # 단위는 sec으로 가정
+      self.pro_table.setItem(row, 3, QTableWidgetItem(remark))
+      '''
+      # json 형식의 res 데이터에 진행중인 프로젝트 정보가 여러개 올때 -> 받아오는 파라미터를 변경해줘야함
+      for item in res:
+        row = self.pro_table.rowCount() 출력
+        self.pro_table.insertRow(row)
+        self.pro_table.setItem(row, 0, QTableWidgetItem(item['p_id']))
+        self.pro_table.setItem(row, 1, QTableWidgetItem(item['progression']))
+        self.pro_table.setItem(row, 2, QTableWidgetItem(item['time']))
+        self.pro_table.setItem(row, 3, QTableWidgetItem(item['remark']))
 
-    '''
+      '''
     pass
 
   # 크레딧 테이블 동적 생성

@@ -1,8 +1,9 @@
 import os
 from daig.api.rest import *
-from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog
+from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QMessageBox, QGridLayout, QFileDialog
 from daig.requester import project
-from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
+from component.constants import setLabelStyle, setButtonStyle, setEditStandard
+
 
 class DataUploadWidget(QWidget):
   # don't touch
@@ -47,11 +48,17 @@ class DataUploadWidget(QWidget):
     #self.valid_img_btn = QPushButton('올리기')
     #self.valid_img_btn.clicked.connect(self.train_lbl_btn_cliked)
 
+    setButtonStyle(self.model_btn)
+    setButtonStyle(self.train_img_btn)
+    setButtonStyle(self.train_lbl_btn)
+
  # task 분할 개수 출력
     self.cho_task = QLineEdit(self)
+    setEditStandard(self.cho_task, 0, 0, 'task num')
 
   # step별 task 개수
     self.cho_step = QLineEdit(self)
+    setEditStandard(self.cho_step, 0, 0, 'step num')
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
@@ -91,20 +98,38 @@ class DataUploadWidget(QWidget):
 
   # train img 파일 받아오기
   def train_img_btn_clicked(self):
-    self.train_img_file = QFileDialog.getOpenFileName(self, './', filter="*.npy")
+    self.train_img_file = QFileDialog.getOpenFileName(
+        self, './', filter="*.npy")
     self.train_img_path.setText(self.train_img_file[0])
 
     #self.train_img_path.text() : 받아온 학습 이미지 경로
   # train lbl 파일 받아오기
   def train_lbl_btn_clicked(self):
-    self.train_lbl_file = QFileDialog.getOpenFileName(self, './', filter="*.py")
+    self.train_lbl_file = QFileDialog.getOpenFileName(
+        self, './', filter="*.py")
     self.train_lbl_path.setText(self.train_lbl_file[0])
 
     #self.train_lbl_path.text() : 받아온 학습 레이블 경로
 
+  '''
+  def valid_img_btn_clicked(self):
+    self.valid_img_file = QFileDialog.getOpenFileName(self, filter="*.npy")
+    self.valid_img_path.setText(self.train_img_file[0])
+
+  def valid_lbl_btn_clicked(self):
+    self.valid_lbl_file = QFileDialog.getOpenFileName(self, filter="*.npy")
+    self.valid_lbl_path.setText(self.train_lbl_path[0])
+  '''
+
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
   def train_start_clicked(self):
+    if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
+      QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
+      return False
+    if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
+      QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
+      return False
 
     task_num = int(self.cho_task.text()) # 분할할 task 수
     step_num = int(self.cho_step.text()) # step내 task 수
@@ -129,3 +154,14 @@ class DataUploadWidget(QWidget):
     # model_path = self.file_path.text()
     upload_model(self.model_path.text(),project.uid)
     upload_data(self.train_img_path.text(),self.train_lbl_path.text(),project.uid,task_num)
+    # 여기에 데이터 업로드가 끝났다는 트리거가 필요함
+
+    # ------ 데이터 업로드가 끝나면 설정값으로 학습 요청
+
+    # 데이터 업로드의 res(ponse)
+    # if (res["is_successful"] == True):
+    #    QMessageBox.about(self, 'DAIG', res['message'])
+    #    return True # return true가 되면 이전 화면으로 되돌아가도록 해놓음
+    # else:
+    #    QMessageBox.about(self, 'DAIG', res['message'])
+    #    return False
