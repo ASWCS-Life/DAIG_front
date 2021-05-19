@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import *
 from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
 from tensorflow import keras
 
+from daig.api.rest import get_owned_projects
+
 class UserFrameWidget(QWidget):
   def __init__(self):
     super().__init__()
@@ -18,10 +20,14 @@ class UserFrameWidget(QWidget):
     self.tabs.addTab(self.cre_tab, 'Credit')
 
     # 프로젝트 테이블 바
-    self.pro_tab.layout = QVBoxLayout()
+    # self.pro_tab.layout = QVBoxLayout()
+    self.pro_tab.layout = QGridLayout()
     self.pro_table = QTableWidget()
     self.pro_table.setColumnCount(3)  # column 설정
     self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', '진행도', '비고'])
+    self.pro_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+    self.pro_table.setSelectionMode(QAbstractItemView.SingleSelection)
+    
 
     # test
     self.p_id = '123'
@@ -40,14 +46,18 @@ class UserFrameWidget(QWidget):
       project_header.setSectionResizeMode(column, QHeaderView.Interactive)
       project_header.resizeSection(column, width[column] * wfactor)
 
-    self.pro_tab.layout.addWidget(self.pro_table)
+    # self.pro_tab.layout.addWidget(self.pro_table)
+    self.pro_tab.layout.addWidget(self.pro_table,0,0,4,5)
     self.pro_tab.setLayout(self.pro_tab.layout)
 
     # 크레딧 테이블 바
-    self.cre_tab.layout = QVBoxLayout()
+    # self.cre_tab.layout = QVBoxLayout()
+    self.cre_tab.layout = QGridLayout()
     self.cre_table = QTableWidget()
     self.cre_table.setColumnCount(3)
     self.cre_table.setHorizontalHeaderLabels(['날짜', '변동 내역', '상세 내용'])
+    self.cre_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+    self.cre_table.setSelectionMode(QAbstractItemView.SingleSelection)
 
     # 테이블 크기 정렬
     credit_header = self.cre_table.horizontalHeader()
@@ -61,14 +71,19 @@ class UserFrameWidget(QWidget):
       credit_header.setSectionResizeMode(column, QHeaderView.Interactive)
       credit_header.resizeSection(column, width[column] * wfactor)
 
-    self.cre_tab.layout.addWidget(self.cre_table)
+    # self.cre_tab.layout.addWidget(self.cre_table)
+    self.cre_tab.layout.addWidget(self.cre_table,0,0,4,5)
     self.cre_tab.setLayout(self.cre_tab.layout)
+
+    self.credit_get_btn = QPushButton('새로 고침') # 임시
+
+    self.cre_tab.layout.addWidget(self.credit_get_btn, 5, 4)
 
     # 버튼 생성
     self.aten_btn = QPushButton('참여')
     self.stop_btn = QPushButton('중단')
     self.down_btn = QPushButton('다운로드')
-    self.get_btn = QPushButton('add_test')
+    self.get_btn = QPushButton('새로 고침')
 
 
     self.aten_btn.clicked.connect(self.attend_learning)
@@ -81,16 +96,15 @@ class UserFrameWidget(QWidget):
     setButtonStyle(self.get_btn)
 
     #test
-    self.get_btn.clicked.connect(lambda: self.project_addItem(self.p_id,
-                                                              self.prog,
-                                                              self.remark))
+    self.get_btn.clicked.connect(self.get_projects)
 
     layout = QGridLayout()
     layout.addWidget(self.tabs, 0, 0, 1, 0)
-    layout.addWidget(self.aten_btn, 1, 1)
-    layout.addWidget(self.stop_btn, 1, 2)
-    layout.addWidget(self.down_btn, 1, 3)
-    layout.addWidget(self.get_btn, 1, 4)
+    self.pro_tab.layout.addWidget(self.aten_btn, 5, 1)
+    self.pro_tab.layout.addWidget(self.stop_btn, 5, 2)
+    self.pro_tab.layout.addWidget(self.down_btn, 5, 3)
+    self.pro_tab.layout.addWidget(self.get_btn, 5, 4)
+    
 
     self.setLayout(layout)
 
@@ -113,6 +127,11 @@ class UserFrameWidget(QWidget):
 
     '''
     pass
+
+  def get_projects(self):
+    projects=get_owned_projects()["projects"]
+    for p in projects:
+      self.project_addItem(p["project_uid"],p["progress"],p["status"])
 
   # 크레딧 테이블 동적 생성
   def credit_addItem(self, date, change_info, remark):

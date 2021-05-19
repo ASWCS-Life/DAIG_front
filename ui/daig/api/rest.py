@@ -301,6 +301,10 @@ def get_current_credit():
     res = requests.get(f'{base_url}/credit/remains/', headers={'AUTH':get_auth_header()})
     return res.json()
 
+def get_owned_projects():
+    res = requests.get(f'{base_url}/project/owned/', headers={'AUTH':get_auth_header()})
+    return res.json()
+
 if __name__ == '__main__':
     model = get_model()
     model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
