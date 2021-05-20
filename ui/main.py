@@ -34,7 +34,7 @@ class PwdInitLayout(PwdInitWidget):
             on_layout_convert_center(main_window, widget, 420, 180)
 
     def openFindPwdClass(self):
-        widget.setCurrentIndex(widget.currentIndex() - 1)
+        widget.setCurrentIndex(7)
         on_layout_convert_center(main_window, widget, 420, 180)
 
 # 비밀번호 찾기 화면 - widget_index_num : 7
@@ -49,7 +49,7 @@ class FindPwdLayout(FindPwdWidget):
 
     def onFindPwdHandler(self):
         if(self.onUserInfoAlert() == True):
-            widget.setCurrentIndex(widget.currentIndex() + 1)
+            widget.setCurrentIndex(8)
             on_layout_convert_center(main_window, widget, 370, 180)
 
     def openLoginClass(self):
@@ -113,11 +113,11 @@ class Mode(ModeChoiceWidget):
 
     def openReqUserClass(self):
         #main_window.create_project.setEnabled(True)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
+        widget.setCurrentIndex(3)
         on_layout_convert_center(main_window, widget, 700, 500)
 
     def openProviderClass(self):
-        widget.setCurrentIndex(widget.currentIndex() + 2)
+        widget.setCurrentIndex(4)
         on_layout_convert_center(main_window, widget, 700, 500)
 
 
@@ -178,8 +178,7 @@ class Login(LoginWidget):
         on_layout_convert_center(main_window, widget, 420, 150)
 
     def openSignUpClass(self):
-        # currentIndex를 +- 해주면서 스택 레이아웃 전환
-        widget.setCurrentIndex(widget.currentIndex()+1)
+        widget.setCurrentIndex(1)
         on_layout_convert_center(main_window, widget, 500, 250)
 
     def onClickLoginHandler(self):
@@ -188,7 +187,7 @@ class Login(LoginWidget):
         main_window.addUserInfoOnToolBar(self.id.text(), "0")
 
     def openModeClass(self):
-        widget.setCurrentIndex(widget.currentIndex()+2)
+        widget.setCurrentIndex(2)
         on_layout_convert_center(main_window, widget, 450, 250)
 
 class MyMainWindow(QMainWindow):
@@ -208,18 +207,16 @@ class MyMainWindow(QMainWindow):
     # 툴바 아이콘 지정 및 행동 지정
     self.go_home = QAction(QIcon('./local_data/home.png'), 'Home', self)
     self.create_project = QAction(QIcon('./local_data/create.png'), 'New Project', self)
-    self.refresh = QAction(QIcon('./local_data/refresh.png'), 'Refresh', self)
     self.credit = QAction(QIcon('./local_data/credit.png'), 'Credit Info', self)
     self.go_home.setStatusTip('Home')
     self.go_home.triggered.connect(self.onToolBarTriggeredHandler) # 아이콘 클릭시 mode설정 화면으로 돌아감
     self.toolbar = self.addToolBar('Home')
     self.toolbar.addAction(self.go_home)
     self.toolbar.addAction(self.create_project)
-    self.toolbar.addAction(self.refresh)
     self.toolbar.addAction(self.credit)
 
     self.create_project.triggered.connect(self.openDataUploadClass)
-    self.refresh.triggered.connect(User_ly.refresh_learning)
+
   def openDataUploadClass(self):
       widget.setCurrentIndex(5)
       on_layout_convert_center(self, widget, 500, 500)
@@ -243,10 +240,8 @@ class MyMainWindow(QMainWindow):
         self.credit.setEnabled(True)
     if (widget.currentIndex() == 3):
         self.create_project.setEnabled(True)
-        self.refresh.setEnabled(True)
     else:
         self.create_project.setEnabled(False)
-        self.refresh.setEnabled(False)
     pass
 
   def onToolBarTriggeredHandler(self):

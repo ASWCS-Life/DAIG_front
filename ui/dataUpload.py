@@ -1,4 +1,3 @@
-import os
 from daig.api.rest import *
 from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QMessageBox, QGridLayout, QFileDialog
 from daig.requester import project

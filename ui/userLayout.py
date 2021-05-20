@@ -21,8 +21,14 @@ class UserFrameWidget(QWidget):
     self.pro_tab.layout = QVBoxLayout()
     self.pro_table = QTableWidget()
     self.pro_table.setColumnCount(4)  # column 설정
+    self.pro_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
     self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', '진행도', '누계 시간', '비고'])
-    
+    self.pro_table.horizontalHeader().setStyleSheet("QHeaderView::section{"
+                                                    'background-color: white;'
+                                                    'border: 1px solid rgb(251, 86, 7);'
+                                                    'border-radius: 2px;'
+                                                    "}")
+
     # test
     self.p_id = '123'
     self.prog = '12/13'
@@ -144,6 +150,7 @@ class UserFrameWidget(QWidget):
     return self.pro_table.item(self.pro_table.currentRow(), 0).text()
 
   def refresh_learning(self):
+    self.pro_table.setRowCount(0)
     print("refresh_button_pressed")
     #if[Toolbar의 refresh button을 눌렀을때]
     #---------- 프로젝트 정보 재요청
