@@ -15,15 +15,19 @@ class Worker(QThread):
   def __init__(self, parent=None):
     super(Worker, self).__init__(parent)
     set_auth_header({'key':get_auth_header()})
+    self.parent=parent
 
   def run(self):
     self.stop_learning = False
     start_learning_internal()
     project_id = get_avaiable_project()
     if(project_id == -1): return
+    start_time=time.time()
     result = start_learning(project_id)
     if((result == 'STOP') or (result == 'FAIL')):
       return
+    task_time=round((time.time()-start_time)*10)/10
+    self.parent.project_updateItem(project_id,1,task_time)
     time.sleep(2)
     if(not(self.stop_learning)):
       self.run()
@@ -39,7 +43,7 @@ class ProviderWidget(QWidget):
     super().__init__()
     self.init_ui()
     self.project_id = -1
-    self.worker = Worker()
+    self.worker = Worker(self)
 
   # code
   def init_ui(self):
@@ -94,14 +98,23 @@ class ProviderWidget(QWidget):
       self.train_start.setEnabled(False)
       self.train_stop.setEnabled(True)
 
+  def project_updateItem(self, p_id, task_num='', task_pf_avrg='', credit=''):
+    for r in range(self.pro_table.rowCount()):
+      if self.pro_table.item(r,0).text()==p_id:
+        self.pro_table.item(r,2).setText(str((float(self.pro_table.item(r,2).text())*float(self.pro_table.item(r,1).text())+float(task_pf_avrg))/(float(self.pro_table.item(r,1).text())+float(task_num))))
+        self.pro_table.item(r,1).setText(str(int(self.pro_table.item(r,1).text())+task_num))
+        self.pro_table.item(r,3).setText(str(credit))
+        return
+    self.project_addItem(p_id, 1, task_pf_avrg, '')
+
     # 프로젝트 테이블 동적 생성
   def project_addItem(self, p_id, task_num='', task_pf_avrg='', credit=''):
     row = self.pro_table.rowCount()
     self.pro_table.insertRow(row)
-    self.pro_table.setItem(row, 0, QTableWidgetItem(p_id))
-    self.pro_table.setItem(row, 1, QTableWidgetItem(task_num))
-    self.pro_table.setItem(row, 2, QTableWidgetItem(task_pf_avrg))
-    self.pro_table.setItem(row, 3, QTableWidgetItem(credit))
+    self.pro_table.setItem(row, 0, QTableWidgetItem(str(p_id)))
+    self.pro_table.setItem(row, 1, QTableWidgetItem(str(task_num)))
+    self.pro_table.setItem(row, 2, QTableWidgetItem(str(task_pf_avrg)))
+    self.pro_table.setItem(row, 3, QTableWidgetItem(str(credit)))
     '''
     # json 형식의 res 데이터에 진행중인 프로젝트 정보가 여러개 올때 -> 받아오는 파라미터를 변경해줘야함
     for item in res:
