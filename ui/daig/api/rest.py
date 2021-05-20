@@ -1,3 +1,4 @@
+import re
 import h5py
 import requests
 import tensorflow as tf
@@ -288,6 +289,10 @@ def validate(project_id):
 
 def get_current_credit():
     res = requests.get(f'{base_url}/credit/remains/', headers={'AUTH':get_auth_header()})
+    return res.json()
+
+def get_credit_log():
+    res = requests.get(f'{base_url}/credit/log/', headers={'AUTH':get_auth_header()})
     return res.json()
 
 def get_owned_projects():
