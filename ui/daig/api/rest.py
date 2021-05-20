@@ -6,13 +6,13 @@ import tensorflow.keras as keras
 
 import numpy as np
 
-from .auth import get_auth_header
+from auth import get_auth_header
 from tempfile import TemporaryFile
 
 import time
 
-base_url = 'http://118.67.130.33:8000'
-#base_url = 'http://127.0.0.1:8000'
+# base_url = 'http://118.67.130.33:8000'
+base_url = 'http://127.0.0.1:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
 auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
@@ -286,8 +286,6 @@ def validate(project_id):
     print('result is...')
     print(test_loss, test_acc)
 
-(x_train, y_train), (x_test, y_test) = get_train_data()
-
 def get_current_credit():
     res = requests.get(f'{base_url}/credit/remains/', headers={'AUTH':get_auth_header()})
     return res.json()
@@ -296,7 +294,17 @@ def get_owned_projects():
     res = requests.get(f'{base_url}/project/owned/', headers={'AUTH':get_auth_header()})
     return res.json()
 
+
+(x_train, y_train), (x_test, y_test) = get_train_data()
+
 if __name__ == '__main__':
-    model = get_model()
-    model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
-    
+    print(y_train.shape)
+
+    model = tf.keras.applications.VGG16(
+        weights=None, input_tensor=None,
+        input_shape=(32,32,3), pooling=None, classes=10,
+        classifier_activation='softmax'
+    )
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
+    model.fit(x_train, y_train, epochs = 30, batch_size = 32)
+
