@@ -5,18 +5,14 @@ import tensorflow as tf
 import tensorflow.keras as keras
 
 import numpy as np
-from tensorflow.python.ops.gen_math_ops import mod
 
 from .auth import get_auth_header
 from tempfile import TemporaryFile
 
-from sklearn.model_selection import train_test_split
-
 import time
-import os
 
-# base_url = 'http://118.67.130.33:8000'
-base_url = 'http://127.0.0.1:8000'
+base_url = 'http://118.67.130.33:8000'
+#base_url = 'http://127.0.0.1:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
 auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
@@ -278,11 +274,6 @@ def get_train_data():
     y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
     y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
     
-    X = np.concatenate((x_train,x_test))
-    y = np.concatenate((y_train,y_test))
-
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=10000, random_state=714)
-
     return (x_train, y_train), (x_test, y_test)
 
 def validate(project_id):
