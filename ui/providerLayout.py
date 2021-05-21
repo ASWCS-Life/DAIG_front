@@ -55,7 +55,13 @@ class ProviderWidget(QWidget):
     self.pro_tab.layout = QVBoxLayout()
     self.pro_table = QTableWidget()
     self.pro_table.setColumnCount(4)  # column 설정
+    self.pro_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
     self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', 'task 개수', 'task 수행 평균 시간', 'credit'])
+    self.pro_table.horizontalHeader().setStyleSheet("QHeaderView::section{"
+                                                    'background-color: white;'
+                                                    'border: 1px solid rgb(123, 207, 146);'
+                                                    'border-radius: 2px;'
+                                                    "}")
 
     project_header = self.pro_table.horizontalHeader()
     twidth = project_header.width()
@@ -73,19 +79,22 @@ class ProviderWidget(QWidget):
 
     self.train_start = QPushButton('학습 시작')
     self.train_stop = QPushButton('학습 중단')
+    self.train_refresh = QPushButton('새로 고침')
     self.train_stop.setEnabled(False)
     self.train_start.clicked.connect(self.onTrainStartClicked)
     self.train_stop.clicked.connect(self.onTrainStopClicked)
+    self.train_refresh.clicked.connect(self.onTrainRefreshClicked)
 
     setButtonStyle(self.train_start)
     setButtonStyle(self.train_stop)
+    setButtonStyle(self.train_refresh)
 
   # 사용자 페이지
     grid = QGridLayout()
     grid.addWidget(self.tabs, 0, 0, 1, 0)
     grid.addWidget(self.train_start, 1, 1)
     grid.addWidget(self.train_stop, 1, 2)
-
+    grid.addWidget(self.train_refresh, 1, 3)
     self.setLayout(grid)
 
   # 요청자 레이아웃에서 참여를 누르면 실행되는 함수
@@ -95,8 +104,6 @@ class ProviderWidget(QWidget):
       #------- 여기에 p_id와 일치하는 프로젝트 요청 후 self.pro_table에 추가
       self.project_addItem(p_id)
       #------- 해당 프로젝트 분산학습 수행 요청
-      self.train_start.setEnabled(False)
-      self.train_stop.setEnabled(True)
 
   def project_updateItem(self, p_id, task_num='', task_pf_avrg='', credit=''):
     for r in range(self.pro_table.rowCount()):
@@ -126,6 +133,9 @@ class ProviderWidget(QWidget):
 
     '''
     pass
+
+  def onTrainRefreshClicked(self):
+      self.pro_table.setRowCount(0)
 
     # 학습 시작 버튼을 눌렀을 경우
   def onTrainStartClicked(self):

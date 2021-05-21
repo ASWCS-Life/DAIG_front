@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
+from component.constants import setLabelStyle, setButtonStyle, setEditStandard
 from tensorflow import keras
 
 from daig.api.rest import get_owned_projects
@@ -23,15 +23,19 @@ class UserFrameWidget(QWidget):
     # self.pro_tab.layout = QVBoxLayout()
     self.pro_tab.layout = QGridLayout()
     self.pro_table = QTableWidget()
-    self.pro_table.setColumnCount(3)  # column 설정
-    self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', '진행도', '비고'])
-    self.pro_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-    self.pro_table.setSelectionMode(QAbstractItemView.SingleSelection)
-    
+    self.pro_table.setColumnCount(4)  # column 설정
+    self.pro_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', '진행도', '누계 시간', '비고'])
+    self.pro_table.horizontalHeader().setStyleSheet("QHeaderView::section{"
+                                                    'background-color: white;'
+                                                    'border: 1px solid rgb(251, 86, 7);'
+                                                    'border-radius: 2px;'
+                                                    "}")
 
     # test
     self.p_id = '123'
     self.prog = '12/13'
+    self.accum_time = '493'
     self.remark = '정상'
 
     # 테이블 전체 너비와 컨텐츠들의 비율에 따라 자동으로 컬럼 너비 조정
@@ -110,12 +114,13 @@ class UserFrameWidget(QWidget):
 
     # 프로젝트 테이블 동적 생성
 
-  def project_addItem(self, p_id, progression, remark):
+  def project_addItem(self, p_id, progression, accum_time,remark):
     row = self.pro_table.rowCount()
     self.pro_table.insertRow(row)
     self.pro_table.setItem(row, 0, QTableWidgetItem(p_id))
     self.pro_table.setItem(row, 1, QTableWidgetItem(progression))
-    self.pro_table.setItem(row, 2, QTableWidgetItem(remark))
+    self.pro_table.setItem(row, 2, QTableWidgetItem(accum_time + 's')) # 단위는 sec으로 가정
+    self.pro_table.setItem(row, 3, QTableWidgetItem(remark))
     '''
     # json 형식의 res 데이터에 진행중인 프로젝트 정보가 여러개 올때 -> 받아오는 파라미터를 변경해줘야함
     for item in res:
@@ -123,15 +128,15 @@ class UserFrameWidget(QWidget):
       self.pro_table.insertRow(row)
       self.pro_table.setItem(row, 0, QTableWidgetItem(item['p_id']))
       self.pro_table.setItem(row, 1, QTableWidgetItem(item['progression']))
-      self.pro_table.setItem(row, 2, QTableWidgetItem(item['remark']))
+      self.pro_table.setItem(row, 2, QTableWidgetItem(item['time']))
+      self.pro_table.setItem(row, 3, QTableWidgetItem(item['remark']))
 
     '''
-    pass
 
   def get_projects(self):
     projects=get_owned_projects()["projects"]
     for p in projects:
-      self.project_addItem(p["project_uid"],p["progress"],p["status"])
+      self.project_addItem(p["project_uid"],p["progress"],'',p["status"])
 
   # 크레딧 테이블 동적 생성
   def credit_addItem(self, date, change_info, remark):
@@ -160,6 +165,7 @@ class UserFrameWidget(QWidget):
     return self.pro_table.item(self.pro_table.currentRow(), 0).text()
 
   def refresh_learning(self):
+    self.pro_table.setRowCount(0)
     print("refresh_button_pressed")
     #if[Toolbar의 refresh button을 눌렀을때]
     #---------- 프로젝트 정보 재요청
@@ -185,7 +191,7 @@ class UserFrameWidget(QWidget):
     file_save_path = file_save[0]
     # model.save(file_save_path)
 
-    pass
+    
 
 
 

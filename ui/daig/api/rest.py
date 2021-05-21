@@ -7,7 +7,7 @@ import tensorflow.keras as keras
 
 import numpy as np
 
-from auth import get_auth_header
+from .auth import get_auth_header
 from tempfile import TemporaryFile
 
 import time

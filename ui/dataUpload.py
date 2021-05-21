@@ -4,7 +4,7 @@ from daig.api.rest import *
 from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar
 from PyQt5.QtCore import QThread
 from daig.requester import project
-from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
+from component.constants import setLabelStyle, setButtonStyle, setEditStandard
 import numpy as np
 import math
 import requests
@@ -139,11 +139,17 @@ class DataUploadWidget(QWidget):
     #self.valid_img_btn = QPushButton('올리기')
     #self.valid_img_btn.clicked.connect(self.train_lbl_btn_cliked)
 
+    setButtonStyle(self.model_btn)
+    setButtonStyle(self.train_img_btn)
+    setButtonStyle(self.train_lbl_btn)
+
  # task 분할 개수 출력
     self.cho_task = QLineEdit(self)
+    setEditStandard(self.cho_task, 0, 0, 'task num')
 
   # step별 task 개수
     self.cho_step = QLineEdit(self)
+    setEditStandard(self.cho_step, 0, 0, 'step num')
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
@@ -187,20 +193,38 @@ class DataUploadWidget(QWidget):
 
   # train img 파일 받아오기
   def train_img_btn_clicked(self):
-    self.train_img_file = QFileDialog.getOpenFileName(self, './', filter="*.npy")
+    self.train_img_file = QFileDialog.getOpenFileName(
+        self, './', filter="*.npy")
     self.train_img_path.setText(self.train_img_file[0])
 
     #self.train_img_path.text() : 받아온 학습 이미지 경로
   # train lbl 파일 받아오기
   def train_lbl_btn_clicked(self):
-    self.train_lbl_file = QFileDialog.getOpenFileName(self, './', filter="*.npy")
+    self.train_lbl_file = QFileDialog.getOpenFileName(
+        self, './', filter="*.npy")
     self.train_lbl_path.setText(self.train_lbl_file[0])
 
     #self.train_lbl_path.text() : 받아온 학습 레이블 경로
 
+  '''
+  def valid_img_btn_clicked(self):
+    self.valid_img_file = QFileDialog.getOpenFileName(self, filter="*.npy")
+    self.valid_img_path.setText(self.train_img_file[0])
+
+  def valid_lbl_btn_clicked(self):
+    self.valid_lbl_file = QFileDialog.getOpenFileName(self, filter="*.npy")
+    self.valid_lbl_path.setText(self.train_lbl_path[0])
+  '''
+
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
   def train_start_clicked(self):
+    if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
+      QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
+      return False
+    if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
+      QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
+      return False
 
     self.upload_thread=UploadThread(get_auth_header(),self)
 
