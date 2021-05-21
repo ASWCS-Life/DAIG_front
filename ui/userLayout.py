@@ -31,6 +31,8 @@ class UserFrameWidget(QWidget):
                                                     'border: 1px solid rgb(251, 86, 7);'
                                                     'border-radius: 2px;'
                                                     "}")
+    self.pro_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+    self.pro_table.setSelectionMode(QAbstractItemView.SingleSelection)
 
     # test
     self.p_id = '123'
@@ -134,6 +136,7 @@ class UserFrameWidget(QWidget):
     '''
 
   def get_projects(self):
+    self.pro_table.setRowCount(0)
     projects=get_owned_projects()["projects"]
     for p in projects:
       self.project_addItem(p["project_uid"],p["progress"],'',p["status"])

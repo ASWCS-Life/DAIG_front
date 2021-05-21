@@ -18,25 +18,27 @@ class UploadThread(QThread):
     super(UploadThread, self).__init__(parent)
     self.auth=auth
     print(auth)
-    self.parent=parent
+    self.model_path=parent.model_path.text()
+    self.train_lbl_path=parent.train_lbl_path.text()
+    self.train_img_path=parent.train_img_path.text()
+    self.pbar=parent.pbar
+    self.task_num = int(parent.cho_task.text())
+    self.step_num = int(parent.cho_step.text())
+    
 
   def run(self):
-    task_num = int(self.parent.cho_task.text())
-    step_num = int(self.parent.cho_step.text())
-
     model = get_model()
 
-
-
     res = self.create_project(model.get_weights(), data = {
-        'total_task':task_num,
-        'step_size':step_num
+        'total_task' : self.task_num,
+        'step_size' : self.step_num
     })
 
     project.uid=res["project_uid"]
 
-    self.upload_model(self.parent.model_path.text(),project.uid)
-    self.upload_data(self.parent.train_img_path.text(),self.parent.train_lbl_path.text(),project.uid,task_num)
+    self.upload_model(self.model_path,project.uid)
+    self.upload_data(self.train_img_path,self.train_lbl_path,project.uid,self.task_num)
+    
 
   def create_project(self,initial_weight,data=None):
     with TemporaryFile() as tf:
@@ -49,7 +51,7 @@ class UploadThread(QThread):
   def upload_model(self, model_path, project_uid):
     res=requests.post(f'{base_url}/project/model/upload',data={ # 업로드 url 요청
       'project_uid':project_uid,
-      'model':'model.json'
+      'model':'model.h5'
     }, headers={'AUTH':self.auth})
 
     url=res.json()['model_url'] # presigned url
@@ -90,9 +92,9 @@ class UploadThread(QThread):
     for idx in range(task_num):
       self.upload_each_data(data_split[idx], label_split[idx], project_uid, idx)
       pbar_rate+=r
-      self.parent.pbar.setValue(pbar_rate)
+      self.pbar.setValue(pbar_rate)
       print(f'{idx} uploaded')
-    self.parent.pbar.setValue(100)
+    self.pbar.setValue(100)
     print('data uploading finished')
 
 
@@ -218,7 +220,14 @@ class DataUploadWidget(QWidget):
 
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
+
   def train_start_clicked(self):
+    # 성공적으로 프로젝트가 생성되면
+    if(self.upload_data() == True):
+      widget.setCurrentIndex(3)
+      on_layout_convert_center(main_window, widget, 700, 500)
+
+  def upload_data(self):
     if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
       QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
       return False
@@ -226,30 +235,9 @@ class DataUploadWidget(QWidget):
       QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
       return False
 
+    self.train_start.setEnabled(False)
     self.upload_thread=UploadThread(get_auth_header(),self)
 
     self.upload_thread.start()
+    return True
 
-    # task_num = int(self.cho_task.text()) # 분할할 task 수
-    # step_num = int(self.cho_step.text()) # step내 task 수
-    # # train_img_mtrx, train_lbl_mtrx = data_division(task_num) # check dummyData.js
-    # model_path = 'test_path' # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
-    # train_data_path = 'test_path' # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
-
-    # # dummy model for test
-    # model = get_model()
-
-    # res = create_project(model.get_weights(), data = {
-    #     'rrs':train_data_path,
-    #     'model_url':model_path,
-    #     'total_task':task_num,
-    #     'step_size':step_num
-    #   })
-
-    # # set_p_id(res["project_id"])
-    # project.uid=res["project_uid"]
-
-    # # dummy값이 아닌 ui에서 받아온 model과 npy파일들의 path
-    # # model_path = self.file_path.text()
-    # upload_model(self.model_path.text(),project.uid)
-    # upload_data(self.train_img_path.text(),self.train_lbl_path.text(),project.uid,task_num)
