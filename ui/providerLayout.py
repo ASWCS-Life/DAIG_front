@@ -4,7 +4,6 @@ from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
 from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
 import time
 
-from daig.api.main import *
 from daig.api.rest import get_avaiable_project, start_learning, start_learning_internal, stop_learning_internal, is_project_finished
 
 from daig.api.auth import get_auth_header, set_auth_header
