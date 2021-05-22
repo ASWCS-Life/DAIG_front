@@ -1,3 +1,4 @@
+from os import truncate
 import re
 import h5py
 import requests
@@ -7,7 +8,7 @@ import tensorflow.keras as keras
 
 import numpy as np
 
-from .auth import get_auth_header
+from auth import get_auth_header
 from tempfile import TemporaryFile
 
 import time
@@ -303,13 +304,7 @@ def get_owned_projects():
 (x_train, y_train), (x_test, y_test) = get_train_data()
 
 if __name__ == '__main__':
-    print(y_train.shape)
+    model = tf.keras.models.load_model('model.h5')
+    model.fit(x_train, y_train, batch_size=32, epochs=30, verbose=2)
 
-    model = tf.keras.applications.VGG16(
-        weights=None, input_tensor=None,
-        input_shape=(32,32,3), pooling=None, classes=10,
-        classifier_activation='softmax'
-    )
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
-    model.fit(x_train, y_train, epochs = 30, batch_size = 32)
 

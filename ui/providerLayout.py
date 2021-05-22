@@ -19,18 +19,18 @@ class Worker(QThread):
 
   def run(self):
     self.stop_learning = False
-    start_learning_internal()
-    project_id = get_avaiable_project()
-    if(project_id == -1): return
-    start_time=time.time()
-    result = start_learning(project_id)
-    if((result == 'STOP') or (result == 'FAIL')):
-      return
-    task_time=round((time.time()-start_time)*10)/10
-    self.parent.project_updateItem(project_id,1,task_time)
-    time.sleep(2)
-    if(not(self.stop_learning)):
-      self.run()
+    while(not(self.stop_learning)):
+      start_learning_internal()
+      project_id = get_avaiable_project()
+      if(project_id == -1): return
+      start_time = time.time()
+      result = start_learning(project_id)
+      if((result == 'STOP') or (result == 'FAIL')):
+        return
+      task_time=round((time.time()-start_time)*10)/10
+      self.parent.project_updateItem(project_id,1,task_time)
+      time.sleep(5)
+    
 
   def stop(self):
     self.stop_learning = True
