@@ -21,7 +21,9 @@ class Worker(QThread):
     while(not(self.stop_learning)):
       start_learning_internal()
       project_id = get_avaiable_project()
-      if(project_id == -1): return
+      if(project_id == -1):
+        time.sleep(3)
+        continue
       start_time = time.time()
       result = start_learning(project_id)
       if((result == 'STOP') or (result == 'FAIL')):
@@ -32,7 +34,7 @@ class Worker(QThread):
           "task_num":1,
           "task_pf_avrg":task_time
       })
-      time.sleep(5)
+      time.sleep(3)
     
 
   def stop(self):
