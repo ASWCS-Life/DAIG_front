@@ -158,10 +158,6 @@ def start_learning(project_id, params=None):
         tf.write(requests.get(url=label_url).content)
         _ = tf.seek(0)
         train_label = np.asarray(np.load(tf,allow_pickle=True)).astype(np.float32)
-    spent_time = time.time() - start_time
-
-    print('loading time')
-    print(spent_time)
 
     init_weight = get_weight(project_id)
 
@@ -174,10 +170,11 @@ def start_learning(project_id, params=None):
         return 'STOP'
     
     model.fit(train_data, train_label, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
-    
 
     if callback.stop_learning_tok:
         return 'STOP'
+
+    spent_time = time.time() - start_time
 
     with TemporaryFile() as tf:
         np.save(tf, np.array(model.get_weights(),dtype=object) - np.array(init_weight,dtype=object))
