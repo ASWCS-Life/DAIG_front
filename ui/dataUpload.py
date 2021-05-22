@@ -155,7 +155,7 @@ class DataUploadWidget(QWidget):
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
-    self.train_start.clicked.connect(self.train_start_clicked)
+
     setButtonStyle(self.train_start)
 
     # progress bar
@@ -221,11 +221,7 @@ class DataUploadWidget(QWidget):
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
 
-  def train_start_clicked(self):
-    # 성공적으로 프로젝트가 생성되면
-    if(self.upload_data() == True):
-      widget.setCurrentIndex(3)
-      on_layout_convert_center(main_window, widget, 700, 500)
+  
 
   def upload_data(self):
     if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
