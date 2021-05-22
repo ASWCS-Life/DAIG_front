@@ -79,13 +79,6 @@ class FindIdLayout(FindIdWidget):
 class DataUploadLayout(DataUploadWidget):
     def __init__(self):
         super().__init__()
-        self.train_start.clicked.connect(self.train_start_clicked)
-
-    def train_start_clicked(self):
-    # 성공적으로 프로젝트가 생성되면
-        if(self.upload_data() == True):
-            widget.setCurrentIndex(3)
-            on_layout_convert_center(main_window, widget, 700, 500)
 
 
 # 제공자 화면 - widget_index_num : 4

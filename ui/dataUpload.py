@@ -1,7 +1,7 @@
 import sys
 import os
 from daig.api.rest import *
-from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar
+from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar, QMessageBox
 from PyQt5.QtCore import QThread
 from daig.requester import project
 from component.constants import setLabelStyle, setButtonStyle, setEditStandard

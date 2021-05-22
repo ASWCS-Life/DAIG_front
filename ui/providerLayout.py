@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5.QtCore import QThread, Qt
+from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
 from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
 import time
 
@@ -11,11 +11,11 @@ from daig.api.auth import get_auth_header, set_auth_header
 
 class Worker(QThread):
   stop_learning = False
+  signal=pyqtSignal(dict)
 
   def __init__(self, parent=None):
     super(Worker, self).__init__(parent)
     set_auth_header({'key':get_auth_header()})
-    self.parent=parent
 
   def run(self):
     self.stop_learning = False
@@ -28,7 +28,11 @@ class Worker(QThread):
       if((result == 'STOP') or (result == 'FAIL')):
         return
       task_time=round((time.time()-start_time)*10)/10
-      self.parent.project_updateItem(project_id,1,task_time)
+      self.signal.emit({
+          "p_id":project_id,
+          "task_num":1,
+          "task_pf_avrg":task_time
+      })
       time.sleep(5)
     
 
@@ -44,6 +48,7 @@ class ProviderWidget(QWidget):
     self.init_ui()
     self.project_id = -1
     self.worker = Worker(self)
+    self.worker.signal.connect(self.project_updateItem)
 
   # code
   def init_ui(self):
@@ -105,7 +110,12 @@ class ProviderWidget(QWidget):
       self.project_addItem(p_id)
       #------- 해당 프로젝트 분산학습 수행 요청
 
-  def project_updateItem(self, p_id, task_num='', task_pf_avrg='', credit=''):
+  @pyqtSlot(dict)
+  def project_updateItem(self, content):
+    p_id=content["p_id"]
+    task_num=content["task_num"]
+    task_pf_avrg=content["task_pf_avrg"]
+    credit=''
     for r in range(self.pro_table.rowCount()):
       if self.pro_table.item(r,0).text()==p_id:
         self.pro_table.item(r,2).setText(str((float(self.pro_table.item(r,2).text())*float(self.pro_table.item(r,1).text())+float(task_pf_avrg))/(float(self.pro_table.item(r,1).text())+float(task_num))))
