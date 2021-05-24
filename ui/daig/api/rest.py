@@ -8,7 +8,7 @@ import tensorflow.keras as keras
 
 import numpy as np
 
-from .auth import get_auth_header
+from auth import get_auth_header
 from tempfile import TemporaryFile
 
 import time
@@ -302,6 +302,12 @@ def get_owned_projects():
 
 if __name__ == '__main__':
     model = tf.keras.models.load_model('model.h5')
-    model.fit(x_train, y_train, batch_size=32, epochs=30, verbose=2)
+    result = np.load("result.npy",allow_pickle=True)
 
+    model = get_model()
+    model.set_weights(result.tolist())
+    #model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    
+    model.evaluate(x_test, y_test)
+    #model.summary()
 
