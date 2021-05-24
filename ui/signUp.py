@@ -72,11 +72,23 @@ class SignUpWidget(QWidget):
         self.email_back = QLineEdit(self)
         self.email_back.setFixedWidth(150)
         setEditStandard(self.email_back, 265, 110, 'daig.co.kr')
+        
+        # # 잠시 비활성화
+        # self.email_front.style
 
+        # self.email_front.setStyleSheet('background: rgb(127, 127, 127);'
+        #                                'border: 1px solid rgb(127, 127, 127);'
+        #                                'border-radius: 5px')
+        # self.email_back.setStyleSheet('background: rgb(127, 127, 127);'
+        #                               'border: 1px solid rgb(127, 127, 127);'
+        #                               'border-radius: 5px')
+        # self.email_front.setEnabled(False)
+        # self.email_back.setEnabled(False)
+        # self.auth_email.setEnabled(False)
     # 이메일 인증
     def emailAuth(self):
-        self.email = self.email_front.text() + '@' + self.email_back
-
+        # self.email = self.email_front.text() + '@' + self.email_back
+        QMessageBox.about(self,'DAIG',"준비중입니다.")
         #--------- self.email로 인증요청
 
         #if (res["is_successful"] == True):
@@ -100,13 +112,13 @@ class SignUpWidget(QWidget):
         self.email_back.adjustSize()
 
     def onClickSignUp(self):
-        if(self.check_email_authorized == False):
-            QMessageBox.about(self, 'DAIG', '이메일 인증을 해주세요')
-            return
+        # if(self.check_email_authorized == False):
+        #     QMessageBox.about(self, 'DAIG', '이메일 인증을 해주세요')
+        #     return
         sender_data = {
            "username" : self.id.text(),
            "password" : self.pwd.text(),
-           "email" : self.email
+        #    "email" : self.email
         }
         res = sign_up_req(sender_data)
         if(res["is_successful"] == True):

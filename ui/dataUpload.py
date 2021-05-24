@@ -2,7 +2,7 @@ import sys
 import os
 from daig.api.rest import *
 from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar, QMessageBox
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
 from daig.requester import project
 from component.constants import setLabelStyle, setButtonStyle, setEditStandard
 import numpy as np
@@ -13,6 +13,7 @@ from daig.api.auth import get_auth_header
 
 class UploadThread(QThread):
   stop_learning = False
+  pbar_signal=pyqtSignal(dict)
 
   def __init__(self,auth, parent=None):
     super(UploadThread, self).__init__(parent)
@@ -21,7 +22,6 @@ class UploadThread(QThread):
     self.model_path=parent.model_path.text()
     self.train_lbl_path=parent.train_lbl_path.text()
     self.train_img_path=parent.train_img_path.text()
-    self.pbar=parent.pbar
     self.task_num = int(parent.cho_task.text())
     self.step_num = int(parent.cho_step.text())
     
@@ -53,6 +53,7 @@ class UploadThread(QThread):
       'project_uid':project_uid,
       'model':'model.h5'
     }, headers={'AUTH':self.auth})
+    print(res.json())
 
     url=res.json()['model_url'] # presigned url
 
@@ -92,9 +93,15 @@ class UploadThread(QThread):
     for idx in range(task_num):
       self.upload_each_data(data_split[idx], label_split[idx], project_uid, idx)
       pbar_rate+=r
-      self.pbar.setValue(pbar_rate)
+      self.pbar_signal.emit({
+        "is_completed":False,
+        "num":pbar_rate
+      })
       print(f'{idx} uploaded')
-    self.pbar.setValue(100)
+    self.pbar_signal.emit({
+      "is_completed":True,
+      "num":100
+    })
     print('data uploading finished')
 
 
@@ -155,7 +162,7 @@ class DataUploadWidget(QWidget):
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
-
+    self.train_start.clicked.connect(self.train_start_clicked)
     setButtonStyle(self.train_start)
 
     # progress bar
@@ -223,17 +230,29 @@ class DataUploadWidget(QWidget):
 
   
 
-  def upload_data(self):
+  def train_start_clicked(self):
     if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
       QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
-      return False
+      return 
     if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
       QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
-      return False
+      return
 
     self.train_start.setEnabled(False)
     self.upload_thread=UploadThread(get_auth_header(),self)
+    self.upload_thread.pbar_signal.connect(self.update_pbar)
 
     self.upload_thread.start()
-    return True
+    return
+
+  @pyqtSlot(dict)
+  def update_pbar(self, content):
+    is_completed=content["is_completed"]
+    value=content["num"]
+    self.pbar.setValue(value)
+    if is_completed:
+      self.complete_upload()
+
+  def complete_upload(self):
+    raise NotImplementedError
 
