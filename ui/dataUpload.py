@@ -1,7 +1,108 @@
+import sys
+import os
 from daig.api.rest import *
-from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QMessageBox, QGridLayout, QFileDialog
+from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar, QMessageBox
+from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
 from daig.requester import project
 from component.constants import setLabelStyle, setButtonStyle, setEditStandard
+import numpy as np
+import math
+import requests
+from tempfile import TemporaryFile
+from daig.api.auth import get_auth_header
+
+class UploadThread(QThread):
+  stop_learning = False
+  pbar_signal=pyqtSignal(dict)
+
+  def __init__(self,auth, parent=None):
+    super(UploadThread, self).__init__(parent)
+    self.auth=auth
+    print(auth)
+    self.model_path=parent.model_path.text()
+    self.train_lbl_path=parent.train_lbl_path.text()
+    self.train_img_path=parent.train_img_path.text()
+    self.task_num = int(parent.cho_task.text())
+    self.step_num = int(parent.cho_step.text())
+    
+
+  def run(self):
+    model = get_model()
+
+    res = self.create_project(model.get_weights(), data = {
+        'total_task' : self.task_num,
+        'step_size' : self.step_num
+    })
+
+    project.uid=res["project_uid"]
+
+    self.upload_model(self.model_path,project.uid)
+    self.upload_data(self.train_img_path,self.train_lbl_path,project.uid,self.task_num)
+    
+
+  def create_project(self,initial_weight,data=None):
+    with TemporaryFile() as tf:
+      np.save(tf, np.array(initial_weight,dtype=object))
+      _ = tf.seek(0)
+      res = requests.post(f'{base_url}/project/create/', files={'weight':tf},data=data, headers={'AUTH':self.auth})
+
+    return res.json()
+
+  def upload_model(self, model_path, project_uid):
+    res=requests.post(f'{base_url}/project/model/upload',data={ # 업로드 url 요청
+      'project_uid':project_uid,
+      'model':'model.h5'
+    }, headers={'AUTH':self.auth})
+    print(res.json())
+
+    url=res.json()['model_url'] # presigned url
+
+    with open(model_path, 'rb') as f:
+      requests.put(url=url,data=f) # 데이터 업로드
+        
+    print('model successfully uploaded')
+
+  def upload_each_data(self,data, label, project_uid, idx):
+    res=requests.post(f'{base_url}/project/data/upload',data={ # 업로드 url 요청
+      'project_uid':project_uid,
+      'data': f'train_data_{idx}',
+      'label': f'train_label_{idx}',
+      'index': idx
+    }, headers={'AUTH':self.auth})
+
+    url=res.json()['label_url'] # presigned url
+    with TemporaryFile() as tf:
+      np.save(tf, label)
+      _ = tf.seek(0)
+      requests.put(url=url,data=tf) # 라벨 업로드
+
+    url=res.json()['data_url'] # presigned url
+    with TemporaryFile() as tf:
+      np.save(tf, data)
+      _ = tf.seek(0)
+      requests.put(url=url,data=tf) # 데이터 업로드
+
+  def upload_data(self,data_path,label_path,project_uid,task_num):
+    data=np.load(data_path, allow_pickle=True)
+    label=np.load(label_path, allow_pickle=True)
+    data_split=np.split(data,task_num)
+    label_split=np.split(label,task_num)
+
+    pbar_rate=0
+    r=math.floor(10000/task_num)*0.01
+    for idx in range(task_num):
+      self.upload_each_data(data_split[idx], label_split[idx], project_uid, idx)
+      pbar_rate+=r
+      self.pbar_signal.emit({
+        "is_completed":False,
+        "num":pbar_rate
+      })
+      print(f'{idx} uploaded')
+    self.pbar_signal.emit({
+      "is_completed":True,
+      "num":100
+    })
+    print('data uploading finished')
 
 
 class DataUploadWidget(QWidget):
@@ -64,6 +165,9 @@ class DataUploadWidget(QWidget):
     self.train_start.clicked.connect(self.train_start_clicked)
     setButtonStyle(self.train_start)
 
+    # progress bar
+    self.pbar=QProgressBar()
+
     # 레이아웃 설정 및 출력
     layout = QGridLayout()
     layout.addWidget(self.model, 0, 0)
@@ -80,6 +184,7 @@ class DataUploadWidget(QWidget):
     layout.addWidget(self.p_step_task, 4, 0)
     layout.addWidget(self.cho_step, 4, 2)
     layout.addWidget(self.train_start, 5, 2)
+    layout.addWidget(self.pbar, 5, 0, 1, 2)
 
     self.setLayout(layout)
 
@@ -105,7 +210,7 @@ class DataUploadWidget(QWidget):
   # train lbl 파일 받아오기
   def train_lbl_btn_clicked(self):
     self.train_lbl_file = QFileDialog.getOpenFileName(
-        self, './', filter="*.py")
+        self, './', filter="*.npy")
     self.train_lbl_path.setText(self.train_lbl_file[0])
 
     #self.train_lbl_path.text() : 받아온 학습 레이블 경로
@@ -122,45 +227,32 @@ class DataUploadWidget(QWidget):
 
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
+
+  
+
   def train_start_clicked(self):
     if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
       QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
-      return False
+      return 
     if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
       QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
-      return False
+      return
 
-    task_num = int(self.cho_task.text()) # 분할할 task 수
-    step_num = int(self.cho_step.text()) # step내 task 수
-    # train_img_mtrx, train_lbl_mtrx = data_division(task_num) # check dummyData.js
-    model_path = 'test_path' # get_model_path() #여기서 model은 요청자가 올린 model py파일의 path임
-    train_data_path = 'test_path' # get_train_data_path() #요청자가 올린 npy파일 path의 list가 들어감
+    self.train_start.setEnabled(False)
+    self.upload_thread=UploadThread(get_auth_header(),self)
+    self.upload_thread.pbar_signal.connect(self.update_pbar)
 
-    # dummy model for test
-    model = get_model()
+    self.upload_thread.start()
+    return
 
-    res = create_project(model.get_weights(), data = {
-        'rrs':train_data_path,
-        'model_url':model_path,
-        'total_task':task_num,
-        'step_size':step_num
-      })
+  @pyqtSlot(dict)
+  def update_pbar(self, content):
+    is_completed=content["is_completed"]
+    value=content["num"]
+    self.pbar.setValue(value)
+    if is_completed:
+      self.complete_upload()
 
-    # set_p_id(res["project_id"])
-    project.uid=res["project_uid"]
+  def complete_upload(self):
+    raise NotImplementedError
 
-    # dummy값이 아닌 ui에서 받아온 model과 npy파일들의 path
-    # model_path = self.file_path.text()
-    upload_model(self.model_path.text(),project.uid)
-    upload_data(self.train_img_path.text(),self.train_lbl_path.text(),project.uid,task_num)
-    # 여기에 데이터 업로드가 끝났다는 트리거가 필요함
-
-    # ------ 데이터 업로드가 끝나면 설정값으로 학습 요청
-
-    # 데이터 업로드의 res(ponse)
-    # if (res["is_successful"] == True):
-    #    QMessageBox.about(self, 'DAIG', res['message'])
-    #    return True # return true가 되면 이전 화면으로 되돌아가도록 해놓음
-    # else:
-    #    QMessageBox.about(self, 'DAIG', res['message'])
-    #    return False

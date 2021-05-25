@@ -1,3 +1,5 @@
+from os import truncate
+import re
 import h5py
 import requests
 import tensorflow as tf
@@ -5,17 +7,14 @@ import tensorflow as tf
 import tensorflow.keras as keras
 
 import numpy as np
-from tensorflow.python.ops.gen_math_ops import mod
 
 from .auth import get_auth_header
 from tempfile import TemporaryFile
 
-from sklearn.model_selection import train_test_split
-
 import time
-import os
 
-base_url = 'http://118.67.130.33:8000'
+# base_url = 'http://118.67.130.33:8000'
+base_url = 'http://127.0.0.1:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
 auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
@@ -159,10 +158,6 @@ def start_learning(project_id, params=None):
         tf.write(requests.get(url=label_url).content)
         _ = tf.seek(0)
         train_label = np.asarray(np.load(tf,allow_pickle=True)).astype(np.float32)
-    spent_time = time.time() - start_time
-
-    print('loading time')
-    print(spent_time)
 
     init_weight = get_weight(project_id)
 
@@ -175,10 +170,11 @@ def start_learning(project_id, params=None):
         return 'STOP'
     
     model.fit(train_data, train_label, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
-    
 
     if callback.stop_learning_tok:
         return 'STOP'
+
+    spent_time = time.time() - start_time
 
     with TemporaryFile() as tf:
         np.save(tf, np.array(model.get_weights(),dtype=object) - np.array(init_weight,dtype=object))
@@ -277,11 +273,6 @@ def get_train_data():
     y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
     y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
     
-    X = np.concatenate((x_train,x_test))
-    y = np.concatenate((y_train,y_test))
-
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=10000, random_state=714)
-
     return (x_train, y_train), (x_test, y_test)
 
 def validate(project_id):
@@ -294,9 +285,29 @@ def validate(project_id):
     print('result is...')
     print(test_loss, test_acc)
 
+def get_current_credit():
+    res = requests.get(f'{base_url}/credit/remains/', headers={'AUTH':get_auth_header()})
+    return res.json()
+
+def get_credit_log():
+    res = requests.get(f'{base_url}/credit/log/', headers={'AUTH':get_auth_header()})
+    return res.json()
+
+def get_owned_projects():
+    res = requests.get(f'{base_url}/project/owned/', headers={'AUTH':get_auth_header()})
+    return res.json()
+
+
 (x_train, y_train), (x_test, y_test) = get_train_data()
 
 if __name__ == '__main__':
+    model = tf.keras.models.load_model('model.h5')
+    result = np.load("result.npy",allow_pickle=True)
+
     model = get_model()
-    model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    model.set_weights(result.tolist())
+    #model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
     
+    model.evaluate(x_test, y_test)
+    #model.summary()
+

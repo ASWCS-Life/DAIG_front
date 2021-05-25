@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplicatio
 from PyQt5.QtGui import QIcon
 from component.constants import enterPressedHandler
 from PyQt5 import QtGui
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSlot
 
 from component.center import on_layout_convert_center
 
@@ -18,7 +18,29 @@ from providerLayout import ProviderWidget
 from trainResult import TrainResultWidget
 from progress import ProgressWidget
 from dataUpload import DataUploadWidget
+from breakdown import BrDownWidget
+from credit import CreditWidget
+from daig.api.rest import get_current_credit
 
+
+#10
+class BrDownLayout(BrDownWidget):
+    def __init__(self):
+        super().__init__()
+
+#9
+class CreditLayout(CreditWidget):
+    def __init__(self):
+        super().__init__()
+        self.all_btn.clicked.connect(self.openBrDownClass)
+
+    def openBrDownClass(self):
+        self.all_btn_clicked()
+        widget.setCurrentIndex(10)
+        BrDown_ly.reqUserBreakDown()
+        on_layout_convert_center(main_window, widget, 400, 500)
+
+#8
 class PwdInitLayout(PwdInitWidget):
     def __init__(self):
         super().__init__()
@@ -78,14 +100,11 @@ class FindIdLayout(FindIdWidget):
 class DataUploadLayout(DataUploadWidget):
     def __init__(self):
         super().__init__()
-        self.train_start.clicked.connect(self.onRequestTrainHandler)
 
-    def onRequestTrainHandler(self):
-        # 성공적으로 프로젝트가 생성되면
-        if(self.train_start_clicked() == True):
-            widget.setCurrentIndex(3)
-            on_layout_convert_center(main_window, widget, 700, 500)
-
+    def complete_upload(self):
+    # 성공적으로 프로젝트가 생성되면
+        widget.setCurrentIndex(3)
+        on_layout_convert_center(main_window, widget, 700, 500)
 
 # 제공자 화면 - widget_index_num : 4
 class ProviderLayout(ProviderWidget):
@@ -182,7 +201,7 @@ class Login(LoginWidget):
         on_layout_convert_center(main_window, widget, 500, 250)
 
     def onClickLoginHandler(self):
-        #user_key = self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        user_key = self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
         self.openModeClass()
         main_window.addUserInfoOnToolBar(self.id.text(), "0")
 
@@ -216,15 +235,16 @@ class MyMainWindow(QMainWindow):
     self.toolbar.addAction(self.credit)
 
     self.create_project.triggered.connect(self.openDataUploadClass)
-
+    self.credit.triggered.connect(self.onCreditTriggeredHandler)
   def openDataUploadClass(self):
       widget.setCurrentIndex(5)
       on_layout_convert_center(self, widget, 500, 500)
 
     # 로그인 시 툴바에 id와 credit 정보 추가
   def addUserInfoOnToolBar(self, id, credit):
-    self.id_lbl.setText("ID : " + id)
-    self.crdt_lbl.setText("Credit : " + credit)
+    res_data=get_current_credit()
+    self.id_lbl.setText(f'ID : {res_data["id"]}')
+    self.crdt_lbl.setText(f'Credit : {res_data["credit"]}')
     self.toolbar.addWidget(self.center_space) #
     self.toolbar.addWidget(self.id_lbl) #
     self.toolbar.addWidget(self.space)
@@ -247,7 +267,11 @@ class MyMainWindow(QMainWindow):
   def onToolBarTriggeredHandler(self):
     widget.setCurrentIndex(2)
     on_layout_convert_center(self, widget, 450, 250)
-
+  def onCreditTriggeredHandler(self):
+    widget.setCurrentIndex(9)
+    res_data = get_current_credit()
+    Credit_ly.credit_amount = f'Credit : {res_data["credit"]}'
+    on_layout_convert_center(self, widget, 400, 300)
 # don't touch
 if __name__ == '__main__':
     #QApplication : 프로그램을 실행시켜주는 클래스
@@ -266,6 +290,8 @@ if __name__ == '__main__':
     FdId_ly = FindIdLayout()
     FdPwd_ly = FindPwdLayout()
     PwdInit_ly = PwdInitLayout()
+    Credit_ly = CreditLayout()
+    BrDown_ly = BrDownLayout()
     #Progress_ly = Progress()
     #TrainRslt_ly = TrainResult()
 
@@ -279,6 +305,8 @@ if __name__ == '__main__':
     widget.addWidget(FdId_ly) #6
     widget.addWidget(FdPwd_ly) #7
     widget.addWidget(PwdInit_ly) #8
+    widget.addWidget(Credit_ly)  # 9
+    widget.addWidget(BrDown_ly)  # 10
     #widget.addWidget(Progress_ly) - 진행상황 ui 따로 필요 x (요청자 화면에서 진행상황을 보여줄 것임)
     #widget.addWidget(TrainRslt_ly) - 결과확인 ui 따로 필요 x (결과 모델을 따로 다운받을 수 있도록)
 

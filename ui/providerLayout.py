@@ -1,16 +1,16 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5.QtCore import QThread, Qt
+from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
 from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
 import time
 
-from daig.api.main import *
 from daig.api.rest import get_avaiable_project, start_learning, start_learning_internal, stop_learning_internal, is_project_finished
 
 from daig.api.auth import get_auth_header, set_auth_header
 
 class Worker(QThread):
   stop_learning = False
+  signal=pyqtSignal(dict)
 
   def __init__(self, parent=None):
     super(Worker, self).__init__(parent)
@@ -18,15 +18,24 @@ class Worker(QThread):
 
   def run(self):
     self.stop_learning = False
-    start_learning_internal()
-    project_id = get_avaiable_project()
-    if(project_id == -1): return
-    result = start_learning(project_id)
-    if((result == 'STOP') or (result == 'FAIL')):
-      return
-    time.sleep(2)
-    if(not(self.stop_learning)):
-      self.run()
+    while(not(self.stop_learning)):
+      start_learning_internal()
+      project_id = get_avaiable_project()
+      if(project_id == -1):
+        time.sleep(3)
+        continue
+      start_time = time.time()
+      result = start_learning(project_id)
+      if((result == 'STOP') or (result == 'FAIL')):
+        return
+      task_time=round((time.time()-start_time)*10)/10
+      self.signal.emit({
+          "p_id":project_id,
+          "task_num":1,
+          "task_pf_avrg":task_time
+      })
+      time.sleep(3)
+    
 
   def stop(self):
     self.stop_learning = True
@@ -39,7 +48,8 @@ class ProviderWidget(QWidget):
     super().__init__()
     self.init_ui()
     self.project_id = -1
-    self.worker = Worker()
+    self.worker = Worker(self)
+    self.worker.signal.connect(self.project_updateItem)
 
   # code
   def init_ui(self):
@@ -101,15 +111,28 @@ class ProviderWidget(QWidget):
       self.project_addItem(p_id)
       #------- 해당 프로젝트 분산학습 수행 요청
 
+  @pyqtSlot(dict)
+  def project_updateItem(self, content):
+    p_id=content["p_id"]
+    task_num=content["task_num"]
+    task_pf_avrg=content["task_pf_avrg"]
+    credit=''
+    for r in range(self.pro_table.rowCount()):
+      if self.pro_table.item(r,0).text()==p_id:
+        self.pro_table.item(r,2).setText(str((float(self.pro_table.item(r,2).text())*float(self.pro_table.item(r,1).text())+float(task_pf_avrg))/(float(self.pro_table.item(r,1).text())+float(task_num))))
+        self.pro_table.item(r,1).setText(str(int(self.pro_table.item(r,1).text())+task_num))
+        self.pro_table.item(r,3).setText(str(credit))
+        return
+    self.project_addItem(p_id, 1, task_pf_avrg, '')
+
     # 프로젝트 테이블 동적 생성
   def project_addItem(self, p_id, task_num='', task_pf_avrg='', credit=''):
     row = self.pro_table.rowCount()
     self.pro_table.insertRow(row)
-    self.pro_table.setItem(row, 0, QTableWidgetItem(p_id))
-    self.pro_table.setItem(row, 1, QTableWidgetItem(task_num))
-    self.pro_table.setItem(row, 2, QTableWidgetItem(task_pf_avrg))
-    self.pro_table.setItem(row, 3, QTableWidgetItem(credit))
-
+    self.pro_table.setItem(row, 0, QTableWidgetItem(str(p_id)))
+    self.pro_table.setItem(row, 1, QTableWidgetItem(str(task_num)))
+    self.pro_table.setItem(row, 2, QTableWidgetItem(str(task_pf_avrg)))
+    self.pro_table.setItem(row, 3, QTableWidgetItem(str(credit)))
     '''
     # json 형식의 res 데이터에 진행중인 프로젝트 정보가 여러개 올때 -> 받아오는 파라미터를 변경해줘야함
     for item in res:
