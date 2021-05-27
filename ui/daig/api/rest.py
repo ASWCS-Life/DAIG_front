@@ -304,12 +304,12 @@ def get_owned_projects():
 (x_train, y_train), (x_test, y_test) = get_train_data()
 
 if __name__ == '__main__':
-    model = tf.keras.models.load_model('model.h5')
-    result = np.load("result.npy",allow_pickle=True)
+    #model = tf.keras.models.load_model('model.h5')
+    #result = np.load("result.npy",allow_pickle=True)
 
     model = get_model()
-    model.set_weights(result.tolist())
-    #model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    #model.set_weights(result.tolist())
+    model.fit(x_train, y_train, batch_size=32, epochs=70, callbacks=[callback], verbose=2)
     
     model.evaluate(x_test, y_test)
     #model.summary()
