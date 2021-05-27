@@ -20,8 +20,14 @@ from progress import ProgressWidget
 from dataUpload import DataUploadWidget
 from breakdown import BrDownWidget
 from credit import CreditWidget
+from creditWebView import WebViewWidget
 from daig.api.rest import get_current_credit
 
+
+#11
+class WebViewLayout(WebViewWidget):
+    def __init__(self):
+        super().__init__()
 
 #10
 class BrDownLayout(BrDownWidget):
@@ -33,6 +39,7 @@ class CreditLayout(CreditWidget):
     def __init__(self):
         super().__init__()
         self.all_btn.clicked.connect(self.openBrDownClass)
+        self.dep_btn.clicked.connect(self.openWebViewClass)
 
     def openBrDownClass(self):
         self.all_btn_clicked()
@@ -40,6 +47,10 @@ class CreditLayout(CreditWidget):
         BrDown_ly.reqUserBreakDown()
         on_layout_convert_center(main_window, widget, 400, 500)
 
+    def openWebViewClass(self):
+        self.dep_btn_clicked()
+        widget.setCurrentIndex(11)
+        on_layout_convert_center(main_window, widget, 600, 400)
 #8
 class PwdInitLayout(PwdInitWidget):
     def __init__(self):
@@ -292,6 +303,7 @@ if __name__ == '__main__':
     PwdInit_ly = PwdInitLayout()
     Credit_ly = CreditLayout()
     BrDown_ly = BrDownLayout()
+    WebView_ly = WebViewLayout()
     #Progress_ly = Progress()
     #TrainRslt_ly = TrainResult()
 
@@ -307,6 +319,7 @@ if __name__ == '__main__':
     widget.addWidget(PwdInit_ly) #8
     widget.addWidget(Credit_ly)  # 9
     widget.addWidget(BrDown_ly)  # 10
+    widget.addWidget(WebView_ly)  # 11
     #widget.addWidget(Progress_ly) - 진행상황 ui 따로 필요 x (요청자 화면에서 진행상황을 보여줄 것임)
     #widget.addWidget(TrainRslt_ly) - 결과확인 ui 따로 필요 x (결과 모델을 따로 다운받을 수 있도록)
 
