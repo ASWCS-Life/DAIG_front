@@ -133,7 +133,7 @@ def start_learning(project_id, params=None):
 
     res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':get_auth_header()})
     res_json = res.json()
-
+    print(res_json)
 
     if(not(res_json['is_successful'])): return 'FAIL'
     occupy_task(project_id,{'task_index':res_json['task_index']})
