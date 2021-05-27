@@ -27,7 +27,7 @@ class UploadThread(QThread):
     self.epoch = int(parent.cho_epoch.text())
     self.batch_size = int(parent.cho_batch.text())
     self.contributor = int(parent.cho_contributor.text())
-    self.valid_rate = int(parent.cho_valid.text())
+    self.valid_rate = float(parent.cho_valid.text())
 
   def run(self):
     model = get_model()

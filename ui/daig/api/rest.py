@@ -1,5 +1,4 @@
 from os import truncate
-import re
 import h5py
 import requests
 import tensorflow as tf
@@ -166,6 +165,8 @@ def start_learning(project_id, params=None):
     epoch = int(res_json['epoch'])
     batch_size = int(res_json['batch_size'])
     valid_rate = int(res_json['valid_rate'])
+
+    print(train_data.shape)
 
     if(task_index == -1): 
         validate(project_id)
