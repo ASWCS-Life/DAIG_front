@@ -13,8 +13,8 @@ from tempfile import TemporaryFile
 
 import time
 
-# base_url = 'http://118.67.130.33:8000'
-base_url = 'http://127.0.0.1:8000'
+base_url = 'http://118.67.130.33:8000'
+# base_url = 'http://127.0.0.1:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
 auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'

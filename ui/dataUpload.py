@@ -24,14 +24,19 @@ class UploadThread(QThread):
     self.train_img_path=parent.train_img_path.text()
     self.task_num = int(parent.cho_task.text())
     self.step_num = int(parent.cho_step.text())
-    
+    self.epoch = int(parent.cho_epoch.text())
+    self.batch_size = int(parent.cho_batch.text())
+    self.contributor = int(parent.cho_contributor.text())
 
   def run(self):
     model = get_model()
 
     res = self.create_project(model.get_weights(), data = {
         'total_task' : self.task_num,
-        'step_size' : self.step_num
+        'step_size' : self.step_num,
+        'epoch': self.epoch,
+        'batch_size': self.batch_size,
+        'max_contributor': self.contributor
     })
 
     project.uid=res["project_uid"]
@@ -123,6 +128,9 @@ class DataUploadWidget(QWidget):
     self.p_contributer = QLabel('max contributer : ')
     self.p_task_div = QLabel('Task 분할 개수')
     self.p_step_task = QLabel('Step별 task 개수')
+    self.p_epoch = QLabel('Epoch number')
+    self.p_batch = QLabel('Epoch number')
+    self.p_contributor = QLabel('최대 참여자수')
     self.model_path = QLabel('')
     self.model_path.setMinimumSize(250, 20)
     self.train_img_path = QLabel('')
@@ -135,6 +143,9 @@ class DataUploadWidget(QWidget):
     setLabelStyle(self.train_lbl)
     setLabelStyle(self.p_task_div)
     setLabelStyle(self.p_step_task)
+    setLabelStyle(self.p_epoch)
+    setLabelStyle(self.p_batch)
+    setLabelStyle(self.p_contributor)
 
   # 파일 올리는 버튼
     self.model_btn = QPushButton('올리기')
@@ -160,6 +171,18 @@ class DataUploadWidget(QWidget):
     self.cho_step = QLineEdit(self)
     setEditStandard(self.cho_step, 0, 0, 'step num')
 
+  # epoch 정보
+    self.cho_epoch = QLineEdit(self)
+    setEditStandard(self.cho_epoch, 0, 0, 'epoch')
+
+  # mini batch 정보
+    self.cho_batch = QLineEdit(self)
+    setEditStandard(self.cho_batch, 0, 0, 'batch size')
+
+  # 참여자수 정보
+    self.cho_contributor = QLineEdit(self)
+    setEditStandard(self.cho_contributor, 0, 0, 'max contributor')
+
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
     self.train_start.clicked.connect(self.train_start_clicked)
@@ -183,8 +206,15 @@ class DataUploadWidget(QWidget):
     layout.addWidget(self.cho_task, 3, 2)
     layout.addWidget(self.p_step_task, 4, 0)
     layout.addWidget(self.cho_step, 4, 2)
-    layout.addWidget(self.train_start, 5, 2)
-    layout.addWidget(self.pbar, 5, 0, 1, 2)
+    layout.addWidget(self.p_epoch, 5, 0)
+    layout.addWidget(self.cho_epoch, 5, 2)
+    layout.addWidget(self.p_batch, 6, 0)
+    layout.addWidget(self.cho_batch, 6, 2)
+    layout.addWidget(self.p_contributor, 7, 0)
+    layout.addWidget(self.cho_contributor, 7, 2)
+    
+    layout.addWidget(self.train_start, 8, 2)
+    layout.addWidget(self.pbar, 8, 0, 1, 2)
 
     self.setLayout(layout)
 
