@@ -27,6 +27,7 @@ class UploadThread(QThread):
     self.epoch = int(parent.cho_epoch.text())
     self.batch_size = int(parent.cho_batch.text())
     self.contributor = int(parent.cho_contributor.text())
+    self.valid_rate = int(parent.cho_valid.text())
 
   def run(self):
     model = get_model()
@@ -36,6 +37,7 @@ class UploadThread(QThread):
         'step_size' : self.step_num,
         'epoch': self.epoch,
         'batch_size': self.batch_size,
+        'valid_rate': self.valid_rate,
         'max_contributor': self.contributor
     })
 
@@ -131,6 +133,7 @@ class DataUploadWidget(QWidget):
     self.p_epoch = QLabel('Epoch number')
     self.p_batch = QLabel('Epoch number')
     self.p_contributor = QLabel('최대 참여자수')
+    self.p_valid = QLabel('검증 비율')
     self.model_path = QLabel('')
     self.model_path.setMinimumSize(250, 20)
     self.train_img_path = QLabel('')
@@ -146,6 +149,7 @@ class DataUploadWidget(QWidget):
     setLabelStyle(self.p_epoch)
     setLabelStyle(self.p_batch)
     setLabelStyle(self.p_contributor)
+    setLabelStyle(self.p_valid)
 
   # 파일 올리는 버튼
     self.model_btn = QPushButton('올리기')
@@ -183,6 +187,10 @@ class DataUploadWidget(QWidget):
     self.cho_contributor = QLineEdit(self)
     setEditStandard(self.cho_contributor, 0, 0, 'max contributor')
 
+  # 검증 데이터 비율
+    self.cho_valid = QLineEdit(self)
+    setEditStandard(self.cho_valid, 0, 0, 'max contributor')
+
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
     self.train_start.clicked.connect(self.train_start_clicked)
@@ -212,9 +220,11 @@ class DataUploadWidget(QWidget):
     layout.addWidget(self.cho_batch, 6, 2)
     layout.addWidget(self.p_contributor, 7, 0)
     layout.addWidget(self.cho_contributor, 7, 2)
+    layout.addWidget(self.p_valid, 8, 0)
+    layout.addWidget(self.cho_valid, 8, 2)
     
-    layout.addWidget(self.train_start, 8, 2)
-    layout.addWidget(self.pbar, 8, 0, 1, 2)
+    layout.addWidget(self.train_start, 9, 2)
+    layout.addWidget(self.pbar, 9, 0, 1, 2)
 
     self.setLayout(layout)
 

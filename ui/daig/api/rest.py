@@ -163,13 +163,15 @@ def start_learning(project_id, params=None):
 
     model.set_weights(init_weight.tolist())
     task_index = int(res_json['task_index'])
-    task_size = int(50000/res_json['total_task'])
+    epoch = int(res_json['epoch'])
+    batch_size = int(res_json['batch_size'])
+    valid_rate = int(res_json['valid_rate'])
 
     if(task_index == -1): 
         validate(project_id)
         return 'STOP'
     
-    model.fit(train_data, train_label, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    model.fit(train_data, train_label, batch_size=batch_size, epochs=epoch, validation_split = valid_rate, callbacks=[callback], verbose=2)
 
     if callback.stop_learning_tok:
         return 'STOP'
