@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e16cc33b-3748-4011-b1b6-d67f81872204" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/creditWebView.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/creditWebView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +77,8 @@
       <workItem from="1621244135733" duration="2026000" />
       <workItem from="1621431641844" duration="179000" />
       <workItem from="1621513820196" duration="82000" />
-      <workItem from="1622112018509" duration="802000" />
+      <workItem from="1622112018509" duration="805000" />
+      <workItem from="1622202826506" duration="146000" />
     </task>
     <servers />
   </component>

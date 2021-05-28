@@ -3,6 +3,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from component.constants import setBigButtonStyle
 from daig.api.rest import get_current_credit
+from daig.api.rest import get_credit_log
+
 
 class CreditWidget(QWidget):
   def __init__(self):
@@ -12,6 +14,7 @@ class CreditWidget(QWidget):
     group_box = QGroupBox()
 
   def init_ui(self):
+    
     self.credit_amount = '0'
     self.label = QLabel(self.credit_amount + '원', self)  # 얼마인지 출력
     self.label.setAlignment(Qt.AlignCenter)

@@ -293,6 +293,17 @@ def get_credit_log():
     res = requests.get(f'{base_url}/credit/log/', headers={'AUTH':get_auth_header()})
     return res.json()
 
+def credit_charge():
+    res = requests.get(f'{base_url}/', headers={'AUTH':get_auth_header()})
+    return res
+'''
+def upload_model(self, model_path, project_uid):
+    res=requests.post(f'{base_url}/project/model/upload',data={ # 업로드 url 요청
+    'project_uid':project_uid,
+    'model':'model.h5'
+    }, headers={'AUTH':self.auth})
+    print(res.json())
+'''
 def get_owned_projects():
     res = requests.get(f'{base_url}/project/owned/', headers={'AUTH':get_auth_header()})
     return res.json()

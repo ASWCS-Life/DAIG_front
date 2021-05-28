@@ -22,6 +22,7 @@ from breakdown import BrDownWidget
 from credit import CreditWidget
 from creditWebView import WebViewWidget
 from daig.api.rest import get_current_credit
+from daig.api.rest import credit_charge
 
 
 #11
@@ -49,8 +50,15 @@ class CreditLayout(CreditWidget):
 
     def openWebViewClass(self):
         self.dep_btn_clicked()
+        ''' 
+        res_data=credit_charge()
+        credit_html=res_data.text - html 받아오기
+        print(credit_html)
+        '''
         widget.setCurrentIndex(11)
-        on_layout_convert_center(main_window, widget, 600, 500)
+        on_layout_convert_center(main_window, widget, 930, 650)
+
+        
 #8
 class PwdInitLayout(PwdInitWidget):
     def __init__(self):
@@ -218,6 +226,7 @@ class Login(LoginWidget):
 
     def openModeClass(self):
         widget.setCurrentIndex(2)
+        # 여기서 크레딧페이지 생성
         WebView_ly = WebViewLayout()
         widget.addWidget(WebView_ly)  # 11
         on_layout_convert_center(main_window, widget, 450, 250)
@@ -284,7 +293,7 @@ class MyMainWindow(QMainWindow):
     widget.setCurrentIndex(9)
     res_data = get_current_credit()
     Credit_ly.credit_amount = f'Credit : {res_data["credit"]}'
-    on_layout_convert_center(self, widget, 400, 300)
+    on_layout_convert_center(self, widget, 600, 500)
 # don't touch
 if __name__ == '__main__':
     #QApplication : 프로그램을 실행시켜주는 클래스
@@ -305,7 +314,7 @@ if __name__ == '__main__':
     PwdInit_ly = PwdInitLayout()
     Credit_ly = CreditLayout()
     BrDown_ly = BrDownLayout()
-    
+
     #Progress_ly = Progress()
     #TrainRslt_ly = TrainResult()
 
@@ -321,7 +330,7 @@ if __name__ == '__main__':
     widget.addWidget(PwdInit_ly) #8
     widget.addWidget(Credit_ly)  # 9
     widget.addWidget(BrDown_ly)  # 10
-    
+
     #widget.addWidget(Progress_ly) - 진행상황 ui 따로 필요 x (요청자 화면에서 진행상황을 보여줄 것임)
     #widget.addWidget(TrainRslt_ly) - 결과확인 ui 따로 필요 x (결과 모델을 따로 다운받을 수 있도록)
 

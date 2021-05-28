@@ -1,23 +1,38 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWebEngineWidgets import *
+
 import sys
 import webbrowser
-class WebViewWidget(QWidget):
-  # don't touch
-  def __init__(self):
-    super().__init__()
-    self.init_ui()
+class WebViewWidget(QWebEngineView):
+    def __init__(self):
+        super().__init__()
 
-  # code
-  def init_ui(self):
-      self.web_widget = QLabel(self)
-      self.web_widget.setScaledContents(True)
-      #self.widget_List.append(self.widget_youtube)
-      self.web_widget.setGeometry(QRect(10, 10, 500,
-                                        300))  # self.widget_youtube.setStyleSheet("background-color: rgb(84, 84, 84);")
-      self.web_widget.setObjectName("widget_youtube")
-      self.webview = QWebEngineView(self.web_widget)
-      self.webview.load(QUrl("http://127.0.0.1:8000"))
-      self.webview.setGeometry(0,0,500,300)
+        self.setUrl(QUrl("http://127.0.0.1:8000"))
+        self.loadStarted.connect(self.printLoadStart)
+        self.loadProgress.connect(self.printLoading)
+        self.loadFinished.connect(self.printLoadFinished)
 
+    def printLoadStart(self): print("Start Loading")
+
+    def printLoading(self): print("Loading")
+
+    def printLoadFinished(self): print("Load Finished")
+
+    def urlChangedFunction(self):
+        self.setText(self.toString())
+        print("Url Changed")
+
+    def btnBackFunc(self):
+        self.back()
+
+    def btnForwardFunc(self):
+        self.forward()
+
+    def btnRelaodFunc(self):
+        self.reload()
+
+    def btnStopFunc(self):
+        self.stop()
+        
+    
