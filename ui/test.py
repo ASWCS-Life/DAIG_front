@@ -84,12 +84,64 @@ def get_train_data():
 
 if __name__ == '__main__':
     #model = tf.keras.models.load_model('model.h5')
-    #result = np.load("result.npy",allow_pickle=True)
+    #result = np.load("result_70.npy",allow_pickle=True)
+
+    #x_train = np.asarray(np.load('train_data.npy',allow_pickle=True)).astype(np.float32)
+    #y_train = np.asarray(np.load('train_label.npy',allow_pickle=True)).astype(np.float32)
+
+    task_num = 50
+
+    data_split=np.split(x_train,task_num)
+    label_split=np.split(y_train,task_num)
 
     model = get_model()
-    #model.set_weights(result.tolist())
-    model.fit(x_train, y_train, batch_size=32, epochs=70, callbacks=[callback], verbose=2)
-    
+
+    k = 5
+
+    weight_list = []
+
+    for i in range(0,k):
+        weight_list.append(model.get_weights())
+
+    tmp_weight_1 = model.get_weights()
+    tmp_weight_2 = model.get_weights()
+    tmp_weight_3 = model.get_weights()
+    tmp_weight_4 = model.get_weights()
+    tmp_weight_5 = model.get_weights()
+
+    epoch = 100
+
+    for index in range(0,10):
+        print('step is...',index)
+        if(index == 0):
+            init_weight = model.get_weights()
+        else:
+            init_weight = np.array(weight_list[0],dtype = object)
+
+            for i in range(1,k):
+                init_weight = init_weight + np.array(weight_list[i],dtype = object)
+
+            init_weight = init_weight/k
+            init_weight = init_weight.tolist()
+        
+        model.set_weights(init_weight)
+        model.evaluate(x_test, y_test)
+
+        for i in range(0,k):
+            model.set_weights(init_weight)
+            model.fit(data_split[index*5+i], label_split[index*5+i], batch_size=32, validation_split=0.2, epochs=epoch, callbacks=[callback], verbose=0)
+            weight_list[i] = model.get_weights()
+
+        
+
+    final_weight = np.array(weight_list[0],dtype = object)
+    for i in range(1,k):
+        final_weight = final_weight + np.array(weight_list[i],dtype = object)
+
+    final_weight = final_weight/k
+    final_weight = final_weight.tolist()
+
+    model.set_weights(final_weight)
     model.evaluate(x_test, y_test)
     #model.summary()
 
