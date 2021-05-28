@@ -50,7 +50,7 @@ class CreditLayout(CreditWidget):
     def openWebViewClass(self):
         self.dep_btn_clicked()
         widget.setCurrentIndex(11)
-        on_layout_convert_center(main_window, widget, 600, 400)
+        on_layout_convert_center(main_window, widget, 600, 500)
 #8
 class PwdInitLayout(PwdInitWidget):
     def __init__(self):
@@ -218,6 +218,8 @@ class Login(LoginWidget):
 
     def openModeClass(self):
         widget.setCurrentIndex(2)
+        WebView_ly = WebViewLayout()
+        widget.addWidget(WebView_ly)  # 11
         on_layout_convert_center(main_window, widget, 450, 250)
 
 class MyMainWindow(QMainWindow):
@@ -303,7 +305,7 @@ if __name__ == '__main__':
     PwdInit_ly = PwdInitLayout()
     Credit_ly = CreditLayout()
     BrDown_ly = BrDownLayout()
-    WebView_ly = WebViewLayout()
+    
     #Progress_ly = Progress()
     #TrainRslt_ly = TrainResult()
 
@@ -319,7 +321,7 @@ if __name__ == '__main__':
     widget.addWidget(PwdInit_ly) #8
     widget.addWidget(Credit_ly)  # 9
     widget.addWidget(BrDown_ly)  # 10
-    widget.addWidget(WebView_ly)  # 11
+    
     #widget.addWidget(Progress_ly) - 진행상황 ui 따로 필요 x (요청자 화면에서 진행상황을 보여줄 것임)
     #widget.addWidget(TrainRslt_ly) - 결과확인 ui 따로 필요 x (결과 모델을 따로 다운받을 수 있도록)
 
