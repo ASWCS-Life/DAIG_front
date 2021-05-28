@@ -18,6 +18,6 @@ class WebViewWidget(QWidget):
                                         300))  # self.widget_youtube.setStyleSheet("background-color: rgb(84, 84, 84);")
       self.web_widget.setObjectName("widget_youtube")
       self.webview = QWebEngineView(self.web_widget)
-      self.webview.setUrl(QUrl("http://127.0.0.1:8000"))
+      self.webview.load(QUrl("http://127.0.0.1:8000"))
       self.webview.setGeometry(0,0,500,300)
 
