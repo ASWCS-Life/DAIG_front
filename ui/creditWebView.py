@@ -12,7 +12,7 @@ class WebViewWidget(QWebEngineView):
         print("start")
         auth=get_auth_header()
 
-        baseUrl = 'http://localhost:8000/' # dummy
+        baseUrl = 'http://localhost:8000/credit/payment/' # dummy
         self.req = QWebEngineHttpRequest(url=QUrl(baseUrl))#, method=QWebEngineHttpRequest.Method.Get)
         self.req.setHeader(QByteArray().append('AUTH'),QByteArray().append(auth)) # dummy
         print(self.req)

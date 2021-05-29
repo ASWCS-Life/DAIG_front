@@ -22,7 +22,7 @@ from breakdown import BrDownWidget
 from credit import CreditWidget
 from creditWebView import WebViewWidget
 from daig.api.rest import get_current_credit
-from daig.api.rest import credit_charge
+from daig.api.rest import get_credit_html
 
 
 #11
@@ -50,9 +50,9 @@ class CreditLayout(CreditWidget):
 
     def openWebViewClass(self):
         self.dep_btn_clicked()
-        ''' 
-        res_data=credit_charge()
-        credit_html=res_data.text - html 받아오기
+        '''
+        res_data=get_credit_html()
+        credit_html=res_data.text 
         print(credit_html)
         '''
         widget.setCurrentIndex(11)
