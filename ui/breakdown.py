@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import *
+from daig.api.rest import get_credit_log
 
 class BrDownWidget(QWidget):
   def __init__(self):
@@ -13,9 +14,12 @@ class BrDownWidget(QWidget):
 
     self.p_date = []
 
+    creditLog_list=get_credit_log()
+    print('loglist: ')
+    print(creditLog_list[0])
     # dummy
-    for i in range(10):
-      self.p_date.append(QLabel('  ' + '날짜' + '\t\t\t\t' + '+ or -원 '))
+    for i in range(len(creditLog_list)):
+      self.p_date.append(QLabel('  ' + '날짜: ' + creditLog_list[i]["date"] + '  +'+ str(creditLog_list[i]["amount"]) + '원' ))
       self.formLayout.addRow(self.p_date[i])
       self.p_date[i].setStyleSheet('border: 1px solid #FFB914;'
                               'font-size: 18px;'
