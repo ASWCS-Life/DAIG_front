@@ -164,14 +164,14 @@ def start_learning(project_id, params=None):
     task_index = int(res_json['task_index'])
     epoch = int(res_json['epoch'])
     batch_size = int(res_json['batch_size'])
-    valid_rate = int(res_json['valid_rate'])
+    valid_rate = float(res_json['valid_rate'])
 
     print(train_data.shape)
 
     if(task_index == -1): 
         validate(project_id)
         return 'STOP'
-    
+
     model.fit(train_data, train_label, batch_size=batch_size, epochs=epoch, validation_split = valid_rate, callbacks=[callback], verbose=2)
 
     if callback.stop_learning_tok:

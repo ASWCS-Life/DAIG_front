@@ -132,7 +132,11 @@ if __name__ == '__main__':
     x_test = (x_test-mean)/(std+1e-7)
 
     model = get_model()
-    
+
+    np.save('new_train_data.npy',x_train)
+    np.save('new_train_label.npy',y_train)
+    model.save('new_model.h5')
+
     k = 5
 
     weight_list = []
@@ -142,11 +146,11 @@ if __name__ == '__main__':
 
     epoch = 50
 
-    '''
+    
     current_time = time.time()
 
     task_num = 25
-
+    '''
     data_split=np.split(x_train,task_num)
     label_split=np.split(y_train,task_num)
 
@@ -168,7 +172,7 @@ if __name__ == '__main__':
 
         for i in range(0,k):
             model.set_weights(init_weight)
-            model.fit(data_split[index*5+i], label_split[index*5+i], batch_size=8, validation_split=0.2, epochs=epoch, callbacks=[callback], verbose=0)
+            model.fit(data_split[index*5+i], label_split[index*5+i], batch_size=8, validation_split=0.2, epochs=epoch, callbacks=[callback], verbose=2)
             weight_list[i] = model.get_weights()
 
         print("spent:",time.time()-current_time)
@@ -184,6 +188,7 @@ if __name__ == '__main__':
 
     model.set_weights(final_weight)
     '''
+    
     model.fit(x_train, y_train, batch_size=8, validation_split=0.2, epochs=epoch, callbacks=[callback], verbose=1)
             
 
