@@ -1,6 +1,7 @@
 from PyQt5.QtWebEngineCore import QWebEngineHttpRequest
 from PyQt5.QtCore import *
 from PyQt5.QtWebEngineWidgets import *
+from daig.api.auth import get_auth_header
 
 class WebViewWidget(QWebEngineView):
     def __init__(self):
@@ -9,9 +10,11 @@ class WebViewWidget(QWebEngineView):
 
     def getReqSpecify(self):
         print("start")
-        baseUrl = 'http://localhost:3000/' # dummy
+        auth=get_auth_header()
+
+        baseUrl = 'http://localhost:8000/' # dummy
         self.req = QWebEngineHttpRequest(url=QUrl(baseUrl))#, method=QWebEngineHttpRequest.Method.Get)
-        self.req.setHeader(QByteArray().append('AUTH'), QByteArray().append('123456')) # dummy
+        self.req.setHeader(QByteArray().append('AUTH'),QByteArray().append(auth)) # dummy
         print(self.req)
         self.load(self.req)
 
