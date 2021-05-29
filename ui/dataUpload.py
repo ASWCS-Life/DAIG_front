@@ -131,7 +131,7 @@ class DataUploadWidget(QWidget):
     self.p_task_div = QLabel('Task 분할 개수')
     self.p_step_task = QLabel('Step별 task 개수')
     self.p_epoch = QLabel('Epoch number')
-    self.p_batch = QLabel('Epoch number')
+    self.p_batch = QLabel('Batch size')
     self.p_contributor = QLabel('최대 참여자수')
     self.p_valid = QLabel('검증 비율')
     self.model_path = QLabel('')
@@ -189,7 +189,7 @@ class DataUploadWidget(QWidget):
 
   # 검증 데이터 비율
     self.cho_valid = QLineEdit(self)
-    setEditStandard(self.cho_valid, 0, 0, 'max contributor')
+    setEditStandard(self.cho_valid, 0, 0, 'validation split')
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
