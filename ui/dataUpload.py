@@ -1,5 +1,6 @@
 import sys
 import os
+import tensorflow as tf
 from daig.api.rest import *
 from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar, QMessageBox
 from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
@@ -30,7 +31,7 @@ class UploadThread(QThread):
     self.valid_rate = float(parent.cho_valid.text())
 
   def run(self):
-    model = get_model()
+    model = tf.keras.models.load_model(self.model_path)
 
     res = self.create_project(model.get_weights(), data = {
         'total_task' : self.task_num,

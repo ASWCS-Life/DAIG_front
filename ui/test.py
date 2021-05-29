@@ -132,11 +132,7 @@ if __name__ == '__main__':
     x_test = (x_test-mean)/(std+1e-7)
 
     model = get_model()
-
-    np.save('new_train_data.npy',x_train)
-    np.save('new_train_label.npy',x_test)
-    model.save('new_model.h5')
-
+    
     k = 5
 
     weight_list = []
@@ -188,7 +184,7 @@ if __name__ == '__main__':
 
     model.set_weights(final_weight)
     '''
-    #model.fit(x_train, y_train, batch_size=8, validation_split=0.2, epochs=epoch, callbacks=[callback], verbose=1)
+    model.fit(x_train, y_train, batch_size=8, validation_split=0.2, epochs=epoch, callbacks=[callback], verbose=1)
             
 
     model.evaluate(x_test, y_test)
