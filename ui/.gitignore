@@ -3,3 +3,5 @@ test_data/
 test_model/
 
 model.h5
+train_data.npy
+train_label.npy
