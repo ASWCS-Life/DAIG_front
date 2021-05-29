@@ -1,17 +1,19 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWebEngineCore import QWebEngineHttpRequest
 from PyQt5.QtCore import *
 from PyQt5.QtWebEngineWidgets import *
 
-import sys
-import webbrowser
 class WebViewWidget(QWebEngineView):
     def __init__(self):
         super().__init__()
+        self.getReqSpecify()
 
-        self.setUrl(QUrl("http://127.0.0.1:8000"))
-        self.loadStarted.connect(self.printLoadStart)
-        self.loadProgress.connect(self.printLoading)
-        self.loadFinished.connect(self.printLoadFinished)
+    def getReqSpecify(self):
+        print("start")
+        baseUrl = 'http://localhost:3000/' # dummy
+        self.req = QWebEngineHttpRequest(url=QUrl(baseUrl))#, method=QWebEngineHttpRequest.Method.Get)
+        self.req.setHeader(QByteArray().append('AUTH'), QByteArray().append('123456')) # dummy
+        print(self.req)
+        self.load(self.req)
 
     def printLoadStart(self): print("Start Loading")
 
@@ -34,5 +36,3 @@ class WebViewWidget(QWebEngineView):
 
     def btnStopFunc(self):
         self.stop()
-        
-    
