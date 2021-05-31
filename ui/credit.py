@@ -3,7 +3,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from component.constants import setBigButtonStyle
 from daig.api.rest import get_current_credit
-from daig.api.rest import get_credit_log
 
 
 class CreditWidget(QWidget):

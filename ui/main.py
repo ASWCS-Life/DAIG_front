@@ -290,9 +290,9 @@ class MyMainWindow(QMainWindow):
     widget.setCurrentIndex(2)
     on_layout_convert_center(self, widget, 450, 250)
   def onCreditTriggeredHandler(self):
-    widget.setCurrentIndex(9)
     res_data = get_current_credit()
     Credit_ly.credit_amount = f'Credit : {res_data["credit"]}'
+    widget.setCurrentIndex(9)
     on_layout_convert_center(self, widget, 600, 500)
 # don't touch
 if __name__ == '__main__':
@@ -314,6 +314,7 @@ if __name__ == '__main__':
     PwdInit_ly = PwdInitLayout()
     Credit_ly = CreditLayout()
     BrDown_ly = BrDownLayout()
+
 
     #Progress_ly = Progress()
     #TrainRslt_ly = TrainResult()

@@ -14,12 +14,12 @@ class BrDownWidget(QWidget):
 
     self.p_date = []
 
-    creditLog_list=get_credit_log()
+    self.creditLog_list=get_credit_log()
     print('loglist: ')
-    print(creditLog_list[0])
+    print(self.creditLog_list[0])
     # dummy
     for i in range(len(creditLog_list)):
-      self.p_date.append(QLabel('  ' + '날짜: ' + creditLog_list[i]["date"] + '  +'+ str(creditLog_list[i]["amount"]) + '원' ))
+      self.p_date.append(QLabel('  ' + '날짜: ' + self.creditLog_list[i]["date"] + '  +'+ str(self.creditLog_list[i]["amount"]) + '원' ))
       self.formLayout.addRow(self.p_date[i])
       self.p_date[i].setStyleSheet('border: 1px solid #FFB914;'
                               'font-size: 18px;'
@@ -40,15 +40,3 @@ class BrDownWidget(QWidget):
     layout.addWidget(scroll)
 
   # BrDownWidget이 트리거 될때마다 내역 불러오기
-  def reqUserBreakDown(self):
-      self.p_date = []
-
-      # ------ 내역 호출
-      # list = res["list"]
-      #for i in range(len(list)):
-          #self.p_date.append(QLabel('  ' + 'list[i]["date"]' + '\t\t\t\t' + 'list[i]["amount"]' + ' '))
-          #self.formLayout.addRow(self.p_date[i])
-          #self.p_date[i].setStyleSheet('border: 1px solid #FFB914;'
-          #                             'font-size: 18px;'
-          #                             'font-family: 맑은 고딕;'
-          #                             'border-radius: 5px')
