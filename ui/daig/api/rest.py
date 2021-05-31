@@ -201,7 +201,7 @@ def update_learning(project_id, gradient, params = None):
     return res.json()['is_successful']
 
 def is_project_finished(project_id, params=None):
-    res = requests.get(f'{base_url}/project/{project_id}/result', params=params, headers={'AUTH':get_auth_header()})
+    res = requests.get(f'{base_url}/project/{project_id}/finished', params=params, headers={'AUTH':get_auth_header()})
 
     # if res.status_code not in [200, 201, 204]:
     # raise exc.ResponseException(res)
@@ -288,6 +288,10 @@ def validate(project_id):
     print('result is...')
     print(test_loss, test_acc)
 
+def get_all_progress():
+    res = requests.get(f'{base_url}/project/progress/', headers={'AUTH':get_auth_header()})
+    return res.json()
+
 def get_current_credit():
     res = requests.get(f'{base_url}/credit/remains/', headers={'AUTH':get_auth_header()})
     return res.json()
@@ -299,6 +303,7 @@ def get_credit_log():
 def get_owned_projects():
     res = requests.get(f'{base_url}/project/owned/', headers={'AUTH':get_auth_header()})
     return res.json()
+
 
 
 (x_train, y_train), (x_test, y_test) = get_train_data()
