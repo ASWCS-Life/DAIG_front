@@ -45,8 +45,8 @@ class FindPwdLayout(FindPwdWidget):
         self.find_btn.clicked.connect(self.onFindPwdHandler)
         self.go_back.clicked.connect(self.openLoginClass)
         enterPressedHandler(self.id, self.onFindPwdHandler)
-        enterPressedHandler(self.email_front, self.onFindPwdHandler)
-        enterPressedHandler(self.email_back, self.onFindPwdHandler)
+        # enterPressedHandler(self.email_front, self.onFindPwdHandler)
+        # enterPressedHandler(self.email_back, self.onFindPwdHandler)
 
     def onFindPwdHandler(self):
         if(self.onUserInfoAlert() == True):
@@ -63,8 +63,8 @@ class FindIdLayout(FindIdWidget):
         super().__init__()
         self.find_btn.clicked.connect(self.onFindIdHandler)
         self.go_back.clicked.connect(self.openLoginClass)
-        enterPressedHandler(self.email_front, self.onFindIdHandler)
-        enterPressedHandler(self.email_back, self.onFindIdHandler)
+        # enterPressedHandler(self.email_front, self.onFindIdHandler)
+        # enterPressedHandler(self.email_back, self.onFindIdHandler)
 
     def onFindIdHandler(self):
         if(self.onEmailAlert() == True):
@@ -133,8 +133,8 @@ class SignUp(SignUpWidget):
         # enter 키 눌렀을 때의 동작
         enterPressedHandler(self.id, self.onClickSignUpHandler) ######
         enterPressedHandler(self.pwd, self.onClickSignUpHandler) ######
-        enterPressedHandler(self.email_front, self.onClickSignUpHandler) ####
-        enterPressedHandler(self.email_back, self.onClickSignUpHandler) #####
+        # enterPressedHandler(self.email_front, self.onClickSignUpHandler) ####
+        # enterPressedHandler(self.email_back, self.onClickSignUpHandler) #####
     def onClickSignUpHandler(self):
         result = self.onClickSignUp()
         if(result):

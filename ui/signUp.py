@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox, QWidget, QPushButton, QLineEdit, QLabel
-from daig.api.rest import sign_up_req
+from daig.api.rest import sign_up_req, verify_email, verify_code, verify_username
 from component.constants import setLabelStyle, setButtonStyle, setEditStandard
 
 class SignUpWidget(QWidget):
@@ -10,6 +10,9 @@ class SignUpWidget(QWidget):
 
     # code
     def initUI(self):
+        self.is_username_available = False
+        self.check_email_authorized = False # 이메일 인증 여부
+    
     # 가입완료 버튼
         self.sign_submit = QPushButton('가입완료', self)
         self.sign_submit.move(255, 165)
@@ -20,14 +23,30 @@ class SignUpWidget(QWidget):
         self.go_back.move(375, 165)
         setButtonStyle(self.go_back)
 
+    # 중복 아이디 확인 버튼
+        self.code = ''
+        self.dup_username = QPushButton('중복확인', self)
+        self.dup_username.move(250, 22)
+        setButtonStyle(self.dup_username)
+        self.dup_username.setFixedWidth(50)
+        self.dup_username.clicked.connect(self.check_username)
+
+
     # 이메일 인증 버튼
         self.email = ''
-        self.check_email_authorized = False # 이메일 인증 여부
-        self.auth_email = QPushButton('인증', self)
-        self.auth_email.move(430, 107)
-        setButtonStyle(self.auth_email)
-        self.auth_email.setFixedWidth(50)
-        self.auth_email.clicked.connect(self.emailAuth)
+        self.send_email = QPushButton('인증', self)
+        self.send_email.move(250, 107)
+        setButtonStyle(self.send_email)
+        self.send_email.setFixedWidth(50)
+        self.send_email.clicked.connect(self.check_email)
+
+    # 이메일 인증 버튼
+        self.code = ''
+        self.auth_code = QPushButton('확인', self)
+        self.auth_code.move(170, 147)
+        setButtonStyle(self.auth_code)
+        self.auth_code.setFixedWidth(50)
+        self.auth_code.clicked.connect(self.check_code)
 
     # 아이디, 비밀번호, 이메일 알리기
         sign_id = QLabel('ID', self)
@@ -51,8 +70,15 @@ class SignUpWidget(QWidget):
         font_email.setPointSize(20)
         setLabelStyle(sign_email)
 
-        alpha = QLabel('@', self)
-        alpha.move(248, 113)
+        sign_code = QLabel('Code', self)
+        sign_code.move(20, 155)
+        font_code = sign_code.font()
+        font_code.setBold(True)
+        font_code.setPointSize(20)
+        setLabelStyle(sign_code)
+
+        # alpha = QLabel('@', self)
+        # alpha.move(248, 113)
 
 
     # 아이디, 비밀번호, 이메일 작성
@@ -65,38 +91,49 @@ class SignUpWidget(QWidget):
         self.pwd.setFixedWidth(150)
         setEditStandard(self.pwd, 95, 70, '비밀번호')
 
-        self.email_front = QLineEdit(self)
-        self.email_front.setFixedWidth(150)
-        setEditStandard(self.email_front, 95, 110, '이메일')
+        # self.email_front = QLineEdit(self)
+        # self.email_front.setFixedWidth(150)
+        # setEditStandard(self.email_front, 95, 110, '이메일')
 
-        self.email_back = QLineEdit(self)
-        self.email_back.setFixedWidth(150)
-        setEditStandard(self.email_back, 265, 110, 'daig.co.kr')
-        
-        # # 잠시 비활성화
-        # self.email_front.style
+        self.email = QLineEdit(self)
+        self.email.setFixedWidth(150)
+        setEditStandard(self.email, 95, 110, '이메일')
 
-        # self.email_front.setStyleSheet('background: rgb(127, 127, 127);'
-        #                                'border: 1px solid rgb(127, 127, 127);'
-        #                                'border-radius: 5px')
-        # self.email_back.setStyleSheet('background: rgb(127, 127, 127);'
-        #                               'border: 1px solid rgb(127, 127, 127);'
-        #                               'border-radius: 5px')
-        # self.email_front.setEnabled(False)
-        # self.email_back.setEnabled(False)
-        # self.auth_email.setEnabled(False)
+        self.code = QLineEdit(self)
+        self.code.setFixedWidth(70)
+        setEditStandard(self.code, 95, 150, '인증 코드')
+
+
     # 이메일 인증
-    def emailAuth(self):
-        # self.email = self.email_front.text() + '@' + self.email_back
-        QMessageBox.about(self,'DAIG',"준비중입니다.")
-        #--------- self.email로 인증요청
+    def check_email(self):
+        self.check_email_authorized = False
+        req_data={
+            'email':self.email.text()
+        }
+        res_data=verify_email(req_data)
+        # if res_data['is_successful']:
+            
+        QMessageBox.about(self,'DAIG',res_data["message"])
 
-        #if (res["is_successful"] == True):
-        #    QMessageBox.about(self, 'DAIG', res['message'])
-        #    self.check_email_authorized = True
-        #else:
-        #    QMessageBox.about(self, 'DAIG', res['message'])
+    def check_code(self):
+        req_data={
+            'email':self.email.text(),
+            'code':self.code.text()
+        }
+        res_data=verify_code(req_data)
+        if res_data['is_successful']:
+            self.check_email_authorized = True
+        QMessageBox.about(self,'DAIG',res_data["message"])
 
+    def check_username(self):
+        self.is_username_available = False
+        req_data={
+            'username':self.id.text(),
+        }
+        res_data=verify_username(req_data)
+        if res_data['is_successful']:
+            self.is_username_available = True
+        QMessageBox.about(self,'DAIG',res_data["message"])
 
 
 
@@ -108,17 +145,21 @@ class SignUpWidget(QWidget):
         self.pwd.adjustSize()
         self.email_front.setText(text)
         self.email_front.adjustSize()
-        self.email_back.setText(text)
-        self.email_back.adjustSize()
+        # self.email_back.setText(text)
+        # self.email_back.adjustSize()
 
     def onClickSignUp(self):
-        # if(self.check_email_authorized == False):
-        #     QMessageBox.about(self, 'DAIG', '이메일 인증을 해주세요')
-        #     return
+        if(self.is_username_available == False):
+            QMessageBox.about(self, 'DAIG', 'ID 중복확인을 해주세요.')
+            return
+        
+        if(self.check_email_authorized == False):
+            QMessageBox.about(self, 'DAIG', '이메일 인증을 해주세요.')
+            return
         sender_data = {
            "username" : self.id.text(),
            "password" : self.pwd.text(),
-        #    "email" : self.email
+           "email" : self.email.text()
         }
         res = sign_up_req(sender_data)
         if(res["is_successful"] == True):

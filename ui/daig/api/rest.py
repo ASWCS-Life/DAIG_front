@@ -304,7 +304,26 @@ def get_owned_projects():
     res = requests.get(f'{base_url}/project/owned/', headers={'AUTH':get_auth_header()})
     return res.json()
 
+def verify_email(data=None):
+    res = requests.post(f'{base_url}/auth/send/email/', data=data)
 
+    if res.status_code not in [200, 201, 204]:
+        raise SystemExit(requests.exceptions.HTTPError)
+    return res.json()
+
+def verify_code(data=None):
+    res = requests.post(f'{base_url}/auth/check/code/', data=data)
+
+    if res.status_code not in [200, 201, 204]:
+        raise SystemExit(requests.exceptions.HTTPError)
+    return res.json()
+
+def verify_username(data=None):
+    res = requests.post(f'{base_url}/auth/check/username/', data=data)
+
+    if res.status_code not in [200, 201, 204]:
+        raise SystemExit(requests.exceptions.HTTPError)
+    return res.json()
 
 (x_train, y_train), (x_test, y_test) = get_train_data()
 
