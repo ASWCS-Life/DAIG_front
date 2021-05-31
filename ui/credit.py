@@ -13,7 +13,8 @@ class CreditWidget(QWidget):
     group_box = QGroupBox()
 
   def init_ui(self):
-    
+
+
     self.credit_amount = '0'
     self.label = QLabel(self.credit_amount + '원', self)  # 얼마인지 출력
     self.label.setAlignment(Qt.AlignCenter)
@@ -65,4 +66,6 @@ class CreditWidget(QWidget):
 
   # 새로고침 버튼 눌렀을 시
   def onRefreshHandler(self):
+    res = get_current_credit()
+    self.credit_amount = str(res["credit"])
     pass

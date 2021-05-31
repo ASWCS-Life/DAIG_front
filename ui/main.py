@@ -22,8 +22,6 @@ from breakdown import BrDownWidget
 from credit import CreditWidget
 from creditWebView import WebViewWidget
 from daig.api.rest import get_current_credit
-from daig.api.rest import get_credit_html
-
 
 #11
 class WebViewLayout(WebViewWidget):
@@ -41,11 +39,13 @@ class CreditLayout(CreditWidget):
         super().__init__()
         self.all_btn.clicked.connect(self.openBrDownClass)
         self.dep_btn.clicked.connect(self.openWebViewClass)
+        self.refresh.clicked.connect(self.onRefreshButton)
 
     def openBrDownClass(self):
         self.all_btn_clicked()
         widget.setCurrentIndex(10)
-        BrDown_ly.reqUserBreakDown()
+        widget.currentWidget().call_credit_log()
+        #BrDown_ly.call_credit_log()
         on_layout_convert_center(main_window, widget, 400, 500)
 
     def openWebViewClass(self):
@@ -57,6 +57,11 @@ class CreditLayout(CreditWidget):
         '''
         widget.setCurrentIndex(11)
         on_layout_convert_center(main_window, widget, 930, 650)
+
+    def onRefreshButton(self):
+        self.onRefreshHandler()
+        res = get_current_credit()
+        main_window.crdt_lbl.setText(f'Credit : {res["credit"]}')
 
         
 #8
@@ -220,15 +225,21 @@ class Login(LoginWidget):
         on_layout_convert_center(main_window, widget, 500, 250)
 
     def onClickLoginHandler(self):
-        user_key = self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
         self.openModeClass()
-        main_window.addUserInfoOnToolBar(self.id.text(), "0")
+        main_window.addUserInfoOnToolBar()
 
     def openModeClass(self):
         widget.setCurrentIndex(2)
-        # 여기서 크레딧페이지 생성
+        Credit_ly = CreditLayout()
+        BrDown_ly = BrDownLayout()
         WebView_ly = WebViewLayout()
+        widget.addWidget(Credit_ly)  # 9
+        widget.addWidget(BrDown_ly)  # 10
         widget.addWidget(WebView_ly)  # 11
+        res_data = get_current_credit()
+        Credit_ly.credit_amount = str(res_data["credit"])
+        # 여기서 크레딧페이지 생성
         on_layout_convert_center(main_window, widget, 450, 250)
 
 class MyMainWindow(QMainWindow):
@@ -263,7 +274,7 @@ class MyMainWindow(QMainWindow):
       on_layout_convert_center(self, widget, 500, 500)
 
     # 로그인 시 툴바에 id와 credit 정보 추가
-  def addUserInfoOnToolBar(self, id, credit):
+  def addUserInfoOnToolBar(self):
     res_data=get_current_credit()
     self.id_lbl.setText(f'ID : {res_data["id"]}')
     self.crdt_lbl.setText(f'Credit : {res_data["credit"]}')
@@ -290,8 +301,6 @@ class MyMainWindow(QMainWindow):
     widget.setCurrentIndex(2)
     on_layout_convert_center(self, widget, 450, 250)
   def onCreditTriggeredHandler(self):
-    res_data = get_current_credit()
-    Credit_ly.credit_amount = f'Credit : {res_data["credit"]}'
     widget.setCurrentIndex(9)
     on_layout_convert_center(self, widget, 600, 500)
 # don't touch
@@ -312,8 +321,7 @@ if __name__ == '__main__':
     FdId_ly = FindIdLayout()
     FdPwd_ly = FindPwdLayout()
     PwdInit_ly = PwdInitLayout()
-    Credit_ly = CreditLayout()
-    BrDown_ly = BrDownLayout()
+
 
 
     #Progress_ly = Progress()
@@ -329,8 +337,7 @@ if __name__ == '__main__':
     widget.addWidget(FdId_ly) #6
     widget.addWidget(FdPwd_ly) #7
     widget.addWidget(PwdInit_ly) #8
-    widget.addWidget(Credit_ly)  # 9
-    widget.addWidget(BrDown_ly)  # 10
+
 
     #widget.addWidget(Progress_ly) - 진행상황 ui 따로 필요 x (요청자 화면에서 진행상황을 보여줄 것임)
     #widget.addWidget(TrainRslt_ly) - 결과확인 ui 따로 필요 x (결과 모델을 따로 다운받을 수 있도록)

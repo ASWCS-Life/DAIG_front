@@ -290,10 +290,12 @@ def validate(project_id):
 
 def get_current_credit():
     res = requests.get(f'{base_url}/credit/remains/', headers={'AUTH':get_auth_header()})
+    print(res.json())
     return res.json()
 
 def get_credit_log():
     res = requests.get(f'{base_url}/credit/log/', headers={'AUTH':get_auth_header()})
+    print(res)
     return res.json()
 
 def get_owned_projects():

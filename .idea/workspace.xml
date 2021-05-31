@@ -6,6 +6,7 @@
       <change beforePath="$PROJECT_DIR$/ui/breakdown.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/breakdown.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/credit.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/credit.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/creditWebView.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/creditWebView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/daig/api/rest.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/daig/api/rest.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +84,7 @@
       <workItem from="1622202826506" duration="146000" />
       <workItem from="1622267498464" duration="2102000" />
       <workItem from="1622269727469" duration="2852000" />
-      <workItem from="1622447208058" duration="3150000" />
+      <workItem from="1622447208058" duration="12831000" />
     </task>
     <servers />
   </component>
@@ -103,6 +104,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ASWCS_front$main.coverage" NAME="main Coverage Results" MODIFIED="1622269620549" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ui" />
+    <SUITE FILE_PATH="coverage/ASWCS_front$main.coverage" NAME="main Coverage Results" MODIFIED="1622465161782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ui" />
   </component>
 </project>
