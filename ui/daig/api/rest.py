@@ -1,5 +1,4 @@
 from os import truncate
-import re
 import h5py
 import requests
 import tensorflow as tf
@@ -13,8 +12,8 @@ from tempfile import TemporaryFile
 
 import time
 
-# base_url = 'http://118.67.130.33:8000'
-base_url = 'http://127.0.0.1:8000'
+base_url = 'http://118.67.130.33:8000'
+# base_url = 'http://127.0.0.1:8000'
 
 temporary_project_id = '60926f7933f0b035a0591d1d'
 auth_temp = '98dbaa34-63d1-4400-93f0-c19d019d1d71'
@@ -133,7 +132,7 @@ def start_learning(project_id, params=None):
 
     res = requests.get(f'{base_url}/project/{project_id}/task/get', params=params, headers={'AUTH':get_auth_header()})
     res_json = res.json()
-
+    print(res_json)
 
     if(not(res_json['is_successful'])): return 'FAIL'
     occupy_task(project_id,{'task_index':res_json['task_index']})
@@ -163,13 +162,17 @@ def start_learning(project_id, params=None):
 
     model.set_weights(init_weight.tolist())
     task_index = int(res_json['task_index'])
-    task_size = int(50000/res_json['total_task'])
+    epoch = int(res_json['epoch'])
+    batch_size = int(res_json['batch_size'])
+    valid_rate = float(res_json['valid_rate'])
+
+    print(train_data.shape)
 
     if(task_index == -1): 
         validate(project_id)
         return 'STOP'
-    
-    model.fit(train_data, train_label, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+
+    model.fit(train_data, train_label, batch_size=batch_size, epochs=epoch, validation_split = valid_rate, callbacks=[callback], verbose=2)
 
     if callback.stop_learning_tok:
         return 'STOP'
@@ -293,10 +296,6 @@ def get_credit_log():
     res = requests.get(f'{base_url}/credit/log/', headers={'AUTH':get_auth_header()})
     return res.json()
 
-def get_credit_html():
-    res = requests.get(f'{base_url}/credit/payment', headers={'AUTH':get_auth_header()})
-    return res
-
 def get_owned_projects():
     res = requests.get(f'{base_url}/project/owned/', headers={'AUTH':get_auth_header()})
     return res.json()
@@ -305,12 +304,12 @@ def get_owned_projects():
 (x_train, y_train), (x_test, y_test) = get_train_data()
 
 if __name__ == '__main__':
-    model = tf.keras.models.load_model('model.h5')
-    result = np.load("result.npy",allow_pickle=True)
+    #model = tf.keras.models.load_model('model.h5')
+    #result = np.load("result.npy",allow_pickle=True)
 
     model = get_model()
-    model.set_weights(result.tolist())
-    #model.fit(x_train, y_train, batch_size=32, epochs=30, callbacks=[callback], verbose=2)
+    #model.set_weights(result.tolist())
+    model.fit(x_train, y_train, batch_size=32, epochs=70, callbacks=[callback], verbose=2)
     
     model.evaluate(x_test, y_test)
     #model.summary()
