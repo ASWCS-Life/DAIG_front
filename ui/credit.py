@@ -14,8 +14,8 @@ class CreditWidget(QWidget):
 
   def init_ui(self):
 
-
-    self.credit_amount = '0'
+    res = get_current_credit()
+    self.credit_amount = str(res["credit"])
     self.label = QLabel(self.credit_amount + '원', self)  # 얼마인지 출력
     self.label.setAlignment(Qt.AlignCenter)
     self.label_font = self.label.font()
@@ -68,4 +68,5 @@ class CreditWidget(QWidget):
   def onRefreshHandler(self):
     res = get_current_credit()
     self.credit_amount = str(res["credit"])
+    self.label.setText(self.credit_amount + '원') 
     pass
