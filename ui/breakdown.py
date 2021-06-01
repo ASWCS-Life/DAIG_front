@@ -29,19 +29,18 @@ class BrDownWidget(QWidget):
   def call_credit_log(self):
     print('start')
     self.p_date = []
+    res = get_credit_log()
+    self.creditLog_list = res["list"]
 
 
-    print(get_credit_log())
-    #
-    # # dummy
-    # for i in range(len(self.creditLog_list)):
-    #   self.p_date.append(
-    #     QLabel('  ' + '날짜: ' + self.creditLog_list[i]["date"] + '  +' + str(self.creditLog_list[i]["amount"]) + '원'))
-    #   self.formLayout.addRow(self.p_date[i])
-    #   self.p_date[i].setStyleSheet('border: 1px solid #FFB914;'
-    #                                'font-size: 18px;'
-    #                                'font-family: 맑은 고딕;'
-    #                                'border-radius: 5px')
-    # pass
+    for i in range(len(self.creditLog_list)):
+      self.p_date.append(
+        QLabel('  ' + '날짜: ' + self.creditLog_list[i]["date"] + '  +' + str(self.creditLog_list[i]["amount"]) + '원'))
+      self.formLayout.addRow(self.p_date[i])
+      self.p_date[i].setStyleSheet('border: 1px solid #FFB914;'
+                                   'font-size: 18px;'
+                                   'font-family: 맑은 고딕;'
+                                   'border-radius: 5px')
+    pass
 
   # BrDownWidget이 트리거 될때마다 내역 불러오기
