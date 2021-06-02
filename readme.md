@@ -44,6 +44,12 @@ If you choose 100, train data will be splitted into 100 data shards.
 ### task size
 It means K batch size at K-batch sync SGD.
 So, if you choose small K, then final model accuracy may be better. but training speed will be decreased as maximum participants get smaller.
+On the other hands, if you choos big K,project will be finished in shorter time. But, its accuracy may be worse.
+However, detail depends on situations.
+
+### max contributor
+This means max participants in your project in single batch.
+So, max contributor more than task size will be useless.
 
 ## Learning requestor
 As Learning requestor, you need to upload model file (as tensorflow supporting .h5 format), train data and train label.
@@ -55,6 +61,13 @@ As Resource provider, you only need to participate button.
 DAIG management server will give you train data shard and model information autoatically. (irrelavant with model info and data info)
 As DAIG client receive data, it starts distributed learning using tensorflow model.fit()
 Also, you can stop it anytime you want by clicking stop button (or shutdown program)
+
+
+
+#### caution!
+This project has been developed by korean developers. So, there are some korean comments.
+And server is usually off because of maintainance fee (not a big deal for single project but will be quite a lot for hundreds of projects). 
+So, if you want to try by your own, please visit https://github.com/netroid314/ASWCS_back for server codes.
 
 # Some points of DAIG client
 ## One way to treat numpy file via https
