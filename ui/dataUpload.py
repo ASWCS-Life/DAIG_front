@@ -33,12 +33,22 @@ class UploadThread(QThread):
   def run(self):
     model = tf.keras.models.load_model(self.model_path)
 
+    total_parameters = 0
+    for variable in tf.trainable_variables():
+        shape = variable.get_shape()
+        variable_parameters = 1
+        for dim in shape:
+            variable_parameters *= dim.value
+        total_parameters += variable_parameters
+
+
     res = self.create_project(model.get_weights(), data = {
         'total_task' : self.task_num,
         'step_size' : self.step_num,
         'epoch': self.epoch,
         'batch_size': self.batch_size,
         'valid_rate': self.valid_rate,
+        'parameter_number': total_parameters,
         'max_contributor': self.contributor
     })
 
@@ -272,11 +282,30 @@ class DataUploadWidget(QWidget):
   
 
   def train_start_clicked(self):
-    if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
+    if((int(self.cho_task.text()) != float(self.cho_task.text())) or
+      (int(self.cho_step.text()) != float(self.cho_step.text())) or
+      (int(self.cho_epoch.text()) != float(self.cho_epoch.text())) or
+      (int(self.cho_batch.text()) != float(self.cho_batch.text())) or
+      (int(self.cho_contributor.text()) != float(self.cho_contributor.text()))):
+      QMessageBox.about(self, 'DAIG', "정수형으로 입력해주세요")
+      return 
+    if(float(self.cho_valid.text()) >= 1 or float(self.cho_valid.text()) < 0):
+      QMessageBox.about(self, 'DAIG', "validation split은 0에서 1사이의 실수여야 합니다.")
+      return 
+    if(int(self.cho_task.text()) < 10 or int(self.cho_task.text()) > 100):
       QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
       return 
     if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
       QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
+      return
+    if(int(self.cho_contributor.text()) < 1):
+      QMessageBox.about(self, 'DAIG', "최대 참여자 수는 양의 정수여야 합니다.")
+      return
+    if(int(self.cho_contributor.text()) > int(self.cho_step.text())):
+      QMessageBox.about(self, 'DAIG', "최대 참여자 수는 step size를 넘길 수 없습니다.")
+      return
+    if(int(self.cho_task.text()) % int(self.cho_step.text()) != 0):
+      QMessageBox.about(self, 'DAIG', "총 Task 갯수는 step size로 나누어 떨어질 수 있어야 합니다.")
       return
 
     self.train_start.setEnabled(False)

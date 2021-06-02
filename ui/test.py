@@ -119,7 +119,7 @@ def get_train_data():
 
 if __name__ == '__main__':
     #model = tf.keras.models.load_model('model.h5')
-    result = np.load("result_k5.npy",allow_pickle=True)
+    #result = np.load("result_k5.npy",allow_pickle=True)
 
     #x_train = np.asarray(np.load('train_data.npy',allow_pickle=True)).astype(np.float32)
     #y_train = np.asarray(np.load('train_label.npy',allow_pickle=True)).astype(np.float32)
@@ -131,12 +131,28 @@ if __name__ == '__main__':
     x_train = (x_train-mean)/(std+1e-7)
     x_test = (x_test-mean)/(std+1e-7)
 
-    model = get_model()
+    #model = get_model()
+    '''
+    model = tf.keras.applications.VGG16(
+    include_top=True, weights=None, input_tensor=None,
+    input_shape=[32,32,3], pooling=None, classes=10)
+    '''
+
+    model = tf.keras.applications.DenseNet121(
+        include_top=True, weights=None, input_tensor=None,
+        input_shape=[32,32,3], pooling=None, classes=10
+    )
+
     print(model.summary())
 
     #model.set_weights(result.tolist())
 
-
+    
+    opt = tf.keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
+    model.compile(loss='categorical_crossentropy',
+                    optimizer=opt,
+                    metrics=['accuracy'])
+    
     k = 10
 
     weight_list = []
@@ -144,16 +160,15 @@ if __name__ == '__main__':
     for i in range(0,k):
         weight_list.append(model.get_weights())
 
-    epoch = 50
-
+    epoch = 70
     
     current_time = time.time()
 
-    task_num = 100
+    task_num = 50
     
     data_split=np.split(x_train,task_num)
     label_split=np.split(y_train,task_num)
-    '''
+
     for index in range(0,5):
         print('step is...',index)
         if(index == 0):
@@ -187,7 +202,6 @@ if __name__ == '__main__':
     final_weight = final_weight.tolist()
    
     model.set_weights(final_weight)
-    '''
     
     #model.fit(x_train, y_train, batch_size=8, validation_split=0.2, epochs=epoch, callbacks=[callback], verbose=1)
 
@@ -196,11 +210,11 @@ if __name__ == '__main__':
     '''
     np.save("single_result.npy",np.array(model.get_weights(),dtype=object))
     '''
-    model.set_weights(result.tolist())
+    #model.set_weights(result.tolist())
     #model.fit(x_train, y_train, batch_size=8, validation_split=0.2, epochs=epoch, callbacks=[callback], verbose=1)
     model.evaluate(x_test, y_test)
 
-    #np.save("single_from_pretrain.npy",np.array(model.get_weights(),dtype=object))
+    np.save("single_from_pretrain.npy",np.array(model.get_weights(),dtype=object))
 
 
     #model.summary()
