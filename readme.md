@@ -26,6 +26,26 @@ Make account and then log in.
 Then, you can choose between two modes, Learning requestor(left) and Resource provider(right)
 
 ## Learning requestor
+As learning requestor, you can create distributed learning porject by clicking + button on top menu bar.
+Then, you will see project setting UI. first, upload your model file and data files.
+Model file should be .h5 format file supported by tensorflow as model.save() and it must also contain compile information
+Data files must be uploaded as two files. One is for train data and another is for label of train data.
+Also these Data files should be stored as numpy file containing train data as numpy array ('dtype = object' is recommended)
+(instruction will be written later).
+After attach files, you can set hyper parameters for learning. each item will be directly put into tensorflow model.fit().
+If you choose epoch = 20, batch_size =32, then it will perform tensorflow based trainging as model.fit(epoch = 20, batch_size = 32).
+Empty item may cause malfunction, so it is recommended to fill all blanks.
+However, 'total task','task size' and 'max contributor' are not for fit() function.
+
+### total task
+You can choose how many data shards you want to split.
+If you choose 100, train data will be splitted into 100 data shards.
+
+### task size
+It means K batch size at K-batch sync SGD.
+So, if you choose small K, then final model accuracy may be better. but training speed will be decreased as maximum participants get smaller.
+
+## Learning requestor
 As Learning requestor, you need to upload model file (as tensorflow supporting .h5 format), train data and train label.
 Then, set parameters and hyper-parameters for distriburted learning.
 Finally, click start button, then uploading and creating project proceed.
