@@ -264,7 +264,6 @@ class DataUploadWidget(QWidget):
         self, './', filter="*.npy")
     self.train_lbl_path.setText(self.train_lbl_file[0])
 
-    #self.train_lbl_path.text() : 받아온 학습 레이블 경로
 
   '''
   def valid_img_btn_clicked(self):
@@ -276,37 +275,10 @@ class DataUploadWidget(QWidget):
     self.valid_lbl_path.setText(self.train_lbl_path[0])
   '''
 
-  # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
-  # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
-
-  
-
   def train_start_clicked(self):
-    if((int(self.cho_task.text()) != float(self.cho_task.text())) or
-      (int(self.cho_step.text()) != float(self.cho_step.text())) or
-      (int(self.cho_epoch.text()) != float(self.cho_epoch.text())) or
-      (int(self.cho_batch.text()) != float(self.cho_batch.text())) or
-      (int(self.cho_contributor.text()) != float(self.cho_contributor.text()))):
-      QMessageBox.about(self, 'DAIG', "정수형으로 입력해주세요")
-      return 
-    if(float(self.cho_valid.text()) >= 1 or float(self.cho_valid.text()) < 0):
-      QMessageBox.about(self, 'DAIG', "validation split은 0에서 1사이의 실수여야 합니다.")
-      return 
-    if(int(self.cho_task.text()) < 10 or int(self.cho_task.text()) > 100):
-      QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
-      return 
-    if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
-      QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
-      return
-    if(int(self.cho_contributor.text()) < 1):
-      QMessageBox.about(self, 'DAIG', "최대 참여자 수는 양의 정수여야 합니다.")
-      return
-    if(int(self.cho_contributor.text()) > int(self.cho_step.text())):
-      QMessageBox.about(self, 'DAIG', "최대 참여자 수는 step size를 넘길 수 없습니다.")
-      return
-    if(int(self.cho_task.text()) % int(self.cho_step.text()) != 0):
-      QMessageBox.about(self, 'DAIG', "총 Task 갯수는 step size로 나누어 떨어질 수 있어야 합니다.")
-      return
+    format_check = self.input_format_check()
+    if(format_check):
+      QMessageBox.about(self, 'DAIG', format_check)
 
     self.train_start.setEnabled(False)
     self.upload_thread=UploadThread(get_auth_header(),self)
@@ -326,3 +298,28 @@ class DataUploadWidget(QWidget):
   def complete_upload(self):
     raise NotImplementedError
 
+  def input_format_check(self):
+    if((int(self.cho_task.text()) != float(self.cho_task.text()))):
+      return "총 task 크기는 정수형으로 입력해주세요"
+    if((int(self.cho_step.text()) != float(self.cho_step.text()))):
+      return "step의 크기는 정수형으로 입력해주세요"
+    if((int(self.cho_epoch.text()) != float(self.cho_epoch.text()))):
+      return "epoch 값은 정수형으로 입력해주세요"
+    if((int(self.cho_batch.text()) != float(self.cho_batch.text()))):
+      return "batch size는 정수형으로 입력해주세요"
+    if((int(self.cho_contributor.text()) != float(self.cho_contributor.text()))):
+      return "참여자 수는 정수형으로 입력해주세요"
+    if(float(self.cho_valid.text()) >= 1 or float(self.cho_valid.text()) < 0):
+      return "validation split은 0에서 1사이의 실수여야 합니다."
+    if(int(self.cho_task.text()) < 10 or int(self.cho_task.text()) > 100):
+      return "task의 숫자가 너무 크거나 작습니다."
+    if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
+      return "step의 숫자가 너무 크거나 작습니다."
+    if(int(self.cho_contributor.text()) < 1):
+      return "최대 참여자 수는 양의 정수여야 합니다."
+    if(int(self.cho_contributor.text()) > int(self.cho_step.text())):
+      return "최대 참여자 수는 step size를 넘길 수 없습니다."
+    if(int(self.cho_task.text()) % int(self.cho_step.text()) != 0):
+      return "총 Task 갯수는 step size로 나누어 떨어질 수 있어야 합니다."
+
+    return False
