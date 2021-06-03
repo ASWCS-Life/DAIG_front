@@ -15,6 +15,10 @@ Then, Management server distribute train data shards and model information to re
 When all train data shards are used for leatning, Management server save final model and weight result at object storage.
 Learning requestor can download trained model at anytime.
 
+## DAIG structure
+![image](https://user-images.githubusercontent.com/22979031/120692223-746ebf00-c4e2-11eb-983f-17ac16a00c82.png)
+
+
 # How DAIG's distribution works?
 We constructed DAIG distribution and result gathering system based on K-batch sync SGD.
 And it gathers trained gradients based on all-reduce method.
