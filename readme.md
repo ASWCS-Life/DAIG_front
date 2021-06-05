@@ -28,7 +28,7 @@ So, its final result is also contorlled by Learning requestor.
 # How to use DAIG?
 Make account and then log in.
 Then, you can choose between two modes, Learning requestor(left) and Resource provider(right)
-- - -
+
 ## Learning requestor
 As learning requestor, you can create distributed learning porject by clicking + button on top menu bar.
 Then, you will see project setting UI. first, upload your model file and data files.
@@ -40,17 +40,17 @@ After attach files, you can set hyper parameters for learning. each item will be
 If you choose epoch = 20, batch_size =32, then it will perform tensorflow based trainging as model.fit(epoch = 20, batch_size = 32).
 Empty item may cause malfunction, so it is recommended to fill all blanks.
 However, 'total task','task size' and 'max contributor' are not for fit() function.
-- - -
+
 ### total task
 You can choose how many data shards you want to split.
 If you choose 100, train data will be splitted into 100 data shards.
-- - -
+
 ### task size
 It means K batch size at K-batch sync SGD.
 So, if you choose small K, then final model accuracy may be better. but training speed will be decreased as maximum participants get smaller.
 On the other hands, if you choos big K,project will be finished in shorter time. But, its accuracy may be worse.
 However, detail depends on situations.
-- - -
+
 ### max contributor
 This means max participants in your project in single batch.
 So, max contributor more than task size will be useless.
