@@ -71,6 +71,11 @@ Also, you can stop it anytime you want by clicking stop button (or shutdown prog
 ## One way to treat numpy file via https
 ## PyQT parallel thread
 
+- - -
+
+### limitation
+*DAID reads train data at once. so, if train data size is too big (like 20GB or more / depends on computer performance), you may not be able to upload total data. upload for big data will be supported later.
+
 ### caution!
 This project has been developed by korean developers. So, there are some korean comments.
 And server is usually off because of maintainance fee (not a big deal for single project but will be quite a lot for hundreds of projects). 
