@@ -1,4 +1,5 @@
 from os import truncate
+from typing import Type
 import h5py
 import requests
 import tensorflow as tf
@@ -171,8 +172,15 @@ def start_learning(project_id, params=None):
     if(task_index == -1): 
         validate(project_id)
         return 'STOP'
-
-    model.fit(train_data, train_label, batch_size=batch_size, epochs=epoch, validation_split = valid_rate, callbacks=[callback], verbose=2)
+    
+    try:
+        model.fit(train_data, train_label, batch_size=batch_size, epochs=epoch, validation_split = valid_rate, callbacks=[callback], verbose=2)    
+    except ValueError as e:
+        report_error(project_id=project_id,params={'error_message':e})
+        return 'ERROR'
+    except TypeError as e:
+        report_error(project_id=project_id,params={'error_message':e})
+        return 'ERROR'
 
     if callback.stop_learning_tok:
         return 'STOP'
@@ -189,6 +197,10 @@ def start_learning(project_id, params=None):
     if(not(update_success)): return 'FAIL'
 
     return 'SUCCESS'
+
+def report_error(project_id, params = None):
+    res = requests.post(f'{base_url}/project/{project_id}/report/',data=params, headers={'AUTH':get_auth_header()})
+    return res.json()['is_successful']
 
 # 학습 Task 선점하기
 def occupy_task(project_id, params = None):
@@ -335,8 +347,15 @@ if __name__ == '__main__':
 
     model = get_model()
     #model.set_weights(result.tolist())
-    model.fit(x_train, y_train, batch_size=32, epochs=70, callbacks=[callback], verbose=2)
-    
-    model.evaluate(x_test, y_test)
+    try:
+        model.fit(x_train, y_train, batch_size=32, epochs=70, callbacks=[callback], verbose=2)
+    except ValueError as e:
+        print(e)
+        print('I catch it')
+    except TypeError as e:
+        print(e)
+        print('I catch it')
+
+    #model.evaluate(x_test, y_test)
     #model.summary()
 
