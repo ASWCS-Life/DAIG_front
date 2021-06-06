@@ -22,9 +22,9 @@ Learning requestor can download trained model at anytime.
 # How to launch?
 To laucnh client program, you shoud install necessary libraries which are 'Tensorflow, Numpy, Requests, h5py, PyQT5'.
 Then, you can launch client program by running main.py like 
-'''
+```
 python main.py
-'''
+```
 - - -
 # How DAIG's distribution works?
 We constructed DAIG distribution and result gathering system based on K-batch sync SGD.
