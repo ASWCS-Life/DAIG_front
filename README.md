@@ -15,7 +15,7 @@ So, we tried to use other people's left pc resources instead of multiple GPUs
 DAIG는(Distributed A.I Grid) 딥러닝 분산학습 기반 머신러닝 시스템입니다.
 보통 딥러닝 기반 머신러닝 기법들은 다른 기법들 보다 더 많은 훈련 시간이 요구됩니다.
 이러한 긴 시간이 소비되는 문제를 해결하는 하나의 방법으로 다중 GPU들을 사용하는 방법이 있습니다. 하지만 이 방법은 많은 비용이 요구됩니다.
-그래서 저희는 다중 GPU들을 사용하는 대신에 다른 사람들의 잉여 pc 자원을 사용하는 것을 고안했습니다.
+그래서 저희는 다중 GPU들을 사용하는 대신에 다른 사람들의 남는 pc 자원을 사용하는 것을 고안했습니다.
 - - -
 # How DAIG works?
 DAIG system consists of Learning requestor, Resource provider and Management server.
@@ -160,14 +160,14 @@ DAIG 클라이언트가 데이터를 받으면 텐서플로우의 model.fit()를
 ### caution!
 * This project has been developed by korean developers. So, there are some korean comments.
 And server is usually off because of maintainance fee (not a big deal for single project but will be quite a lot for hundreds of projects). 
-So, if you want to try by your own, please visit https://github.com/netroid314/ASWCS_back for server codes.
+So, if you want to try by your own, please visit https://github.com/ASWCS-Life/DAIG_back for server codes.
 * If you upload incorrect type of model or data, it may cause eniter system malfunction
 * DAIG reads train data at once. so, if train data size is too big (like 20GB or more / depends on computer performance), you may not be able to upload total data. upload for big data will be supported later.
 * Some parameters have limitation.
 
 * 이 프로젝트는 한국 개발자들이 개발했습니다. 따라서 코드에 한국어 코멘트들이 많이 있습니다.
 그리고 서버의 사용요금 때문에 관리 서버는 주로 꺼진상태입니다. (단일 프로젝트를 관리할 때는 문제가 되지않지만, 수백 단위의 프로젝트를 운영할 때 서버의 사용요금이 문제가 될 수 있습니다)
-만약 이 프로젝트를 주도적으로 사용해보고 싶다면 https://github.com/netroid314/ASWCS_back 를 방문하여 서버 코드를 확인하세요.
+만약 이 프로젝트를 주도적으로 사용해보고 싶다면 https://github.com/ASWCS-Life/DAIG_back 를 방문하여 서버 코드를 확인하세요.
 
 * 맞지 않는 모델과 데이터 타입의 업로드로 인해 시스템 오작동이 생길 수 있습니다.
 * DAIG 시스템은 학습 데이터를 한번에 읽습니다. 따라서 만약 훈련 데이터 사이즈가 너무 크면(20GB 보다 큰 값들 / 컴퓨터 성능에 따라 달라질 수 있습니다), 모든 데이터 업로드가 불가능할 수 있습니다. 큰 사이즈의 데이터는 이후 지원예정입니다.
