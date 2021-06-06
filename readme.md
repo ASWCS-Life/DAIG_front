@@ -19,9 +19,19 @@ Learning requestor can download trained model at anytime.
 ![image](https://user-images.githubusercontent.com/22979031/120693675-47bba700-c4e4-11eb-94b6-f079a1ae0f46.png)
 ![image2](https://user-images.githubusercontent.com/22979031/120912837-895b7600-c6cd-11eb-93a9-890f489ed992.PNG)
 - - -
+# DAIG client dependency
+|Name|version|usage|
+|------|---|---|
+|PyQT5|5.12|for UI and multi-thread develoment|
+|tensorflow|2.5.0|for model training|
+|numpy|1.19.5|for data manipulation|
+|requests|2.25.1|for http communication|
+|h5py|3.1.0|for model saving|
+
+- - -
 # How to launch?
 To laucnh client program, you shoud install necessary libraries which are 'Tensorflow, Numpy, Requests, h5py, PyQT5'.
-Any latest version in 2021 May will be acceptable.
+
 Then, you can launch client program by running main.py like 
 ```
 python main.py
