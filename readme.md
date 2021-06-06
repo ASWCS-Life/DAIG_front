@@ -25,6 +25,7 @@ Then, you can launch client program by running main.py like
 ```
 python main.py
 ```
+Currently, we are working on converting this project into single executable file.
 - - -
 # How DAIG's distribution works?
 We constructed DAIG distribution and result gathering system based on K-batch sync SGD.
