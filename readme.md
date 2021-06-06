@@ -1,13 +1,13 @@
 # Repository Info
 this is respository of DAIG (Distributed A.I Grid) project client program.
 it is based on PyQT5 because we use tensorflow for model training and others.
-
+- - -
 # What is DAIG?
 DAIG (Distributed A.I Grid) is distributed deep learning based machine learning system.
 Usually, deep learning based machine learning methods require more training time than other methods.
 One way to solve this long training time problem is using multiple GPUs. However, it is pretty expensive.
 So, we tried to use other people's left pc resources instead of multiple GPUs
-
+- - -
 # How DAIG works?
 DAIG system consists of Learning requestor, Resource provider and Management server.
 Learning requestor makes project and upload train data to Management server.
@@ -18,7 +18,13 @@ Learning requestor can download trained model at anytime.
 ## DAIG structure
 ![image](https://user-images.githubusercontent.com/22979031/120693675-47bba700-c4e4-11eb-94b6-f079a1ae0f46.png)
 ![image2](https://user-images.githubusercontent.com/22979031/120912837-895b7600-c6cd-11eb-93a9-890f489ed992.PNG)
-
+- - -
+# How to launch?
+To laucnh client program, you shoud install necessary libraries which are 'Tensorflow, Numpy, Requests, h5py, PyQT5'.
+Then, you can launch client program by running main.py like 
+'''
+python main.py
+'''
 - - -
 # How DAIG's distribution works?
 We constructed DAIG distribution and result gathering system based on K-batch sync SGD.
@@ -55,12 +61,12 @@ However, detail depends on situations.
 ### max contributor
 This means max participants in your project in single batch.
 So, max contributor more than task size will be useless.
-- - -
+
 ## Learning requestor
 As Learning requestor, you need to upload model file (as tensorflow supporting .h5 format), train data and train label.
 Then, set parameters and hyper-parameters for distriburted learning.
 Finally, click start button, then uploading and creating project proceed.
-- - -
+
 ## Resource provider
 As Resource provider, you only need to participate button.
 DAIG management server will give you train data shard and model information autoatically. (irrelavant with model info and data info)
