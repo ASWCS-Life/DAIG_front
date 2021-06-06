@@ -21,6 +21,7 @@ Learning requestor can download trained model at anytime.
 - - -
 # How to launch?
 To laucnh client program, you shoud install necessary libraries which are 'Tensorflow, Numpy, Requests, h5py, PyQT5'.
+Any latest version in 2021 May will be acceptable.
 Then, you can launch client program by running main.py like 
 ```
 python main.py
