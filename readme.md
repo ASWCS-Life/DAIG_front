@@ -39,7 +39,7 @@ DAIG 시스템은 학습요청자, 리소스 제공자 그리고 관리 서버�
 |tensorflow|2.5.0|for model training|
 |numpy|1.19.5|for data manipulation|
 |requests|2.25.1|for http communication|
-|h5py|3.1.0|for model saving|
+|h5py|3.1.0|for tensorflow model saving|
 
 - - -
 # How to launch?
