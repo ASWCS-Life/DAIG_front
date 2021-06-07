@@ -176,10 +176,17 @@ class SignUp(SignUpWidget):
         self.pwd.returnPressed.connect(self.onClickSignUpHandler)
 
         # enter 키 눌렀을 때의 동작
+<<<<<<< HEAD
         enterPressedHandler(self.id, self.onClickSignUpHandler) ######
         enterPressedHandler(self.pwd, self.onClickSignUpHandler) ######
         #enterPressedHandler(self.email_front, self.onClickSignUpHandler) ####
         #enterPressedHandler(self.email_back, self.onClickSignUpHandler) #####
+=======
+        # enterPressedHandler(self.id, self.onClickSignUpHandler) ######
+        # enterPressedHandler(self.pwd, self.onClickSignUpHandler) ######
+        # enterPressedHandler(self.email_front, self.onClickSignUpHandler) ####
+        # enterPressedHandler(self.email_back, self.onClickSignUpHandler) #####
+>>>>>>> c7285d41c3d0039c2548b939b2fdda2dc7a36edb
     def onClickSignUpHandler(self):
         result = self.onClickSignUp()
         if(result):
