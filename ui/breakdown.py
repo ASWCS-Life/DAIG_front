@@ -7,13 +7,13 @@ class BrDownWidget(QWidget):
     self.init_ui()
 
   def init_ui(self):
-    self.formLayout = QFormLayout()
-    self.formLayout.setSpacing(20)
+    self.form_layout = QFormLayout()
+    self.form_layout.setSpacing(20)
     groupBox = QGroupBox()
     #groupBox.setStyleSheet()
 
 
-    groupBox.setLayout(self.formLayout)
+    groupBox.setLayout(self.form_layout)
     scroll = QScrollArea()
     scroll.setWidget(groupBox)
     scroll.setWidgetResizable(True)
@@ -27,11 +27,10 @@ class BrDownWidget(QWidget):
 
 
   def call_credit_log(self):
-    print('start')
     self.p_date = []
-    row_len = self.formLayout.rowCount()
-    for i in range(row_len):
-      self.formLayout.removeRow(i)
+    row_len = self.form_layout.rowCount()
+    for i in range(row_len + 1):
+      self.form_layout.removeRow(i)
     res = get_credit_log()
     self.creditLog_list = res["list"]
 
@@ -39,7 +38,7 @@ class BrDownWidget(QWidget):
     for i in range(len(self.creditLog_list)):
       self.p_date.append(
         QLabel('  ' + self.creditLog_list[i]["details"] + '\t' +self.creditLog_list[i]["date"] + '\t' + str(self.creditLog_list[i]["amount"]) + '원'))
-      self.formLayout.addRow(self.p_date[i])
+      self.form_layout.addRow(self.p_date[i])
       self.p_date[i].setStyleSheet('border: 1px solid #FFB914;'
                                    'font-size: 18px;'
                                    'font-family: 맑은 고딕;'

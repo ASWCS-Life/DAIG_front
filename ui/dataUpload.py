@@ -297,3 +297,14 @@ class DataUploadWidget(QWidget):
   def complete_upload(self):
     raise NotImplementedError
 
+  def on_clean_line_edit(self):
+    self.cho_batch.setText("")
+    self.cho_task.setText("")
+    self.cho_step.setText("")
+    self.cho_contributor.setText("")
+    self.cho_epoch.setText("")
+    self.cho_valid.setText("")
+    self.model_path.setText("")
+    self.train_lbl_path.setText("")
+    self.train_img_path.setText("")
+

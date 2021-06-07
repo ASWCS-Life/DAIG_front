@@ -72,13 +72,13 @@ class LoginWidget(QWidget):
         setEditStandard(self.pwd, 100, 220, '비밀번호')
 
     # 아이디, 비밀번호 창
-    def onChanged(self, text):
+    def on_changed(self, text):
         self.id.setText(text)
         self.id.adjustSize()
         self.pwd.setText(text)
         self.pwd.adjustSize()
 
-    def onClickLogin(self):
+    def on_click_login(self):
         sender_data = {
            "username" : self.id.text(),
            "password" : self.pwd.text()
@@ -93,3 +93,7 @@ class LoginWidget(QWidget):
         else:
             QMessageBox.about(self, 'DAIG', res["message"])
             return False
+
+    def on_clean_line_edit(self):
+        self.id.setText("")
+        self.pwd.setText("")

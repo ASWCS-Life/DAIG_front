@@ -27,7 +27,7 @@ class SignUpWidget(QWidget):
         self.auth_email.move(430, 107)
         setButtonStyle(self.auth_email)
         self.auth_email.setFixedWidth(50)
-        self.auth_email.clicked.connect(self.emailAuth)
+        self.auth_email.clicked.connect(self.email_auth)
 
     # 아이디, 비밀번호, 이메일 알리기
         sign_id = QLabel('ID', self)
@@ -73,20 +73,8 @@ class SignUpWidget(QWidget):
         self.email_back.setFixedWidth(150)
         setEditStandard(self.email_back, 265, 110, 'daig.co.kr')
         
-        # # 잠시 비활성화
-        # self.email_front.style
 
-        # self.email_front.setStyleSheet('background: rgb(127, 127, 127);'
-        #                                'border: 1px solid rgb(127, 127, 127);'
-        #                                'border-radius: 5px')
-        # self.email_back.setStyleSheet('background: rgb(127, 127, 127);'
-        #                               'border: 1px solid rgb(127, 127, 127);'
-        #                               'border-radius: 5px')
-        # self.email_front.setEnabled(False)
-        # self.email_back.setEnabled(False)
-        # self.auth_email.setEnabled(False)
-    # 이메일 인증
-    def emailAuth(self):
+    def email_auth(self):
         # self.email = self.email_front.text() + '@' + self.email_back
         QMessageBox.about(self,'DAIG',"준비중입니다.")
         #--------- self.email로 인증요청
@@ -101,7 +89,7 @@ class SignUpWidget(QWidget):
 
 
     # onChange Handler
-    def onChanged(self, text):
+    def on_changed(self, text):
         self.id.setText(text)
         self.id.adjustSize()
         self.pwd.setText(text)
@@ -111,7 +99,7 @@ class SignUpWidget(QWidget):
         self.email_back.setText(text)
         self.email_back.adjustSize()
 
-    def onClickSignUp(self):
+    def on_click_sign_up(self):
         # if(self.check_email_authorized == False):
         #     QMessageBox.about(self, 'DAIG', '이메일 인증을 해주세요')
         #     return
@@ -127,3 +115,9 @@ class SignUpWidget(QWidget):
         else:
             QMessageBox.about(self, 'DAIG', res["message"])
             return False
+    
+    def on_clean_line_edit(self):
+        self.id.setText("")
+        self.pwd.setText("")
+        self.email_front.setText("")
+        self.email_back.setText("")

@@ -47,7 +47,7 @@ class FindPwdWidget(QWidget):
         self.go_back.move(285, 90)
         setButtonStyle(self.go_back)
 
-    def onChanged(self, text):
+    def on_changed(self, text):
         self.id.setText(text)
         self.id.adjustSize()
         self.email_front.setText(text)
@@ -55,7 +55,7 @@ class FindPwdWidget(QWidget):
         self.email_back.setText(text)
         self.email_back.adjustSize()
 
-    def onUserInfoAlert(self):
+    def on_user_info_alert(self):
         self.email = self.email_front.text() + '@' + self.email_back.text()
 
         #-----   self.id.text() & self.email 로 해당 아이디및 이메일에 해당하는 정보가 있는지에 대한 요청
@@ -68,3 +68,8 @@ class FindPwdWidget(QWidget):
         # else:
         #    QMessageBox.about(self, 'DAIG', res['message'])
         #    return False
+
+    def on_clean_line_edit(self):
+        self.id.setText("")
+        self.email_front.setText("")
+        self.email_back.setText("")
