@@ -304,7 +304,7 @@ class MyMainWindow(QMainWindow):
   def on_credit_triggered_handler(self):
     widget.setCurrentIndex(9)
     on_layout_convert_center(self, widget, 600, 500)
-# don't touch
+# don't touc
 if __name__ == '__main__':
     #QApplication : 프로그램을 실행시켜주는 클래스
     app = QApplication(sys.argv)
