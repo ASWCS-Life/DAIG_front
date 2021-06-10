@@ -264,17 +264,6 @@ class DataUploadWidget(QWidget):
         self, './', filter="*.npy")
     self.train_lbl_path.setText(self.train_lbl_file[0])
 
-
-  '''
-  def valid_img_btn_clicked(self):
-    self.valid_img_file = QFileDialog.getOpenFileName(self, filter="*.npy")
-    self.valid_img_path.setText(self.train_img_file[0])
-
-  def valid_lbl_btn_clicked(self):
-    self.valid_lbl_file = QFileDialog.getOpenFileName(self, filter="*.npy")
-    self.valid_lbl_path.setText(self.train_lbl_path[0])
-  '''
-
   def train_start_clicked(self):
     format_check = self.input_format_check()
     if(format_check):
@@ -323,3 +312,15 @@ class DataUploadWidget(QWidget):
       return "총 Task 갯수는 step size로 나누어 떨어질 수 있어야 합니다."
 
     return False
+    
+  def on_clean_line_edit(self):
+    self.cho_batch.setText("")
+    self.cho_task.setText("")
+    self.cho_step.setText("")
+    self.cho_contributor.setText("")
+    self.cho_epoch.setText("")
+    self.cho_valid.setText("")
+    self.model_path.setText("")
+    self.train_lbl_path.setText("")
+    self.train_img_path.setText("")
+

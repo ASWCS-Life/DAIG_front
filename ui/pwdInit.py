@@ -40,13 +40,13 @@ class PwdInitWidget(QWidget):
         self.go_back.move(240, 90)
         setButtonStyle(self.go_back)
 
-    def onChanged(self, text):
+    def on_changed(self, text):
         self.pwd.setText(text)
         self.pwd.adjustSize()
         self.check_pwd.setText(text)
         self.check_pwdt.adjustSize()
 
-    def onPwdInitAlert(self):
+    def on_pwd_init_alert(self):
         if(self.pwd.text() != self.check_pwd.text()):
             QMessageBox.about(self, 'DAIG', '비밀번호가 서로 일치하지 않습니다.')
         pass
@@ -61,3 +61,7 @@ class PwdInitWidget(QWidget):
         # else:
         #    QMessageBox.about(self, 'DAIG', res['message'])
         #    return False
+
+    def on_clean_line_edit(self):
+        self.check_pwd.setText("")
+        self.pwd.setText("")

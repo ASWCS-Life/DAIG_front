@@ -87,9 +87,9 @@ class ProviderWidget(QWidget):
     self.train_stop = QPushButton('학습 중단')
     self.train_refresh = QPushButton('새로 고침')
     self.train_stop.setEnabled(False)
-    self.train_start.clicked.connect(self.onTrainStartClicked)
-    self.train_stop.clicked.connect(self.onTrainStopClicked)
-    self.train_refresh.clicked.connect(self.onTrainRefreshClicked)
+    self.train_start.clicked.connect(self.on_train_start_clicked)
+    self.train_stop.clicked.connect(self.on_train_stop_clicked)
+    self.train_refresh.clicked.connect(self.on_train_refresh_clicked)
 
     setButtonStyle(self.train_start)
     setButtonStyle(self.train_stop)
@@ -105,7 +105,7 @@ class ProviderWidget(QWidget):
 
   # 요청자 레이아웃에서 참여를 누르면 실행되는 함수
   # 해당하는 프로젝트 아이디를 가져옴
-  def onAttendHandler(self, p_id):
+  def on_attend_handler(self, p_id):
       print(p_id)
       #------- 여기에 p_id와 일치하는 프로젝트 요청 후 self.pro_table에 추가
       self.project_addItem(p_id)
@@ -145,11 +145,11 @@ class ProviderWidget(QWidget):
     '''
     pass
 
-  def onTrainRefreshClicked(self):
+  def on_train_refresh_clicked(self):
       self.pro_table.setRowCount(0)
 
     # 학습 시작 버튼을 눌렀을 경우
-  def onTrainStartClicked(self):
+  def on_train_start_clicked(self):
       self.train_start.setEnabled(False)
       self.train_stop.setEnabled(True)
       self.repeat_learning()
@@ -158,7 +158,7 @@ class ProviderWidget(QWidget):
       #focused_p_id = self.pro_table.item(self.pro_table.currentRow(), 0).text()
 
     # 학습 중단 버튼을 눌렀을 경우
-  def onTrainStopClicked(self):
+  def on_train_stop_clicked(self):
       self.train_start.setEnabled(True)
       self.train_stop.setEnabled(False)
       self.worker.stop()

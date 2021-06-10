@@ -47,7 +47,7 @@ class FindPwdWidget(QWidget):
         self.go_back.move(285, 90)
         setButtonStyle(self.go_back)
 
-    def onChanged(self, text):
+    def on_changed(self, text):
         self.id.setText(text)
         self.id.adjustSize()
         self.email_front.setText(text)
@@ -55,16 +55,11 @@ class FindPwdWidget(QWidget):
         self.email_back.setText(text)
         self.email_back.adjustSize()
 
-    def onUserInfoAlert(self):
+    def on_user_info_alert(self):
         self.email = self.email_front.text() + '@' + self.email_back.text()
 
-        #-----   self.id.text() & self.email 로 해당 아이디및 이메일에 해당하는 정보가 있는지에 대한 요청
-        # res[is_successful] == True면 비밀번호 변경화면 레이아웃으로 이동하게 만듬
-        # response에 헤더를 받아와서 비밀번호 변경할때 해당 헤더를 사용해야 할듯해요
 
-        # if (res["is_successful"] == True):
-        #    QMessageBox.about(self, 'DAIG', res['message'])
-        #    return True
-        # else:
-        #    QMessageBox.about(self, 'DAIG', res['message'])
-        #    return False
+    def on_clean_line_edit(self):
+        self.id.setText("")
+        self.email_front.setText("")
+        self.email_back.setText("")

@@ -34,19 +34,15 @@ class FindIdWidget(QWidget):
         self.go_back.move(285, 60)
         setButtonStyle(self.go_back)
 
-    def onChanged(self, text):
+    def on_changed(self, text):
         self.email_front.setText(text)
         self.id.adjustSize()
         self.email_back.setText(text)
         self.pwd.adjustSize()
 
-    def onEmailAlert(self):
+    def on_email_alert(self):
         self.email = self.email_front.text() + '@' + self.email_back
 
-        #------- self.email로 id 요청
-        # if (res["is_successful"] == True):
-        #    QMessageBox.about(self, 'DAIG', res['message'])
-        #    return True
-        # else:
-        #    QMessageBox.about(self, 'DAIG', res['message'])
-        #    return False
+    def on_clean_line_edit(self):
+        self.email_front.setText("")
+        self.email_back.setText("")
