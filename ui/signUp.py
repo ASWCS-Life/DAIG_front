@@ -75,15 +75,8 @@ class SignUpWidget(QWidget):
         
 
     def email_auth(self):
-        # self.email = self.email_front.text() + '@' + self.email_back
-        QMessageBox.about(self,'DAIG',"준비중입니다.")
-        #--------- self.email로 인증요청
 
-        #if (res["is_successful"] == True):
-        #    QMessageBox.about(self, 'DAIG', res['message'])
-        #    self.check_email_authorized = True
-        #else:
-        #    QMessageBox.about(self, 'DAIG', res['message'])
+        QMessageBox.about(self,'DAIG',"준비중입니다.")
 
 
 
@@ -100,13 +93,9 @@ class SignUpWidget(QWidget):
         self.email_back.adjustSize()
 
     def on_click_sign_up(self):
-        # if(self.check_email_authorized == False):
-        #     QMessageBox.about(self, 'DAIG', '이메일 인증을 해주세요')
-        #     return
         sender_data = {
            "username" : self.id.text(),
            "password" : self.pwd.text(),
-        #    "email" : self.email
         }
         res = sign_up_req(sender_data)
         if(res["is_successful"] == True):

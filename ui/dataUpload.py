@@ -256,16 +256,6 @@ class DataUploadWidget(QWidget):
 
     #self.train_lbl_path.text() : 받아온 학습 레이블 경로
 
-  '''
-  def valid_img_btn_clicked(self):
-    self.valid_img_file = QFileDialog.getOpenFileName(self, filter="*.npy")
-    self.valid_img_path.setText(self.train_img_file[0])
-
-  def valid_lbl_btn_clicked(self):
-    self.valid_lbl_file = QFileDialog.getOpenFileName(self, filter="*.npy")
-    self.valid_lbl_path.setText(self.train_lbl_path[0])
-  '''
-
   # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
   # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
 
