@@ -2,9 +2,6 @@ import sys
 from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplication, QStackedWidget, QAction
 from PyQt5.QtGui import QIcon
 from component.constants import enterPressedHandler
-from PyQt5 import QtGui
-from PyQt5.QtCore import Qt, pyqtSlot
-
 from component.center import on_layout_convert_center
 
 from pwdInit import PwdInitWidget
@@ -15,8 +12,6 @@ from signUp import SignUpWidget
 from mode import ModeChoiceWidget
 from userLayout import UserFrameWidget
 from providerLayout import ProviderWidget
-from trainResult import TrainResultWidget
-from progress import ProgressWidget
 from dataUpload import DataUploadWidget
 from breakdown import BrDownWidget
 from credit import CreditWidget
