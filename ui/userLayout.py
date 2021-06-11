@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from component.constants import setLabelStyle, setButtonStyle, setEditStandard
+from component.constants import set_button_style
 from tensorflow import keras
 
 from daig.api.rest import get_owned_projects
@@ -95,10 +95,10 @@ class UserFrameWidget(QWidget):
     self.stop_btn.clicked.connect(self.stop_learning)
     self.down_btn.clicked.connect(self.download_model)
 
-    setButtonStyle(self.aten_btn)
-    setButtonStyle(self.stop_btn)
-    setButtonStyle(self.down_btn)
-    setButtonStyle(self.get_btn)
+    set_button_style(self.aten_btn)
+    set_button_style(self.stop_btn)
+    set_button_style(self.down_btn)
+    set_button_style(self.get_btn)
 
     #test
     self.get_btn.clicked.connect(self.get_projects)
