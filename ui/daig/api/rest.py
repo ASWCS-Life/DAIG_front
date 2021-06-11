@@ -219,22 +219,6 @@ def result_learning(project_id, params=None):
     # raise exc.ResponseException(res)
     return weight
 
-# 중단 요청
-def stop_learning(path, params, data=None):
-    res = requests.put(f'{base_url}/{path}', params=params, json=data, headers=get_auth_header())
-
-    # if res.status_code not in [200, 201, 204]:
-    # raise exc.ResponseException(res)
-    return res.json()
-
-# 진행 상태 요청
-def status_req(path, params):
-    res = requests.get(f'{base_url}/{path}', params=params, headers=get_auth_header())
-
-    # if res.status_code not in [200, 201, 204]:
-    # raise exc.ResponseException(res)
-    return res.json()
-
 # 학습 모델 받아오기 (현재 더미 데이터 추후 S3)
 def get_model():
     model = tf.keras.models.Sequential([
