@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplication, QStackedWidget, QAction
 from PyQt5.QtGui import QIcon
-from component.constants import enterPressedHandler
+from component.constants import enter_pressed_handler
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, pyqtSlot
 
@@ -69,8 +69,8 @@ class PwdInitLayout(PwdInitWidget):
 
         self.pwd_init_btn.clicked.connect(self.on_pwd_init_handler)
         self.go_back.clicked.connect(self.open_find_pwd_class)
-        enterPressedHandler(self.pwd, self.on_pwd_init_handler)
-        enterPressedHandler(self.check_pwd, self.on_pwd_init_handler)
+        enter_pressed_handler(self.pwd, self.on_pwd_init_handler)
+        enter_pressed_handler(self.check_pwd, self.on_pwd_init_handler)
 
     def on_pwd_init_handler(self):
         if(self.on_pwd_init_alert() == True):
@@ -87,9 +87,9 @@ class FindPwdLayout(FindPwdWidget):
         super().__init__()
         self.find_btn.clicked.connect(self.on_find_pwd_handler)
         self.go_back.clicked.connect(self.open_login_class)
-        enterPressedHandler(self.id, self.on_find_pwd_handler)
-        enterPressedHandler(self.email_front, self.on_find_pwd_handler)
-        enterPressedHandler(self.email_back, self.on_find_pwd_handler)
+        enter_pressed_handler(self.id, self.on_find_pwd_handler)
+        enter_pressed_handler(self.email_front, self.on_find_pwd_handler)
+        enter_pressed_handler(self.email_back, self.on_find_pwd_handler)
 
     def on_find_pwd_handler(self):
         if(self.on_user_info_alert() == True):
@@ -107,8 +107,8 @@ class FindIdLayout(FindIdWidget):
         super().__init__()
         self.find_btn.clicked.connect(self.on_find_id_handler)
         self.go_back.clicked.connect(self.open_login_class)
-        enterPressedHandler(self.email_front, self.on_find_id_handler)
-        enterPressedHandler(self.email_back, self.on_find_id_handler)
+        enter_pressed_handler(self.email_front, self.on_find_id_handler)
+        enter_pressed_handler(self.email_back, self.on_find_id_handler)
 
     def on_find_id_handler(self):
         if(self.on_email_alert() == True):
@@ -173,10 +173,10 @@ class SignUp(SignUpWidget):
         self.pwd.returnPressed.connect(self.on_click_sign_up_handler)
 
         # enter 키 눌렀을 때의 동작
-        enterPressedHandler(self.id, self.on_click_sign_up_handler)
-        enterPressedHandler(self.pwd, self.on_click_sign_up_handler)
-        enterPressedHandler(self.email_front, self.on_click_sign_up_handler)
-        enterPressedHandler(self.email_back, self.on_click_sign_up_handler)
+        enter_pressed_handler(self.id, self.on_click_sign_up_handler)
+        enter_pressed_handler(self.pwd, self.on_click_sign_up_handler)
+        enter_pressed_handler(self.email_front, self.on_click_sign_up_handler)
+        enter_pressed_handler(self.email_back, self.on_click_sign_up_handler)
     def on_click_sign_up_handler(self):
         result = self.on_click_sign_up()
         if(result):
@@ -199,8 +199,8 @@ class Login(LoginWidget):
 
         # id, pwd 입력 창에 커서를 두고 엔터 키 눌렀을 시 로그인 할 수 있도록
         # self.pwd.returnPressed.connect(self.onClickLoginHandler)
-        enterPressedHandler(self.id, self.on_click_login_handler) #####
-        enterPressedHandler(self.pwd, self.on_click_login_handler)# ####
+        enter_pressed_handler(self.id, self.on_click_login_handler) #####
+        enter_pressed_handler(self.pwd, self.on_click_login_handler)# ####
 
         # 회원가입 버튼 눌렀을 경우
         self.sign_up.clicked.connect(self.open_sign_up_class)
