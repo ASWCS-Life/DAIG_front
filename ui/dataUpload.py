@@ -29,6 +29,7 @@ class UploadThread(QThread):
     self.valid_rate = float(parent.cho_valid.text())
 
   def run(self):
+    print(self.model_path)
     model = tf.keras.models.load_model(self.model_path)
 
     res = self.create_project(model.get_weights(), data = {
@@ -37,7 +38,8 @@ class UploadThread(QThread):
         'epoch': self.epoch,
         'batch_size': self.batch_size,
         'valid_rate': self.valid_rate,
-        'max_contributor': self.contributor
+        'max_contributor': self.contributor,
+        'parameter_number': np.sum([np.prod(v.get_shape().as_list()) for v in model.trainable_variables])
     })
 
     project.uid=res["project_uid"]
@@ -109,7 +111,8 @@ class UploadThread(QThread):
       "num":100
     })
     print('data uploading finished')
-
+    requests.post(f'{base_url}/project/{project_uid}/start/', data={}, headers = {'AUTH' : get_auth_header()})
+    
 
 class DataUploadWidget(QWidget):
   # don't touch
