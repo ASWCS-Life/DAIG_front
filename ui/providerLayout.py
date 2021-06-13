@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
-from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
+from component.constants import set_button_style
 import time
 
 from daig.api.rest import get_avaiable_project, start_learning, start_learning_internal, stop_learning_internal, is_project_finished
@@ -91,9 +91,9 @@ class ProviderWidget(QWidget):
     self.train_stop.clicked.connect(self.on_train_stop_clicked)
     self.train_refresh.clicked.connect(self.on_train_refresh_clicked)
 
-    setButtonStyle(self.train_start)
-    setButtonStyle(self.train_stop)
-    setButtonStyle(self.train_refresh)
+    set_button_style(self.train_start)
+    set_button_style(self.train_stop)
+    set_button_style(self.train_refresh)
 
   # 사용자 페이지
     grid = QGridLayout()

@@ -243,48 +243,6 @@ def status_req(path, params):
     # raise exc.ResponseException(res)
     return res.json()
 
-# 학습 모델 받아오기 (현재 더미 데이터 추후 S3)
-def get_model():
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Conv2D(32, (3, 3)),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-        tf.keras.layers.Dropout(0.25),
-
-        tf.keras.layers.Conv2D(64, (3, 3), padding='same'),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Conv2D(64, (3, 3)),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-        tf.keras.layers.Dropout(0.25),
-
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(512),
-        tf.keras.layers.Activation('relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(10),
-        tf.keras.layers.Activation('softmax')
-    ])
-
-    opt = tf.keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
-    model.compile(loss='categorical_crossentropy',
-                    optimizer=opt,
-                    metrics=['accuracy'])
-
-    return model
-
-# 학습 데이터 받아오기 (현재 더미 데이터 추후 S3)
-def get_train_data():
-    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
-    x_train = x_train.astype('float32') / 256
-    x_test = x_test.astype('float32') / 256
-
-    y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
-    y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
-    
-    return (x_train, y_train), (x_test, y_test)
 
 def validate(project_id):
     model = get_model()
@@ -334,24 +292,4 @@ def verify_username(data=None):
     if res.status_code not in [200, 201, 204]:
         raise SystemExit(requests.exceptions.HTTPError)
     return res.json()
-
-(x_train, y_train), (x_test, y_test) = get_train_data()
-
-if __name__ == '__main__':
-    #model = tf.keras.models.load_model('model.h5')
-    #result = np.load("result.npy",allow_pickle=True)
-
-    model = get_model()
-    #model.set_weights(result.tolist())
-    try:
-        model.fit(x_train, y_train, batch_size=32, epochs=70, callbacks=[callback], verbose=2)
-    except ValueError as e:
-        print(e)
-        print('I catch it')
-    except TypeError as e:
-        print(e)
-        print('I catch it')
-
-    #model.evaluate(x_test, y_test)
-    #model.summary()
 

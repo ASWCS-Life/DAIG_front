@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from component.constants import setBigButtonStyle
+from component.constants import set_big_button_style
 from daig.api.rest import get_current_credit
 
 
@@ -25,17 +25,17 @@ class CreditWidget(QWidget):
   # 크레딧 충전 버튼
     self.dep_btn = QPushButton('크레딧 충전', self)
     self.dep_btn.setFont(QFont('맑은 고딕', 12))
-    setBigButtonStyle(self.dep_btn)
+    set_big_button_style(self.dep_btn)
 
   # 내역 확인 버튼
     self.all_btn = QPushButton('내역 확인', self)
     self.all_btn.setFont(QFont('맑은 고딕', 12))
-    setBigButtonStyle(self.all_btn)
+    set_big_button_style(self.all_btn)
 
   # 새로 고침 버튼
     self.refresh = QPushButton('새로 고침', self)
     self.refresh.setFont(QFont('맑은 고딕', 12))
-    setBigButtonStyle(self.refresh)
+    set_big_button_style(self.refresh)
 
   # 레이아웃 설정
     layout = QGridLayout()

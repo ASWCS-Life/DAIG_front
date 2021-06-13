@@ -1,11 +1,9 @@
-import sys
-import os
 import tensorflow as tf
 from daig.api.rest import *
 from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar, QMessageBox
 from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
 from daig.requester import project
-from component.constants import setLabelStyle, setButtonStyle, setEditStandard
+from component.constants import set_label_style, set_button_style, set_edit_standard
 import numpy as np
 import math
 import requests
@@ -33,22 +31,12 @@ class UploadThread(QThread):
   def run(self):
     model = tf.keras.models.load_model(self.model_path)
 
-    total_parameters = 0
-    for variable in tf.trainable_variables():
-        shape = variable.get_shape()
-        variable_parameters = 1
-        for dim in shape:
-            variable_parameters *= dim.value
-        total_parameters += variable_parameters
-
-
     res = self.create_project(model.get_weights(), data = {
         'total_task' : self.task_num,
         'step_size' : self.step_num,
         'epoch': self.epoch,
         'batch_size': self.batch_size,
         'valid_rate': self.valid_rate,
-        'parameter_number': total_parameters,
         'max_contributor': self.contributor
     })
 
@@ -152,15 +140,15 @@ class DataUploadWidget(QWidget):
     #self.valid_img_path = QLabel('')
     #self.valid_lbl_path = QLabel('')
 
-    setLabelStyle(self.model)
-    setLabelStyle(self.train_img)
-    setLabelStyle(self.train_lbl)
-    setLabelStyle(self.p_task_div)
-    setLabelStyle(self.p_step_task)
-    setLabelStyle(self.p_epoch)
-    setLabelStyle(self.p_batch)
-    setLabelStyle(self.p_contributor)
-    setLabelStyle(self.p_valid)
+    set_label_style(self.model)
+    set_label_style(self.train_img)
+    set_label_style(self.train_lbl)
+    set_label_style(self.p_task_div)
+    set_label_style(self.p_step_task)
+    set_label_style(self.p_epoch)
+    set_label_style(self.p_batch)
+    set_label_style(self.p_contributor)
+    set_label_style(self.p_valid)
 
   # 파일 올리는 버튼
     self.model_btn = QPushButton('올리기')
@@ -174,38 +162,38 @@ class DataUploadWidget(QWidget):
     #self.valid_img_btn = QPushButton('올리기')
     #self.valid_img_btn.clicked.connect(self.train_lbl_btn_cliked)
 
-    setButtonStyle(self.model_btn)
-    setButtonStyle(self.train_img_btn)
-    setButtonStyle(self.train_lbl_btn)
+    set_button_style(self.model_btn)
+    set_button_style(self.train_img_btn)
+    set_button_style(self.train_lbl_btn)
 
  # task 분할 개수 출력
     self.cho_task = QLineEdit(self)
-    setEditStandard(self.cho_task, 0, 0, 'task num')
+    set_edit_standard(self.cho_task, 0, 0, 'task num')
 
   # step별 task 개수
     self.cho_step = QLineEdit(self)
-    setEditStandard(self.cho_step, 0, 0, 'step num')
+    set_edit_standard(self.cho_step, 0, 0, 'step num')
 
   # epoch 정보
     self.cho_epoch = QLineEdit(self)
-    setEditStandard(self.cho_epoch, 0, 0, 'epoch')
+    set_edit_standard(self.cho_epoch, 0, 0, 'epoch')
 
   # mini batch 정보
     self.cho_batch = QLineEdit(self)
-    setEditStandard(self.cho_batch, 0, 0, 'batch size')
+    set_edit_standard(self.cho_batch, 0, 0, 'batch size')
 
   # 참여자수 정보
     self.cho_contributor = QLineEdit(self)
-    setEditStandard(self.cho_contributor, 0, 0, 'max contributor')
+    set_edit_standard(self.cho_contributor, 0, 0, 'max contributor')
 
   # 검증 데이터 비율
     self.cho_valid = QLineEdit(self)
-    setEditStandard(self.cho_valid, 0, 0, 'validation split')
+    set_edit_standard(self.cho_valid, 0, 0, 'validation split')
 
   # 학습 시작 버튼
     self.train_start = QPushButton('프로젝트 생성')
     self.train_start.clicked.connect(self.train_start_clicked)
-    setButtonStyle(self.train_start)
+    set_button_style(self.train_start)
 
     # progress bar
     self.pbar=QProgressBar()
@@ -264,10 +252,20 @@ class DataUploadWidget(QWidget):
         self, './', filter="*.npy")
     self.train_lbl_path.setText(self.train_lbl_file[0])
 
+    #self.train_lbl_path.text() : 받아온 학습 레이블 경로
+
+  # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
+  # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
+
+  
+
   def train_start_clicked(self):
-    format_check = self.input_format_check()
-    if(format_check):
-      QMessageBox.about(self, 'DAIG', format_check)
+    if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
+      QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
+      return 
+    if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
+      QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
+      return
 
     self.train_start.setEnabled(False)
     self.upload_thread=UploadThread(get_auth_header(),self)
