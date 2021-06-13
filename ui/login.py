@@ -1,9 +1,11 @@
-import sys
+import os
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QMessageBox
 from PyQt5.QtGui import QPixmap
-from daig.api.rest import login_req
-from daig.api.auth import set_auth_header
-from component.constants import set_label_style, set_button_style, set_login_button_style, set_edit_standard
+from .daig.api.rest import login_req
+from .daig.api.auth import set_auth_header
+from .component.constants import set_label_style, set_button_style, set_login_button_style, set_edit_standard
+
+path=os.path.dirname(__file__)
 
 class LoginWidget(QWidget):
     def __init__(self):
@@ -12,7 +14,7 @@ class LoginWidget(QWidget):
 
     def initUI(self):
         # Daig 이미지
-        daig_img = QPixmap('./local_data/daig_img.png') # 비율 10:4
+        daig_img = QPixmap(os.path.join(path,'local_data/daig_img.png')) # 비율 10:4
         self.img_container = QLabel(self)
         self.img_container.setPixmap(QPixmap(daig_img))
         self.img_container.setScaledContents(True)

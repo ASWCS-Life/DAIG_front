@@ -41,21 +41,23 @@ DAIG 시스템은 학습요청자, 리소스 제공자 그리고 관리 서버�
 |requests|2.25.1|for http communication|
 |h5py|3.1.0|for tensorflow model saving|
 
+Details: [requirements.txt](requirements.txt)
+
 - - -
 # How to launch?
 To laucnh client program, you should install necessary libraries which are 'Tensorflow, Numpy, Requests, h5py, PyQT5'.
 
-Then, you can launch client program by running main.py like 
+Then, you can launch client program by running daig_exec.py like 
 ```
-python main.py
+python daig_exec.py
 ```
 Currently, we are working on converting this project into single executable file.
 
 클라이언트 프로그램을 실행하기 위해선 파이썬 라이브러리인 'Tensorflow, Numpy, Requests, h5py, PyQT5' 을 수동으로 설치해야 합니다.
 
-이후, ui 폴더에서 main.py 파일을 이용하여 클라이언트 프로그램을 켤 수 있습니다. 다음은 예시입니다.
+이후, daig_exec.py 파일을 이용하여 클라이언트 프로그램을 켤 수 있습니다. 다음은 예시입니다.
 ```
-python main.py
+python daig_exec.py
 ```
 로 클라이언트 프로그램을 실행할 수 있습니다.
 
