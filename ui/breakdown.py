@@ -32,8 +32,7 @@ class BrDownWidget(QWidget):
     row_len = self.formLayout.rowCount()
     for i in range(row_len):
       self.formLayout.removeRow(i)
-    res = get_credit_log()
-    self.creditLog_list = res["list"]
+    self.creditLog_list = get_credit_log()
 
 
     for i in range(len(self.creditLog_list)):
