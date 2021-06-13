@@ -20,7 +20,6 @@ class UserFrameWidget(QWidget):
     self.tabs.addTab(self.cre_tab, 'Credit')
 
     # 프로젝트 테이블 바
-    # self.pro_tab.layout = QVBoxLayout()
     self.pro_tab.layout = QGridLayout()
     self.pro_table = QTableWidget()
     self.pro_table.setColumnCount(4)  # column 설정
@@ -123,17 +122,6 @@ class UserFrameWidget(QWidget):
     self.pro_table.setItem(row, 1, QTableWidgetItem(progression))
     self.pro_table.setItem(row, 2, QTableWidgetItem(accum_time + 's')) # 단위는 sec으로 가정
     self.pro_table.setItem(row, 3, QTableWidgetItem(remark))
-    '''
-    # json 형식의 res 데이터에 진행중인 프로젝트 정보가 여러개 올때 -> 받아오는 파라미터를 변경해줘야함
-    for item in res:
-      row = self.pro_table.rowCount() 출력
-      self.pro_table.insertRow(row)
-      self.pro_table.setItem(row, 0, QTableWidgetItem(item['p_id']))
-      self.pro_table.setItem(row, 1, QTableWidgetItem(item['progression']))
-      self.pro_table.setItem(row, 2, QTableWidgetItem(item['time']))
-      self.pro_table.setItem(row, 3, QTableWidgetItem(item['remark']))
-
-    '''
 
   def get_projects(self):
     self.pro_table.setRowCount(0)
@@ -148,51 +136,25 @@ class UserFrameWidget(QWidget):
     self.cre_table.setItem(row, 0, QTableWidgetItem(date))
     self.cre_table.setItem(row, 1, QTableWidgetItem(change_info))
     self.cre_table.setItem(row, 2, QTableWidgetItem(remark))
-    '''
-    # json 형식의 res 데이터에 진행중인 프로젝트 정보가 여러개 올때 -> 받아오는 파라미터를 변경해줘야함
-    for item in res:
-      row = self.pro_table.rowCount()
-      self.pro_table.insertRow(row)
-      self.pro_table.setItem(row, 0, QTableWidgetItem(item['data']))
-      self.pro_table.setItem(row, 1, QTableWidgetItem(item['change_info']))
-      self.pro_table.setItem(row, 2, QTableWidgetItem(item['remark']))
 
-    '''
     pass
 
-  # 현재 선택한(focus 되어 있는)프로젝트 참여
   def attend_learning(self):
-    #if[이미 끝난 프로젝트 라면]:
-    #QMessageBox.about(self, 'DAIG', res['message'])
-    #return
     return self.pro_table.item(self.pro_table.currentRow(), 0).text()
 
   def refresh_learning(self):
     self.pro_table.setRowCount(0)
     print("refresh_button_pressed")
-    #if[Toolbar의 refresh button을 눌렀을때]
-    #---------- 프로젝트 정보 재요청
     pass
 
   # 현재 선택한 프로젝트 중단
   def stop_learning(self):
-    # self.pro_table.item(self.pro_table.currentRow(), 0).text() # 선택된 열의 p_id를 반환
-    # ------ 해당 프로젝트 중단 요청
     pass
 
   # 현재 선택한 모델 다운로드
   def download_model(self):
-    # if[해당 프로젝트가 끝나지 않았으면]
-    #   QMessageBox.about(self, 'DAIG', res["message"])
-
-    # self.pro_table.item(self.pro_table.currentRow(), 0).text() # 선택된 열의 p_id를 반환
-    # ----- 해당 프로젝트 결과 요청
-    # model = 결과 모델
-
-    # 저장할 원하는 파일 이름으로 결과 모델 저장
     file_save = QFileDialog.getSaveFileName(self, 'Save File', './', filter='*.h5')
     file_save_path = file_save[0]
-    # model.save(file_save_path)
 
     
 

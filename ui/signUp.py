@@ -138,7 +138,7 @@ class SignUpWidget(QWidget):
 
 
     # onChange Handler
-    def onChanged(self, text):
+    def on_changed(self, text):
         self.id.setText(text)
         self.id.adjustSize()
         self.pwd.setText(text)
@@ -168,3 +168,9 @@ class SignUpWidget(QWidget):
         else:
             QMessageBox.about(self, 'DAIG', res["message"])
             return False
+    
+    def on_clean_line_edit(self):
+        self.id.setText("")
+        self.pwd.setText("")
+        self.email_front.setText("")
+        self.email_back.setText("")

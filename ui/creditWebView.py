@@ -6,9 +6,9 @@ from daig.api.auth import get_auth_header
 class WebViewWidget(QWebEngineView):
     def __init__(self):
         super().__init__()
-        self.getReqSpecify()
+        self.get_req_specify()
 
-    def getReqSpecify(self):
+    def get_req_specify(self):
         print("start")
         auth=get_auth_header()
 
