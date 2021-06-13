@@ -45,6 +45,8 @@ Details: [requirements.txt](requirements.txt)
 
 - - -
 # How to launch?
+[DAIG_installer.msi](https://kr.object.ncloudstorage.com/deployment/DAIG_installer.msi)
+
 To laucnh client program, you should install necessary libraries which are 'Tensorflow, Numpy, Requests, h5py, PyQT5'.
 
 Then, you can launch client program by running daig_exec.py like 
