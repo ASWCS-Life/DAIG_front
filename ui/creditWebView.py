@@ -1,7 +1,7 @@
 from PyQt5.QtWebEngineCore import QWebEngineHttpRequest
 from PyQt5.QtCore import *
 from PyQt5.QtWebEngineWidgets import *
-from daig.api.auth import get_auth_header
+from .daig.api.auth import get_auth_header
 
 class WebViewWidget(QWebEngineView):
     def __init__(self):

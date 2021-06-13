@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QMessageBox
-from component.constants import set_label_style, set_edit_standard, set_button_style
+from .component.constants import set_label_style, set_edit_standard, set_button_style
 
 class FindPwdWidget(QWidget):
     def __init__(self):

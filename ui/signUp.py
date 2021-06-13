@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox, QWidget, QPushButton, QLineEdit, QLabel
-from daig.api.rest import sign_up_req, verify_email, verify_code, verify_username
-from component.constants import set_label_style, set_button_style, set_edit_standard
+from .daig.api.rest import sign_up_req, verify_email, verify_code, verify_username
+from .component.constants import set_label_style, set_button_style, set_edit_standard
 
 class SignUpWidget(QWidget):
     # don't touch

@@ -1,14 +1,14 @@
 import tensorflow as tf
-from daig.api.rest import *
+from .daig.api.rest import *
 from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar, QMessageBox
 from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
-from daig.requester import project
-from component.constants import set_label_style, set_button_style, set_edit_standard
+from .daig.requester import project
+from .component.constants import set_label_style, set_button_style, set_edit_standard
 import numpy as np
 import math
 import requests
 from tempfile import TemporaryFile
-from daig.api.auth import get_auth_header
+from .daig.api.auth import get_auth_header
 
 class UploadThread(QThread):
   stop_learning = False

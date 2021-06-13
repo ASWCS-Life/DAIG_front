@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from daig.api.rest import get_credit_log
+from .daig.api.rest import get_credit_log
 
 class BrDownWidget(QWidget):
   def __init__(self):
