@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QPushButton
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-from component.constants import setLabelStyle, setButtonStyle, setLoginButtonStyle
+from component.constants import set_label_style, set_button_style
 
 class ModeChoiceWidget(QWidget):
     def __init__(self):
@@ -21,8 +21,8 @@ class ModeChoiceWidget(QWidget):
         self.req_img.setScaledContents(True)
         self.req_size = QPushButton('학습 요청자')
 
-        setLabelStyle(self.req_img)
-        setButtonStyle(self.req_size)
+        set_label_style(self.req_img)
+        set_button_style(self.req_size)
 
         self.shr_img = QLabel(self)
         self.shr_img.setMaximumSize(100, 115)
@@ -31,7 +31,7 @@ class ModeChoiceWidget(QWidget):
         self.shr_img.setScaledContents(True)
         self.shr_size = QPushButton('리소스 제공자')
 
-        setButtonStyle(self.shr_size)
+        set_button_style(self.shr_size)
 
     # 레이아웃 생성 및 배치
         layout = QGridLayout()

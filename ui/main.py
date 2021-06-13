@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplication, QStackedWidget, QAction
 from PyQt5.QtGui import QIcon
-from component.constants import enterPressedHandler
+from component.constants import enter_pressed_handler
 from component.center import on_layout_convert_center
 
 from pwdInit import PwdInitWidget
@@ -32,29 +32,23 @@ class BrDownLayout(BrDownWidget):
 class CreditLayout(CreditWidget):
     def __init__(self):
         super().__init__()
-        self.all_btn.clicked.connect(self.openBrDownClass)
-        self.dep_btn.clicked.connect(self.openWebViewClass)
-        self.refresh.clicked.connect(self.onRefreshButton)
+        self.all_btn.clicked.connect(self.open_br_down_class)
+        self.dep_btn.clicked.connect(self.open_web_view_class)
+        self.refresh.clicked.connect(self.on_refresh_button)
 
-    def openBrDownClass(self):
+    def open_br_down_class(self):
         self.all_btn_clicked()
         widget.setCurrentIndex(10)
         widget.currentWidget().call_credit_log()
-        #BrDown_ly.call_credit_log()
         on_layout_convert_center(main_window, widget, 400, 500)
 
-    def openWebViewClass(self):
+    def open_web_view_class(self):
         self.dep_btn_clicked()
-        '''
-        res_data=get_credit_html()
-        credit_html=res_data.text 
-        print(credit_html)
-        '''
         widget.setCurrentIndex(11)
         on_layout_convert_center(main_window, widget, 930, 650)
 
-    def onRefreshButton(self):
-        self.onRefreshHandler()
+    def on_refresh_button(self):
+        self.on_refresh_handler()
         res = get_current_credit()
         main_window.crdt_lbl.setText(f'Credit : {res["credit"]}')
 
@@ -64,17 +58,17 @@ class PwdInitLayout(PwdInitWidget):
     def __init__(self):
         super().__init__()
 
-        self.pwd_init_btn.clicked.connect(self.onPwdInitHandler)
-        self.go_back.clicked.connect(self.openFindPwdClass)
-        enterPressedHandler(self.pwd, self.onPwdInitHandler)
-        enterPressedHandler(self.check_pwd, self.onPwdInitHandler)
+        self.pwd_init_btn.clicked.connect(self.on_pwd_init_handler)
+        self.go_back.clicked.connect(self.open_find_pwd_class)
+        enter_pressed_handler(self.pwd, self.on_pwd_init_handler)
+        enter_pressed_handler(self.check_pwd, self.on_pwd_init_handler)
 
-    def onPwdInitHandler(self):
-        if(self.onPwdInitAlert() == True):
+    def on_pwd_init_handler(self):
+        if(self.on_pwd_init_alert() == True):
             widget.setCurrentIndex(0)
             on_layout_convert_center(main_window, widget, 420, 180)
 
-    def openFindPwdClass(self):
+    def open_find_pwd_class(self):
         widget.setCurrentIndex(7)
         on_layout_convert_center(main_window, widget, 420, 180)
 
@@ -82,18 +76,17 @@ class PwdInitLayout(PwdInitWidget):
 class FindPwdLayout(FindPwdWidget):
     def __init__(self):
         super().__init__()
-        self.find_btn.clicked.connect(self.onFindPwdHandler)
-        self.go_back.clicked.connect(self.openLoginClass)
-        enterPressedHandler(self.id, self.onFindPwdHandler)
-        #enterPressedHandler(self.email_front, self.onFindPwdHandler)
-        #enterPressedHandler(self.email_back, self.onFindPwdHandler)
+        self.find_btn.clicked.connect(self.on_find_pwd_handler)
+        self.go_back.clicked.connect(self.open_login_class)
+        enter_pressed_handler(self.id, self.on_find_pwd_handler)
 
-    def onFindPwdHandler(self):
-        if(self.onUserInfoAlert() == True):
+    def on_find_pwd_handler(self):
+        if(self.on_user_info_alert() == True):
             widget.setCurrentIndex(8)
+            widget.currentWidget().on_clean_line_edit()
             on_layout_convert_center(main_window, widget, 370, 180)
 
-    def openLoginClass(self):
+    def open_login_class(self):
         widget.setCurrentIndex(0)
         on_layout_convert_center(main_window, widget, 400, 430)
 
@@ -101,17 +94,15 @@ class FindPwdLayout(FindPwdWidget):
 class FindIdLayout(FindIdWidget):
     def __init__(self):
         super().__init__()
-        self.find_btn.clicked.connect(self.onFindIdHandler)
-        self.go_back.clicked.connect(self.openLoginClass)
-        #enterPressedHandler(self.email_front, self.onFindIdHandler)
-        #enterPressedHandler(self.email_back, self.onFindIdHandler)
+        self.find_btn.clicked.connect(self.on_find_id_handler)
+        self.go_back.clicked.connect(self.open_login_class)
 
-    def onFindIdHandler(self):
-        if(self.onEmailAlert() == True):
+    def on_find_id_handler(self):
+        if(self.on_email_alert() == True):
             widget.setCurrentIndex(0)
             on_layout_convert_center(main_window, widget, 420, 180)
 
-    def openLoginClass(self):
+    def open_login_class(self):
         widget.setCurrentIndex(0)
         on_layout_convert_center(main_window, widget, 400, 430)
 
@@ -134,11 +125,11 @@ class ProviderLayout(ProviderWidget):
 class ReqUserLayout(UserFrameWidget):
     def __init__(self):
         super().__init__()
-        self.aten_btn.clicked.connect(self.onProjectCreateHandler)
+        self.aten_btn.clicked.connect(self.on_project_create_handler)
 
-    def onProjectCreateHandler(self):
+    def on_project_create_handler(self):
         widget.setCurrentIndex(4)
-        Prov_ly.onAttendHandler(self.attend_learning()) # 요청자가 프로젝트에 참여버튼을 누르면 제공자에 해당 p_id 전송
+        Prov_ly.on_attend_handler(self.attend_learning())
         print(Prov_ly.self_attend_p_id)
         on_layout_convert_center(main_window, widget, 700, 500)
 
@@ -146,44 +137,38 @@ class ReqUserLayout(UserFrameWidget):
 class Mode(ModeChoiceWidget):
     def __init__(self):
         super().__init__()
-        self.req_size.clicked.connect(self.openReqUserClass)
-        self.shr_size.clicked.connect(self.openProviderClass)
+        self.req_size.clicked.connect(self.open_req_user_class)
+        self.shr_size.clicked.connect(self.open_provider_class)
 
-    def openReqUserClass(self):
-        #main_window.create_project.setEnabled(True)
+    def open_req_user_class(self):
         widget.setCurrentIndex(3)
         on_layout_convert_center(main_window, widget, 700, 500)
 
-    def openProviderClass(self):
+    def open_provider_class(self):
         widget.setCurrentIndex(4)
         on_layout_convert_center(main_window, widget, 700, 500)
+
 
 
 # 회원가입 화면 - widget_index_num : 1
 class SignUp(SignUpWidget):
     def __init__(self):
         super().__init__()
-        ## 회원가입
-        # 가입완료 버튼눌렀을 경우
-        self.sign_submit.clicked.connect(self.onClickSignUpHandler)
-        # 돌아가기 버튼 눌렀을 경우
-        self.go_back.clicked.connect(self.openLoginClass)
-        self.pwd.returnPressed.connect(self.onClickSignUpHandler)
 
-        # enter 키 눌렀을 때의 동작
-        # enterPressedHandler(self.id, self.onClickSignUpHandler) ######
-        # enterPressedHandler(self.pwd, self.onClickSignUpHandler) ######
-        # enterPressedHandler(self.email_front, self.onClickSignUpHandler) ####
-        # enterPressedHandler(self.email_back, self.onClickSignUpHandler) #####
-    def onClickSignUpHandler(self):
-        result = self.onClickSignUp()
+        self.sign_submit.clicked.connect(self.on_click_sign_up_handler)
+        self.go_back.clicked.connect(self.open_login_class)
+        self.pwd.returnPressed.connect(self.on_click_sign_up_handler)
+
+    def on_click_sign_up_handler(self):
+        result = self.on_click_sign_up()
         if(result):
-            self.openLoginClass()
+            self.open_login_class()
 
 
-    def openLoginClass(self):
+    def open_login_class(self):
         widget.setCurrentIndex(widget.currentIndex() - 1)
-        on_layout_convert_center(main_window, widget, 400, 430) ##########
+        on_layout_convert_center(main_window, widget, 400, 430)
+
 
 # 로그인 화면 - widget_index_num : 0
 class Login(LoginWidget):
@@ -193,38 +178,39 @@ class Login(LoginWidget):
         self.initUI()
         ## 로그인
         # 로그인 버튼 눌렀을 경우
-        self.login.clicked.connect(self.onClickLoginHandler)
+        self.login.clicked.connect(self.on_click_login_handler)
 
-        # id, pwd 입력 창에 커서를 두고 엔터 키 눌렀을 시 로그인 할 수 있도록
-        # self.pwd.returnPressed.connect(self.onClickLoginHandler)
-        enterPressedHandler(self.id, self.onClickLoginHandler) #####
-        enterPressedHandler(self.pwd, self.onClickLoginHandler)# ####
+        enter_pressed_handler(self.id, self.on_click_login_handler) #####
+        enter_pressed_handler(self.pwd, self.on_click_login_handler)# ####
 
         # 회원가입 버튼 눌렀을 경우
-        self.sign_up.clicked.connect(self.openSignUpClass)
+        self.sign_up.clicked.connect(self.open_sign_up_class)
         # 아이디 찾기 눌렀을 경우
-        self.find_id.clicked.connect(self.openFindIdClass)
+        self.find_id.clicked.connect(self.open_find_id_class)
         # 비밀번호 찾기 눌렀을 경우
-        self.find_pwd.clicked.connect(self.openFindPwdClass)
+        self.find_pwd.clicked.connect(self.open_find_pwd_class)
 
-    def openFindPwdClass(self):
+    def open_find_pwd_class(self):
         widget.setCurrentIndex(7)
+        widget.currentWidget().on_clean_line_edit()
         on_layout_convert_center(main_window, widget, 420, 180)
 
-    def openFindIdClass(self):
+    def open_find_id_class(self):
         widget.setCurrentIndex(6)
+        widget.currentWidget().on_clean_line_edit()
         on_layout_convert_center(main_window, widget, 420, 150)
 
-    def openSignUpClass(self):
+    def open_sign_up_class(self):
         widget.setCurrentIndex(1)
-        on_layout_convert_center(main_window, widget, 500, 250)
+        widget.currentWidget().on_clean_line_edit()
+        on_layout_convert_center(main_window, widget, 500, 300)
 
-    def onClickLoginHandler(self):
-        self.onClickLogin() # 서버로 로그인 req... 결과로 res["auth"] 리턴
-        self.openModeClass()
-        main_window.addUserInfoOnToolBar()
+    def on_click_login_handler(self):
+        self.on_click_login() # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        self.open_mode_class()
+        main_window.add_user_info_on_tool_bar()
 
-    def openModeClass(self):
+    def open_mode_class(self):
         widget.setCurrentIndex(2)
         Credit_ly = CreditLayout()
         BrDown_ly = BrDownLayout()
@@ -256,20 +242,21 @@ class MyMainWindow(QMainWindow):
     self.create_project = QAction(QIcon('./local_data/create.png'), 'New Project', self)
     self.credit = QAction(QIcon('./local_data/credit.png'), 'Credit Info', self)
     self.go_home.setStatusTip('Home')
-    self.go_home.triggered.connect(self.onToolBarTriggeredHandler) # 아이콘 클릭시 mode설정 화면으로 돌아감
+    self.go_home.triggered.connect(self.on_tool_bar_triggered_handler) # 아이콘 클릭시 mode설정 화면으로 돌아감
     self.toolbar = self.addToolBar('Home')
     self.toolbar.addAction(self.go_home)
     self.toolbar.addAction(self.create_project)
     self.toolbar.addAction(self.credit)
 
-    self.create_project.triggered.connect(self.openDataUploadClass)
-    self.credit.triggered.connect(self.onCreditTriggeredHandler)
-  def openDataUploadClass(self):
+    self.create_project.triggered.connect(self.open_data_upload_class)
+    self.credit.triggered.connect(self.on_credit_triggered_handler)
+  def open_data_upload_class(self):
       widget.setCurrentIndex(5)
+      widget.currentWidget().on_clean_line_edit()
       on_layout_convert_center(self, widget, 500, 500)
 
     # 로그인 시 툴바에 id와 credit 정보 추가
-  def addUserInfoOnToolBar(self):
+  def add_user_info_on_tool_bar(self):
     res_data=get_current_credit()
     self.id_lbl.setText(f'ID : {res_data["id"]}')
     self.crdt_lbl.setText(f'Credit : {res_data["credit"]}')
@@ -279,7 +266,7 @@ class MyMainWindow(QMainWindow):
     self.toolbar.addWidget(self.crdt_lbl) #
     self.toolbar.addWidget(self.space_)
 
-  def toolBarTriggerHandler(self):
+  def tool_bar_trigger_handler(self):
     if (widget.currentIndex() < 2 or (widget.currentIndex() > 5 and widget.currentIndex() < 9)):
         self.go_home.setEnabled(False)
         self.credit.setEnabled(False)
@@ -292,10 +279,10 @@ class MyMainWindow(QMainWindow):
         self.create_project.setEnabled(False)
     pass
 
-  def onToolBarTriggeredHandler(self):
+  def on_tool_bar_triggered_handler(self):
     widget.setCurrentIndex(2)
     on_layout_convert_center(self, widget, 450, 250)
-  def onCreditTriggeredHandler(self):
+  def on_credit_triggered_handler(self):
     widget.setCurrentIndex(9)
     on_layout_convert_center(self, widget, 600, 500)
 # don't touch
@@ -317,11 +304,6 @@ if __name__ == '__main__':
     FdPwd_ly = FindPwdLayout()
     PwdInit_ly = PwdInitLayout()
 
-
-
-    #Progress_ly = Progress()
-    #TrainRslt_ly = TrainResult()
-
     #레이아웃 스택 추가
     widget.addWidget(Login_ly) #0
     widget.addWidget(SignUp_ly) #1
@@ -334,17 +316,13 @@ if __name__ == '__main__':
     widget.addWidget(PwdInit_ly) #8
 
 
-    #widget.addWidget(Progress_ly) - 진행상황 ui 따로 필요 x (요청자 화면에서 진행상황을 보여줄 것임)
-    #widget.addWidget(TrainRslt_ly) - 결과확인 ui 따로 필요 x (결과 모델을 따로 다운받을 수 있도록)
-
-
     #윈도우 객체 생성 및 타이틀 설정
     main_window = MyMainWindow()
     main_window.setWindowTitle("DAIG")
 
     # 윈도우 크기 설정 -> 화면 중앙 배치 -> 윈도우 열기
-    on_layout_convert_center(main_window, widget, 400, 430) ##########
-    main_window.toolBarTriggerHandler()
+    on_layout_convert_center(main_window, widget, 400, 430)
+    main_window.tool_bar_trigger_handler()
     main_window.show()
 
     sys.exit(app.exec_())
