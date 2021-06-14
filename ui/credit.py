@@ -15,7 +15,7 @@ class CreditWidget(QWidget):
 
     res = get_current_credit()
     self.credit_amount = str(res["credit"])
-    self.label = QLabel(self.credit_amount + '원', self) 
+    self.label = QLabel(self.credit_amount + '원', self)
     self.label.setAlignment(Qt.AlignCenter)
     self.label_font = self.label.font()
     self.label_font.setPointSize(25)
@@ -49,8 +49,8 @@ class CreditWidget(QWidget):
   def all_btn_clicked(self):
     pass
 
-
   # 출금하기 눌렀을 시
+
   def dep_btn_clicked(self):
     pass
 
@@ -58,5 +58,5 @@ class CreditWidget(QWidget):
   def on_refresh_handler(self):
     res = get_current_credit()
     self.credit_amount = str(res["credit"])
-    self.label.setText(self.credit_amount + '원') 
+    self.label.setText(self.credit_amount + '원')
     pass

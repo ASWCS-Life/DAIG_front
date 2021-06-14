@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMessageBox, QWidget, QPushButton, QLineEdit, QLabel
 from .daig.api.rest import sign_up_req, verify_email, verify_code, verify_username
 from .component.constants import set_label_style, set_button_style, set_edit_standard
 
+
 class SignUpWidget(QWidget):
     # don't touch
     def __init__(self):
@@ -11,8 +12,8 @@ class SignUpWidget(QWidget):
     # code
     def initUI(self):
         self.is_username_available = False
-        self.check_email_authorized = False # 이메일 인증 여부
-    
+        self.check_email_authorized = False  # 이메일 인증 여부
+
     # 가입완료 버튼
         self.sign_submit = QPushButton('가입완료', self)
         self.sign_submit.move(255, 205)
@@ -29,7 +30,6 @@ class SignUpWidget(QWidget):
         self.dup_username.move(375, 27)
         set_button_style(self.dup_username)
         self.dup_username.clicked.connect(self.check_username)
-
 
     # 이메일 인증 버튼
         self.email = ''
@@ -92,41 +92,38 @@ class SignUpWidget(QWidget):
         self.code.setFixedWidth(80)
         set_edit_standard(self.code, 95, 150, '인증 코드')
 
-
     # 이메일 인증
+
     def check_email(self):
         self.check_email_authorized = False
-        req_data={
-            'email':self.email.text()
+        req_data = {
+            'email': self.email.text()
         }
-        res_data=verify_email(req_data)
+        res_data = verify_email(req_data)
         # if res_data['is_successful']:
-            
-        QMessageBox.about(self,'DAIG',res_data["message"])
+
+        QMessageBox.about(self, 'DAIG', res_data["message"])
 
     def check_code(self):
-        req_data={
-            'email':self.email.text(),
-            'code':self.code.text()
+        req_data = {
+            'email': self.email.text(),
+            'code': self.code.text()
         }
-        res_data=verify_code(req_data)
+        res_data = verify_code(req_data)
         if res_data['is_successful']:
             self.check_email_authorized = True
-        QMessageBox.about(self,'DAIG',res_data["message"])
+        QMessageBox.about(self, 'DAIG', res_data["message"])
 
     def check_username(self):
         self.is_username_available = False
-        req_data={
-            'username':self.id.text(),
+        req_data = {
+            'username': self.id.text(),
         }
-        res_data=verify_username(req_data)
+        res_data = verify_username(req_data)
         if res_data['is_successful']:
             self.is_username_available = True
-        QMessageBox.about(self,'DAIG',res_data["message"])
+        QMessageBox.about(self, 'DAIG', res_data["message"])
 
-
-
-    # onChange Handler
     def on_changed(self, text):
         self.id.setText(text)
         self.id.adjustSize()
@@ -143,14 +140,14 @@ class SignUpWidget(QWidget):
         if(self.is_username_available == False):
             QMessageBox.about(self, 'DAIG', 'ID 중복확인을 해주세요.')
             return
-        
+
         if(self.check_email_authorized == False):
             QMessageBox.about(self, 'DAIG', '이메일 인증을 해주세요.')
             return
         sender_data = {
-           "username" : self.id.text(),
-           "password" : self.pwd.text(),
-           "email" : self.email.text()
+            "username": self.id.text(),
+            "password": self.pwd.text(),
+            "email": self.email.text()
         }
         res = sign_up_req(sender_data)
         if(res["is_successful"] == True):
@@ -159,10 +156,9 @@ class SignUpWidget(QWidget):
         else:
             QMessageBox.about(self, 'DAIG', res["message"])
             return False
-    
+
     def on_clean_line_edit(self):
         self.id.setText("")
         self.pwd.setText("")
         self.email.setText("")
         self.code.setText("")
-

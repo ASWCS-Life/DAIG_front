@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import *
 from .component.constants import set_button_style
-from tensorflow import keras
 
 from .daig.api.rest import get_owned_projects
 
@@ -51,12 +50,10 @@ class UserFrameWidget(QWidget):
       project_header.setSectionResizeMode(column, QHeaderView.Interactive)
       project_header.resizeSection(column, width[column] * wfactor)
 
-    # self.pro_tab.layout.addWidget(self.pro_table)
     self.pro_tab.layout.addWidget(self.pro_table,0,0,4,5)
     self.pro_tab.setLayout(self.pro_tab.layout)
 
     # 크레딧 테이블 바
-    # self.cre_tab.layout = QVBoxLayout()
     self.cre_tab.layout = QGridLayout()
     self.cre_table = QTableWidget()
     self.cre_table.setColumnCount(3)
@@ -76,7 +73,6 @@ class UserFrameWidget(QWidget):
       credit_header.setSectionResizeMode(column, QHeaderView.Interactive)
       credit_header.resizeSection(column, width[column] * wfactor)
 
-    # self.cre_tab.layout.addWidget(self.cre_table)
     self.cre_tab.layout.addWidget(self.cre_table,0,0,4,5)
     self.cre_tab.setLayout(self.cre_tab.layout)
 
