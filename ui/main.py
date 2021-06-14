@@ -51,6 +51,7 @@ class CreditLayout(CreditWidget):
     def open_web_view_class(self):
         self.dep_btn_clicked()
         widget.setCurrentIndex(11)
+        widget.currentWidget().reload()
         on_layout_convert_center(main_window, widget, 930, 650)
 
     def on_refresh_button(self):
@@ -221,7 +222,7 @@ class Login(LoginWidget):
         on_layout_convert_center(main_window, widget, 500, 300)
 
     def on_click_login_handler(self):
-        result = self.on_click_login()  # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        result = self.on_click_login()  
         if(result == False): return
         self.open_mode_class()
         main_window.add_user_info_on_tool_bar()

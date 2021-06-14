@@ -18,6 +18,8 @@ class WebViewWidget(QWebEngineView):
         print(self.req)
         self.load(self.req)
 
+    def reload(self): self.load(self.req)
+
     def printLoadStart(self): print("Start Loading")
 
     def printLoading(self): print("Loading")

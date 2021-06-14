@@ -28,8 +28,8 @@ class BrDownWidget(QWidget):
   def call_credit_log(self):
     self.p_date = []
     row_len = self.form_layout.rowCount()
-    for i in range(row_len + 1):
-      self.form_layout.removeRow(i)
+    for i in range(row_len):
+      self.form_layout.removeRow(0)
       
     self.credit_log_list = get_credit_log()
 
