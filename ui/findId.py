@@ -37,9 +37,7 @@ class FindIdWidget(QWidget):
 
     def on_changed(self, text):
         self.email_front.setText(text)
-        self.id.adjustSize()
         self.email_back.setText(text)
-        self.pwd.adjustSize()
 
     def on_email_alert(self):
         self.email = self.email_front.text() + '@' + self.email_back.text()
