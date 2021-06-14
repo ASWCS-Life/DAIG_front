@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox, QWidget, QPushButton, QLineEdit, QLabel
-
-from daig.api.rest import sign_up_req, verify_email, verify_code, verify_username
-from component.constants import set_label_style, set_button_style, set_edit_standard
+from .daig.api.rest import sign_up_req, verify_email, verify_code, verify_username
+from .component.constants import set_label_style, set_button_style, set_edit_standard
 
 class SignUpWidget(QWidget):
     # don't touch
@@ -16,20 +15,12 @@ class SignUpWidget(QWidget):
     
     # 가입완료 버튼
         self.sign_submit = QPushButton('가입완료', self)
-<<<<<<< HEAD
-        self.sign_submit.move(255, 165)
-=======
         self.sign_submit.move(255, 205)
->>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
         set_button_style(self.sign_submit)
 
     # 돌아가기 버튼
         self.go_back = QPushButton('돌아가기', self)
-<<<<<<< HEAD
-        self.go_back.move(375, 165)
-=======
         self.go_back.move(375, 205)
->>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
         set_button_style(self.go_back)
 
     # 중복 아이디 확인 버튼
@@ -92,13 +83,6 @@ class SignUpWidget(QWidget):
         self.pwd.setEchoMode(QLineEdit.Password)
         self.pwd.setFixedWidth(150)
         set_edit_standard(self.pwd, 95, 70, '비밀번호')
-<<<<<<< HEAD
-
-        # self.email_front = QLineEdit(self)
-        # self.email_front.setFixedWidth(150)
-        # setEditStandard(self.email_front, 95, 110, '이메일')
-=======
->>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
 
         self.email = QLineEdit(self)
         self.email.setFixedWidth(220)

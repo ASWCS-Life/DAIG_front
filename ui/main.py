@@ -1,22 +1,25 @@
 import sys
+import os
 from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplication, QStackedWidget, QAction
 from PyQt5.QtGui import QIcon
-from component.constants import enter_pressed_handler
-from component.center import on_layout_convert_center
+from .component.constants import enter_pressed_handler
+from .component.center import on_layout_convert_center
 
-from pwdInit import PwdInitWidget
-from findPwd import FindPwdWidget
-from findId import FindIdWidget
-from login import LoginWidget
-from signUp import SignUpWidget
-from mode import ModeChoiceWidget
-from userLayout import UserFrameWidget
-from providerLayout import ProviderWidget
-from dataUpload import DataUploadWidget
-from breakdown import BrDownWidget
-from credit import CreditWidget
-from creditWebView import WebViewWidget
-from daig.api.rest import get_current_credit
+from .pwdInit import PwdInitWidget
+from .findPwd import FindPwdWidget
+from .findId import FindIdWidget
+from .login import LoginWidget
+from .signUp import SignUpWidget
+from .mode import ModeChoiceWidget
+from .userLayout import UserFrameWidget
+from .providerLayout import ProviderWidget
+from .dataUpload import DataUploadWidget
+from .breakdown import BrDownWidget
+from .credit import CreditWidget
+from .creditWebView import WebViewWidget
+from .daig.api.rest import get_current_credit
+
+path=os.path.dirname(__file__)
 
 #11
 class WebViewLayout(WebViewWidget):
@@ -224,7 +227,7 @@ class Login(LoginWidget):
 class MyMainWindow(QMainWindow):
   def __init__(self):
     super().__init__()
-    self.setWindowIcon(QIcon('./local_data/daig_icon.png'))
+    self.setWindowIcon(QIcon(os.path.join(path,'local_data/daig_icon.png')))
 
     self.id_lbl = QLabel(self) #
     self.space = QLabel("  ", self)
@@ -236,9 +239,9 @@ class MyMainWindow(QMainWindow):
     self.center_space.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) #
 
     # 툴바 아이콘 지정 및 행동 지정
-    self.go_home = QAction(QIcon('./local_data/home.png'), 'Home', self)
-    self.create_project = QAction(QIcon('./local_data/create.png'), 'New Project', self)
-    self.credit = QAction(QIcon('./local_data/credit.png'), 'Credit Info', self)
+    self.go_home = QAction(QIcon(os.path.join(path,'local_data/home.png')), 'Home', self)
+    self.create_project = QAction(QIcon(os.path.join(path,'local_data/create.png')), 'New Project', self)
+    self.credit = QAction(QIcon(os.path.join(path,'local_data/credit.png')), 'Credit Info', self)
     self.go_home.setStatusTip('Home')
     self.go_home.triggered.connect(self.on_tool_bar_triggered_handler) # 아이콘 클릭시 mode설정 화면으로 돌아감
     self.toolbar = self.addToolBar('Home')
@@ -283,44 +286,91 @@ class MyMainWindow(QMainWindow):
   def on_credit_triggered_handler(self):
     widget.setCurrentIndex(9)
     on_layout_convert_center(self, widget, 600, 500)
-# don't touch
-if __name__ == '__main__':
-    #QApplication : 프로그램을 실행시켜주는 클래스
-    app = QApplication(sys.argv)
-
-    #화면 전환용 Widget 설정
-    widget = QStackedWidget()
-
-    #레이아웃 인스턴스 생성
-    Login_ly = Login()
-    SignUp_ly = SignUp()
-    Mode_ly = Mode()
-    User_ly = ReqUserLayout()
-    Prov_ly = ProviderLayout()
-    DtUp_ly = DataUploadLayout()
-    FdId_ly = FindIdLayout()
-    FdPwd_ly = FindPwdLayout()
-    PwdInit_ly = PwdInitLayout()
-
-    #레이아웃 스택 추가
-    widget.addWidget(Login_ly) #0
-    widget.addWidget(SignUp_ly) #1
-    widget.addWidget(Mode_ly) #2
-    widget.addWidget(User_ly) #3
-    widget.addWidget(Prov_ly) #4
-    widget.addWidget(DtUp_ly) #5
-    widget.addWidget(FdId_ly) #6
-    widget.addWidget(FdPwd_ly) #7
-    widget.addWidget(PwdInit_ly) #8
 
 
-    #윈도우 객체 생성 및 타이틀 설정
-    main_window = MyMainWindow()
-    main_window.setWindowTitle("DAIG")
+app = QApplication(sys.argv)
+widget = QStackedWidget()
 
-    # 윈도우 크기 설정 -> 화면 중앙 배치 -> 윈도우 열기
-    on_layout_convert_center(main_window, widget, 400, 430)
-    main_window.tool_bar_trigger_handler()
+#레이아웃 인스턴스 생성
+Login_ly = Login()
+SignUp_ly = SignUp()
+Mode_ly = Mode()
+User_ly = ReqUserLayout()
+Prov_ly = ProviderLayout()
+DtUp_ly = DataUploadLayout()
+FdId_ly = FindIdLayout()
+FdPwd_ly = FindPwdLayout()
+PwdInit_ly = PwdInitLayout()
+
+
+
+#Progress_ly = Progress()
+#TrainRslt_ly = TrainResult()
+
+#레이아웃 스택 추가
+widget.addWidget(Login_ly) #0
+widget.addWidget(SignUp_ly) #1
+widget.addWidget(Mode_ly) #2
+widget.addWidget(User_ly) #3
+widget.addWidget(Prov_ly) #4
+widget.addWidget(DtUp_ly) #5
+widget.addWidget(FdId_ly) #6
+widget.addWidget(FdPwd_ly) #7
+widget.addWidget(PwdInit_ly) #8
+
+main_window = MyMainWindow()
+main_window.setWindowTitle("DAIG")
+
+# 윈도우 크기 설정 -> 화면 중앙 배치 -> 윈도우 열기
+on_layout_convert_center(main_window, widget, 400, 430) ##########
+main_window.tool_bar_trigger_handler()
+
+def main():   
     main_window.show()
 
     sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
+
+# # don't touch
+# if __name__ == '__main__':
+#     #QApplication : 프로그램을 실행시켜주는 클래스
+#     app = QApplication(sys.argv)
+
+#     #화면 전환용 Widget 설정
+#     widget = QStackedWidget()
+
+#     #레이아웃 인스턴스 생성
+#     Login_ly = Login()
+#     SignUp_ly = SignUp()
+#     Mode_ly = Mode()
+#     User_ly = ReqUserLayout()
+#     Prov_ly = ProviderLayout()
+#     DtUp_ly = DataUploadLayout()
+#     FdId_ly = FindIdLayout()
+#     FdPwd_ly = FindPwdLayout()
+#     PwdInit_ly = PwdInitLayout()
+
+#     #레이아웃 스택 추가
+#     widget.addWidget(Login_ly) #0
+#     widget.addWidget(SignUp_ly) #1
+#     widget.addWidget(Mode_ly) #2
+#     widget.addWidget(User_ly) #3
+#     widget.addWidget(Prov_ly) #4
+#     widget.addWidget(DtUp_ly) #5
+#     widget.addWidget(FdId_ly) #6
+#     widget.addWidget(FdPwd_ly) #7
+#     widget.addWidget(PwdInit_ly) #8
+
+
+#     #윈도우 객체 생성 및 타이틀 설정
+#     main_window = MyMainWindow()
+#     main_window.setWindowTitle("DAIG")
+
+#     # 윈도우 크기 설정 -> 화면 중앙 배치 -> 윈도우 열기
+#     on_layout_convert_center(main_window, widget, 400, 430)
+#     main_window.tool_bar_trigger_handler()
+#     main_window.show()
+
+#     sys.exit(app.exec_())
