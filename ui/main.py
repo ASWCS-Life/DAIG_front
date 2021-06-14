@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplicatio
 from PyQt5.QtGui import QIcon
 from .component.constants import enter_pressed_handler
 from .component.center import on_layout_convert_center
-
 from .pwdInit import PwdInitWidget
 from .findPwd import FindPwdWidget
 from .findId import FindIdWidget
