@@ -110,9 +110,9 @@ class FindIdLayout(FindIdWidget):
         self.go_back.clicked.connect(self.open_login_class)
 
     def on_find_id_handler(self):
-        if(self.on_email_alert() == True):
+        # if(self.on_email_alert() == True):
             widget.setCurrentIndex(0)
-            on_layout_convert_center(main_window, widget, 420, 180)
+            on_layout_convert_center(main_window, widget, 400, 430)
 
     def open_login_class(self):
         widget.setCurrentIndex(0)

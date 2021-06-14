@@ -13,8 +13,8 @@ from tempfile import TemporaryFile
 
 import time
 
-base_url = 'http://118.67.130.33:8000'
-#base_url = 'http://127.0.0.1:8000'
+# base_url = 'http://118.67.130.33:8000'
+base_url = 'http://127.0.0.1:8000'
 
 class CustomCallback(tf.keras.callbacks.Callback): 
     stop_learning_tok = False
@@ -296,3 +296,11 @@ def verify_username(data = None):
     response_alert(res.status_code)
     return res.json()
 
+def find_id(data=None):
+    data={
+        'email':data
+    }
+    res = requests.post(f'{base_url}/auth/find/username/', data = data)
+
+    response_alert(res.status_code)
+    return res.json()
