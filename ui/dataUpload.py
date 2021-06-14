@@ -30,7 +30,11 @@ class UploadThread(QThread):
 
   def run(self):
     print(self.model_path)
-    model = tf.keras.models.load_model(self.model_path)
+    try:
+      model = tf.keras.models.load_model(self.model_path)
+    except:
+      QMessageBox.about(self, 'DAIG', '잘못된 h5 모델 파일입니다.')
+      return
 
     res = self.create_project(model.get_weights(), data = {
         'total_task' : self.task_num,
