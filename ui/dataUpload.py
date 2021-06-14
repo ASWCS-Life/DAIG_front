@@ -97,8 +97,12 @@ class UploadThread(QThread):
   def upload_data(self,data_path,label_path,project_uid,task_num):
     data=np.load(data_path, allow_pickle=True)
     label=np.load(label_path, allow_pickle=True)
-    data_split=np.split(data,task_num)
-    label_split=np.split(label,task_num)
+    try:
+      data_split=np.split(data,task_num)
+      label_split=np.split(label,task_num)
+    except:
+      QMessageBox.about(self, 'DAIG', '잘못된 npy 데이터 파일입니다.')
+      return
 
     pbar_rate=0
     r=math.floor(10000/task_num)*0.01
