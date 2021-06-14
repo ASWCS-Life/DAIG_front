@@ -256,11 +256,10 @@ class DataUploadWidget(QWidget):
   
 
   def train_start_clicked(self):
-    if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
-      QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
-      return 
-    if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
-      QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
+
+    error = self.input_format_check()
+    if error:
+      QMessageBox.about(self, 'DAIG', error)
       return
 
     self.train_start.setEnabled(False)
@@ -282,19 +281,19 @@ class DataUploadWidget(QWidget):
     raise NotImplementedError
 
   def input_format_check(self):
-    if((int(self.cho_task.text()) != float(self.cho_task.text()))):
-      return "총 task 크기는 정수형으로 입력해주세요"
-    if((int(self.cho_step.text()) != float(self.cho_step.text()))):
-      return "step의 크기는 정수형으로 입력해주세요"
-    if((int(self.cho_epoch.text()) != float(self.cho_epoch.text()))):
-      return "epoch 값은 정수형으로 입력해주세요"
-    if((int(self.cho_batch.text()) != float(self.cho_batch.text()))):
-      return "batch size는 정수형으로 입력해주세요"
-    if((int(self.cho_contributor.text()) != float(self.cho_contributor.text()))):
-      return "참여자 수는 정수형으로 입력해주세요"
-    if(float(self.cho_valid.text()) >= 1 or float(self.cho_valid.text()) < 0):
-      return "validation split은 0에서 1사이의 실수여야 합니다."
-    if(int(self.cho_task.text()) < 10 or int(self.cho_task.text()) > 100):
+    if(not (self.cho_task.text().isdecimal() and self.isInt(self.cho_task.text()))):
+      return "총 task 크기는 양의 정수형으로 입력해주세요"
+    if(not (self.cho_step.text().isdecimal() and self.isInt(self.cho_step.text()))):
+      return "step의 크기는 양의 정수형으로 입력해주세요"
+    if(not (self.cho_epoch.text().isdecimal() and self.isInt(self.cho_epoch.text()))):
+      return "epoch 값은 양의 정수형으로 입력해주세요"
+    if(not (self.cho_batch.text().isdecimal() and self.isInt(self.cho_batch.text()))):
+      return "batch size는 양의 정수형으로 입력해주세요"
+    if(not (self.cho_contributor.text().isdecimal() and self.isInt(self.cho_contributor.text()))):
+      return "참여자 수는 양의 정수형으로 입력해주세요"
+    if(not (self.cho_valid.text().isdecimal() and (float(self.cho_valid.text()) <= 1 and float(self.cho_valid.text()) > 0))):
+      return "검증 비율은 0에서 1사이의 실수여야 합니다."
+    if(not (self.cho_task.text().isdecimal() and (int(self.cho_task.text()) > 10 and int(self.cho_task.text()) < 100))):
       return "task의 숫자가 너무 크거나 작습니다."
     if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
       return "step의 숫자가 너무 크거나 작습니다."
@@ -306,6 +305,12 @@ class DataUploadWidget(QWidget):
       return "총 Task 갯수는 step size로 나누어 떨어질 수 있어야 합니다."
 
     return False
+
+  def isInt(self, str):
+    if(float(str)%1 != 0):
+      return False
+    else:
+      return True
     
   def on_clean_line_edit(self):
     self.cho_batch.setText("")
@@ -317,4 +322,6 @@ class DataUploadWidget(QWidget):
     self.model_path.setText("")
     self.train_lbl_path.setText("")
     self.train_img_path.setText("")
+    self.pbar.setValue(0)
+    self.train_start.setEnabled(True)
 
