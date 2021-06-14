@@ -13,8 +13,8 @@ from tempfile import TemporaryFile
 
 import time
 
-#base_url = 'http://118.67.130.33:8000'
-base_url = 'http://127.0.0.1:8000'
+base_url = 'http://118.67.130.33:8000'
+#base_url = 'http://127.0.0.1:8000'
 
 class CustomCallback(tf.keras.callbacks.Callback): 
     stop_learning_tok = False
