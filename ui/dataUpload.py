@@ -295,12 +295,12 @@ class DataUploadWidget(QWidget):
       return "batch size는 양의 정수형으로 입력해주세요"
     if(not (self.cho_contributor.text().isdecimal() and self.isInt(self.cho_contributor.text()))):
       return "참여자 수는 양의 정수형으로 입력해주세요"
-    if(not (float(self.cho_valid.text()) <= 1 and float(self.cho_valid.text()) > 0)):
+    if(not (float(self.cho_valid.text()) < 1 and float(self.cho_valid.text()) > 0)):
       return "검증 비율은 0에서 1사이의 실수여야 합니다."
-    if(not (self.cho_task.text().isdecimal() and (int(self.cho_task.text()) > 10 and int(self.cho_task.text()) < 100))):
-      return "task의 숫자가 너무 크거나 작습니다."
+    if(not (self.cho_task.text().isdecimal() and (int(self.cho_task.text()) >= 10 and int(self.cho_task.text()) <= 500))):
+      return "task의 숫자가 너무 크거나 작습니다. (10 ~ 500)"
     if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
-      return "step의 숫자가 너무 크거나 작습니다."
+      return "step의 숫자가 너무 크거나 작습니다. (1 ~ 20)"
     if(int(self.cho_contributor.text()) < 1):
       return "최대 참여자 수는 양의 정수여야 합니다."
     if(int(self.cho_contributor.text()) > int(self.cho_step.text())):
