@@ -81,17 +81,17 @@ class UserFrameWidget(QWidget):
     self.cre_tab.layout.addWidget(self.credit_get_btn, 5, 4)
 
     # 버튼 생성
-    self.aten_btn = QPushButton('참여')
+    # self.aten_btn = QPushButton('참여')
     self.stop_btn = QPushButton('중단')
     self.down_btn = QPushButton('다운로드')
     self.get_btn = QPushButton('새로 고침')
 
 
-    self.aten_btn.clicked.connect(self.attend_learning)
+    # self.aten_btn.clicked.connect(self.attend_learning)
     self.stop_btn.clicked.connect(self.stop_learning)
     self.down_btn.clicked.connect(self.download_model)
 
-    set_button_style(self.aten_btn)
+    # set_button_style(self.aten_btn)
     set_button_style(self.stop_btn)
     set_button_style(self.down_btn)
     set_button_style(self.get_btn)
@@ -101,7 +101,7 @@ class UserFrameWidget(QWidget):
 
     layout = QGridLayout()
     layout.addWidget(self.tabs, 0, 0, 1, 0)
-    self.pro_tab.layout.addWidget(self.aten_btn, 5, 1)
+    # self.pro_tab.layout.addWidget(self.aten_btn, 5, 1)
     self.pro_tab.layout.addWidget(self.stop_btn, 5, 2)
     self.pro_tab.layout.addWidget(self.down_btn, 5, 3)
     self.pro_tab.layout.addWidget(self.get_btn, 5, 4)

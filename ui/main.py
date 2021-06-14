@@ -1,9 +1,11 @@
 import sys
 import os
+from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QSizePolicy, QWidget, QLabel, QMainWindow, QApplication, QStackedWidget, QAction
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QDesktopServices, QIcon
 from .component.constants import enter_pressed_handler
 from .component.center import on_layout_convert_center
+from .daig.api.rest import base_url
 
 from .pwdInit import PwdInitWidget
 from .findPwd import FindPwdWidget
@@ -88,13 +90,11 @@ class FindPwdLayout(FindPwdWidget):
         super().__init__()
         self.find_btn.clicked.connect(self.on_find_pwd_handler)
         self.go_back.clicked.connect(self.open_login_class)
-        enter_pressed_handler(self.id, self.on_find_pwd_handler)
 
     def on_find_pwd_handler(self):
-        if(self.on_user_info_alert() == True):
-            widget.setCurrentIndex(8)
-            widget.currentWidget().on_clean_line_edit()
-            on_layout_convert_center(main_window, widget, 370, 180)
+        widget.setCurrentIndex(0)
+        widget.currentWidget().on_clean_line_edit()
+        on_layout_convert_center(main_window, widget, 400, 430)
 
     def open_login_class(self):
         widget.setCurrentIndex(0)
@@ -110,9 +110,8 @@ class FindIdLayout(FindIdWidget):
         self.go_back.clicked.connect(self.open_login_class)
 
     def on_find_id_handler(self):
-        # if(self.on_email_alert() == True):
-            widget.setCurrentIndex(0)
-            on_layout_convert_center(main_window, widget, 400, 430)
+        widget.setCurrentIndex(0)
+        on_layout_convert_center(main_window, widget, 400, 430)
 
     def open_login_class(self):
         widget.setCurrentIndex(0)
@@ -143,13 +142,13 @@ class ProviderLayout(ProviderWidget):
 class ReqUserLayout(UserFrameWidget):
     def __init__(self):
         super().__init__()
-        self.aten_btn.clicked.connect(self.on_project_create_handler)
+    #     self.aten_btn.clicked.connect(self.on_project_create_handler)
 
-    def on_project_create_handler(self):
-        widget.setCurrentIndex(4)
-        Prov_ly.on_attend_handler(self.attend_learning())
-        print(Prov_ly.self_attend_p_id)
-        on_layout_convert_center(main_window, widget, 700, 500)
+    # def on_project_create_handler(self):
+    #     widget.setCurrentIndex(4)
+    #     Prov_ly.on_attend_handler(self.attend_learning())
+    #     print(Prov_ly.self_attend_p_id)
+    #     on_layout_convert_center(main_window, widget, 700, 500)
 
 # 요청자 / 제공자 모드 선택 화면 - widget_index_num : 2
 
@@ -210,9 +209,7 @@ class Login(LoginWidget):
         self.find_pwd.clicked.connect(self.open_find_pwd_class)
 
     def open_find_pwd_class(self):
-        widget.setCurrentIndex(7)
-        widget.currentWidget().on_clean_line_edit()
-        on_layout_convert_center(main_window, widget, 420, 180)
+        QDesktopServices.openUrl(QUrl(f'{base_url}/auth/accounts/password_reset/'))
 
     def open_find_id_class(self):
         widget.setCurrentIndex(6)
