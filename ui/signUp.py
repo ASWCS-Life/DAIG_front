@@ -89,8 +89,6 @@ class SignUpWidget(QWidget):
         self.pwd.adjustSize()
         self.email_front.setText(text)
         self.email_front.adjustSize()
-        self.email_back.setText(text)
-        self.email_back.adjustSize()
 
     def on_click_sign_up(self):
         sender_data = {

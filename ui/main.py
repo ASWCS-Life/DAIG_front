@@ -40,19 +40,12 @@ class CreditLayout(CreditWidget):
         self.refresh.clicked.connect(self.on_refresh_button)
 
     def open_br_down_class(self):
-        self.all_btn_clicked()
         widget.setCurrentIndex(10)
         widget.currentWidget().call_credit_log()
-        #BrDown_ly.call_credit_log()
         on_layout_convert_center(main_window, widget, 400, 500)
 
     def open_web_view_class(self):
         self.dep_btn_clicked()
-        '''
-        res_data=get_credit_html()
-        credit_html=res_data.text 
-        print(credit_html)
-        '''
         widget.setCurrentIndex(11)
         on_layout_convert_center(main_window, widget, 930, 650)
 
@@ -88,8 +81,6 @@ class FindPwdLayout(FindPwdWidget):
         self.find_btn.clicked.connect(self.on_find_pwd_handler)
         self.go_back.clicked.connect(self.open_login_class)
         enter_pressed_handler(self.id, self.on_find_pwd_handler)
-        enter_pressed_handler(self.email_front, self.on_find_pwd_handler)
-        enter_pressed_handler(self.email_back, self.on_find_pwd_handler)
 
     def on_find_pwd_handler(self):
         if(self.on_user_info_alert() == True):
@@ -107,8 +98,6 @@ class FindIdLayout(FindIdWidget):
         super().__init__()
         self.find_btn.clicked.connect(self.on_find_id_handler)
         self.go_back.clicked.connect(self.open_login_class)
-        enter_pressed_handler(self.email_front, self.on_find_id_handler)
-        enter_pressed_handler(self.email_back, self.on_find_id_handler)
 
     def on_find_id_handler(self):
         if(self.on_email_alert() == True):
@@ -172,11 +161,6 @@ class SignUp(SignUpWidget):
         self.go_back.clicked.connect(self.open_login_class)
         self.pwd.returnPressed.connect(self.on_click_sign_up_handler)
 
-        # enter 키 눌렀을 때의 동작
-        enter_pressed_handler(self.id, self.on_click_sign_up_handler)
-        enter_pressed_handler(self.pwd, self.on_click_sign_up_handler)
-        enter_pressed_handler(self.email_front, self.on_click_sign_up_handler)
-        enter_pressed_handler(self.email_back, self.on_click_sign_up_handler)
     def on_click_sign_up_handler(self):
         result = self.on_click_sign_up()
         if(result):
@@ -197,8 +181,6 @@ class Login(LoginWidget):
         # 로그인 버튼 눌렀을 경우
         self.login.clicked.connect(self.on_click_login_handler)
 
-        # id, pwd 입력 창에 커서를 두고 엔터 키 눌렀을 시 로그인 할 수 있도록
-        # self.pwd.returnPressed.connect(self.onClickLoginHandler)
         enter_pressed_handler(self.id, self.on_click_login_handler) #####
         enter_pressed_handler(self.pwd, self.on_click_login_handler)# ####
 

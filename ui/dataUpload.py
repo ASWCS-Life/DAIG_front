@@ -1,5 +1,3 @@
-import sys
-import os
 import tensorflow as tf
 from daig.api.rest import *
 from PyQt5.QtWidgets import QLineEdit, QWidget, QLabel, QPushButton, QComboBox, QGridLayout, QFileDialog, QProgressBar, QMessageBox
