@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit
+from PyQt5.QtWidgets import QMessageBox, QWidget, QLabel, QPushButton, QLineEdit
 from .component.constants import set_label_style, set_edit_standard, set_button_style
-
 
 class FindPwdWidget(QWidget):
     def __init__(self):
@@ -32,32 +31,26 @@ class FindPwdWidget(QWidget):
         set_edit_standard(self.id, 75, 20, '아이디')
         self.id.setFixedWidth(150)
 
-        self.email_front = QLineEdit(self)
-        self.email_front.setFixedWidth(150)
-        set_edit_standard(self.email_front, 75, 50, '이메일')
-
-        self.email_back = QLineEdit(self)
-        self.email_back.setFixedWidth(150)
-        set_edit_standard(self.email_back, 245, 50, 'daig.co.kr')
+        self.email = QLineEdit(self)
+        self.email.setFixedWidth(150)
+        set_edit_standard(self.email, 75, 50, '이메일')
 
         self.find_btn = QPushButton('비밀번호 찾기', self)
         self.find_btn.move(165, 90)
+        self.find_btn.clicked.connect(self.find_btn_clicked)
         set_button_style(self.find_btn)
 
         self.go_back = QPushButton('돌아가기', self)
         self.go_back.move(285, 90)
         set_button_style(self.go_back)
 
-    def on_changed(self, text):
-        self.id.setText(text)
-        self.id.adjustSize()
-        self.email_front.setText(text)
-        self.email_front.adjustSize()
-        self.email_back.setText(text)
-        self.email_back.adjustSize()
 
-    def on_user_info_alert(self):
-        self.email = self.email_front.text() + '@' + self.email_back.text()
+    def find_btn_clicked(self):
+        res_data=find_pwd({
+            'username':self.id.text(),
+            'email':self.email.text()
+        })
+        QMessageBox.about(self, 'DAIG', res_data["message"])
 
     def on_clean_line_edit(self):
         self.id.setText("")

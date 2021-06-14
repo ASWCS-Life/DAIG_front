@@ -14,7 +14,7 @@ from tempfile import TemporaryFile
 import time
 
 base_url = 'http://118.67.130.33:8000'
-#base_url = 'http://127.0.0.1:8000'
+# base_url = 'http://127.0.0.1:8000'
 
 class CustomCallback(tf.keras.callbacks.Callback): 
     stop_learning_tok = False
@@ -226,11 +226,23 @@ def result_learning(project_id, params = None):
     res = requests.get(f'{base_url}/project/{project_id}/result', params = params, headers = {'AUTH' : get_auth_header()})
     response_alert(res.status_code)
 
+    data=res.json()
+    model_url=data['model_url']
+    result_url=data['result_url']
+
     with TemporaryFile() as tf : 
-        tf.write(res.content)
+        tf.write(requests.get(url = model_url).content)
         _ = tf.seek(0)
-        weight = np.load(tf,allow_pickle = True)
-    return weight
+        model = keras.models.load_model(h5py.File(tf,mode = 'r'))
+
+    with TemporaryFile() as tf : 
+        tf.write(requests.get(url = result_url).content)
+        _ = tf.seek(0)
+        result = np.asarray(np.load(tf,allow_pickle = True))
+
+    model.set_weights(result.tolist())
+
+    return model
 
 # 중단 요청
 def stop_learning(path, params, data = None): 
@@ -297,3 +309,11 @@ def verify_username(data = None):
     response_alert(res.status_code)
     return res.json()
 
+def find_id(data=None):
+    data={
+        'email':data
+    }
+    res = requests.post(f'{base_url}/auth/find/username/', data = data)
+
+    response_alert(res.status_code)
+    return res.json()

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from .component.constants import set_button_style
 
-from .daig.api.rest import get_owned_projects
+from .daig.api.rest import get_owned_projects, result_learning
 
 class UserFrameWidget(QWidget):
   def __init__(self):
@@ -23,7 +23,7 @@ class UserFrameWidget(QWidget):
     self.pro_table = QTableWidget()
     self.pro_table.setColumnCount(4)  # column 설정
     self.pro_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-    self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', '진행도', '누계 시간', '비고'])
+    self.pro_table.setHorizontalHeaderLabels(['Project 이름(id)', '진행도', '생성 날짜', '비고'])
     self.pro_table.horizontalHeader().setStyleSheet("QHeaderView::section{"
                                                     'background-color: white;'
                                                     'border: 1px solid rgb(251, 86, 7);'
@@ -53,14 +53,25 @@ class UserFrameWidget(QWidget):
     self.pro_tab.layout.addWidget(self.pro_table,0,0,4,5)
     self.pro_tab.setLayout(self.pro_tab.layout)
 
-    # 크레딧 테이블 바
-    self.cre_tab.layout = QGridLayout()
-    self.cre_table = QTableWidget()
-    self.cre_table.setColumnCount(3)
-    self.cre_table.setHorizontalHeaderLabels(['날짜', '변동 내역', '상세 내용'])
-    self.cre_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-    self.cre_table.setSelectionMode(QAbstractItemView.SingleSelection)
+   
+    # 테이블 크기 정렬
+    # credit_header = self.cre_table.horizontalHeader()
+    # twidth = credit_header.width()
+    # width = []
+    # for column in range(credit_header.count()):
+    #   credit_header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
+    #   width.append(credit_header.sectionSize(column))
+    # wfactor = twidth / sum(width)
+    # for column in range(credit_header.count()):
+    #   credit_header.setSectionResizeMode(column, QHeaderView.Interactive)
+    #   credit_header.resizeSection(column, width[column] * wfactor)
 
+    # self.cre_tab.layout.addWidget(self.cre_table,0,0,4,5)
+    # self.cre_tab.setLayout(self.cre_tab.layout)
+
+    # self.credit_get_btn = QPushButton('새로 고침') # 임시
+
+    # self.cre_tab.layout.addWidget(self.credit_get_btn, 5, 4)
 
     self.down_btn = QPushButton('다운로드')
     self.get_btn = QPushButton('새로 고침')
@@ -92,41 +103,23 @@ class UserFrameWidget(QWidget):
     self.pro_table.insertRow(row)
     self.pro_table.setItem(row, 0, QTableWidgetItem(p_id))
     self.pro_table.setItem(row, 1, QTableWidgetItem(progression))
-    self.pro_table.setItem(row, 2, QTableWidgetItem(accum_time + 's')) # 단위는 sec으로 가정
+    self.pro_table.setItem(row, 2, QTableWidgetItem(accum_time)) # 단위는 sec으로 가정
     self.pro_table.setItem(row, 3, QTableWidgetItem(remark))
 
   def get_projects(self):
     self.pro_table.setRowCount(0)
     projects=get_owned_projects()["projects"]
     for p in projects:
-      self.project_addItem(p["project_uid"],p["progress"],'',p["status"])
+      self.project_addItem(p["project_uid"],p["progress"],p["created_at"],p["status"])
 
-  # 크레딧 테이블 동적 생성
-  def credit_addItem(self, date, change_info, remark):
-    row = self.pro_table.rowCount()
-    self.cre_table.insertRow(row)
-    self.cre_table.setItem(row, 0, QTableWidgetItem(date))
-    self.cre_table.setItem(row, 1, QTableWidgetItem(change_info))
-    self.cre_table.setItem(row, 2, QTableWidgetItem(remark))
-
-    pass
-
-  def attend_learning(self):
-    return self.pro_table.item(self.pro_table.currentRow(), 0).text()
-
-  def refresh_learning(self):
-    self.pro_table.setRowCount(0)
-    print("refresh_button_pressed")
-    pass
-
-  # 현재 선택한 프로젝트 중단
-  def stop_learning(self):
-    pass
 
   # 현재 선택한 모델 다운로드
   def download_model(self):
+    project_id=self.pro_table.selectedItems()[0].text()
+    model=result_learning(project_id)
     file_save = QFileDialog.getSaveFileName(self, 'Save File', './', filter='*.h5')
     file_save_path = file_save[0]
+    model.save(file_save_path)
 
     
 
