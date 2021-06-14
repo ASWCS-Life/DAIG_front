@@ -76,7 +76,7 @@ class UserFrameWidget(QWidget):
     self.down_btn = QPushButton('다운로드')
     self.get_btn = QPushButton('새로 고침')
 
-    self.pro_table.selectedItems()
+    self.down_btn.setEnabled(False) #
 
     self.down_btn.clicked.connect(self.download_model)
 
@@ -110,11 +110,13 @@ class UserFrameWidget(QWidget):
     self.pro_table.setRowCount(0)
     projects=get_owned_projects()["projects"]
     for p in projects:
+      self.down_btn.setEnabled(True) #
       self.project_addItem(p["project_uid"],p["progress"],p["created_at"],p["status"])
 
 
   # 현재 선택한 모델 다운로드
   def download_model(self):
+    if(len(self.pro_table.selectedItems()) < 1): return #
     project_id=self.pro_table.selectedItems()[0].text()
     model=result_learning(project_id)
     file_save = QFileDialog.getSaveFileName(self, 'Save File', './', filter='*.h5')
