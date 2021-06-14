@@ -45,7 +45,7 @@ class PwdInitWidget(QWidget):
         self.pwd.setText(text)
         self.pwd.adjustSize()
         self.check_pwd.setText(text)
-        self.check_pwdt.adjustSize()
+        self.check_pwd.adjustSize()
 
     def on_pwd_init_alert(self):
         if(self.pwd.text() != self.check_pwd.text()):

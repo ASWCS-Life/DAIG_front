@@ -117,6 +117,13 @@ class ProviderWidget(QWidget):
     p_id = content["p_id"]
     task_num = content["task_num"]
     task_pf_avrg = content["task_pf_avrg"]
+
+    if(not task_num):
+      task_num = '0'
+
+    if(not task_pf_avrg):
+      task_pf_avrg = '0'
+
     credit = ''
     for r in range(self.pro_table.rowCount()):
       if self.pro_table.item(r, 0).text() == p_id:

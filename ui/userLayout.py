@@ -16,7 +16,7 @@ class UserFrameWidget(QWidget):
 
     self.tabs = QTabWidget()
     self.tabs.addTab(self.pro_tab, 'Project')
-    self.tabs.addTab(self.cre_tab, 'Credit')
+    # self.tabs.addTab(self.cre_tab, 'Credit')
 
     # 프로젝트 테이블 바
     self.pro_tab.layout = QGridLayout()
@@ -62,37 +62,37 @@ class UserFrameWidget(QWidget):
     self.cre_table.setSelectionMode(QAbstractItemView.SingleSelection)
 
     # 테이블 크기 정렬
-    credit_header = self.cre_table.horizontalHeader()
-    twidth = credit_header.width()
-    width = []
-    for column in range(credit_header.count()):
-      credit_header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
-      width.append(credit_header.sectionSize(column))
-    wfactor = twidth / sum(width)
-    for column in range(credit_header.count()):
-      credit_header.setSectionResizeMode(column, QHeaderView.Interactive)
-      credit_header.resizeSection(column, width[column] * wfactor)
+    # credit_header = self.cre_table.horizontalHeader()
+    # twidth = credit_header.width()
+    # width = []
+    # for column in range(credit_header.count()):
+    #   credit_header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
+    #   width.append(credit_header.sectionSize(column))
+    # wfactor = twidth / sum(width)
+    # for column in range(credit_header.count()):
+    #   credit_header.setSectionResizeMode(column, QHeaderView.Interactive)
+    #   credit_header.resizeSection(column, width[column] * wfactor)
 
-    self.cre_tab.layout.addWidget(self.cre_table,0,0,4,5)
-    self.cre_tab.setLayout(self.cre_tab.layout)
+    # self.cre_tab.layout.addWidget(self.cre_table,0,0,4,5)
+    # self.cre_tab.setLayout(self.cre_tab.layout)
 
-    self.credit_get_btn = QPushButton('새로 고침') # 임시
+    # self.credit_get_btn = QPushButton('새로 고침') # 임시
 
-    self.cre_tab.layout.addWidget(self.credit_get_btn, 5, 4)
+    # self.cre_tab.layout.addWidget(self.credit_get_btn, 5, 4)
 
     # 버튼 생성
-    # self.aten_btn = QPushButton('참여')
-    self.stop_btn = QPushButton('중단')
+    #self.aten_btn = QPushButton('참여')
+    #self.stop_btn = QPushButton('중단')
     self.down_btn = QPushButton('다운로드')
     self.get_btn = QPushButton('새로 고침')
 
 
-    # self.aten_btn.clicked.connect(self.attend_learning)
-    self.stop_btn.clicked.connect(self.stop_learning)
+    #self.aten_btn.clicked.connect(self.attend_learning)
+    #self.stop_btn.clicked.connect(self.stop_learning)
     self.down_btn.clicked.connect(self.download_model)
 
-    # set_button_style(self.aten_btn)
-    set_button_style(self.stop_btn)
+    #set_button_style(self.aten_btn)
+    #set_button_style(self.stop_btn)
     set_button_style(self.down_btn)
     set_button_style(self.get_btn)
 
@@ -101,8 +101,8 @@ class UserFrameWidget(QWidget):
 
     layout = QGridLayout()
     layout.addWidget(self.tabs, 0, 0, 1, 0)
-    # self.pro_tab.layout.addWidget(self.aten_btn, 5, 1)
-    self.pro_tab.layout.addWidget(self.stop_btn, 5, 2)
+    #self.pro_tab.layout.addWidget(self.aten_btn, 5, 1)
+    #self.pro_tab.layout.addWidget(self.stop_btn, 5, 2)
     self.pro_tab.layout.addWidget(self.down_btn, 5, 3)
     self.pro_tab.layout.addWidget(self.get_btn, 5, 4)
     

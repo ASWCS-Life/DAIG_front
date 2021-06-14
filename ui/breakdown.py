@@ -30,12 +30,12 @@ class BrDownWidget(QWidget):
     row_len = self.form_layout.rowCount()
     for i in range(row_len + 1):
       self.form_layout.removeRow(i)
-    res = get_credit_log()
-    self.creditLog_list = res["list"]
+      
+    self.credit_log_list = get_credit_log()
 
-    for i in range(len(self.creditLog_list)):
+    for i in range(len(self.credit_log_list)):
       self.p_date.append(
-          QLabel('  ' + self.creditLog_list[i]["details"] + '\t' + self.creditLog_list[i]["date"] + '\t' + str(self.creditLog_list[i]["amount"]) + '원'))
+          QLabel('  ' + self.credit_log_list[i]["details"] + '\t' + self.credit_log_list[i]["date"] + '\t' + str(self.credit_log_list[i]["amount"]) + '원'))
       self.form_layout.addRow(self.p_date[i])
       self.p_date[i].setStyleSheet('border: 1px solid #FFB914;'
                                    'font-size: 18px;'

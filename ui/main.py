@@ -25,7 +25,6 @@ path = os.path.dirname(__file__)
 
 #11
 
-
 class WebViewLayout(WebViewWidget):
     def __init__(self):
         super().__init__()
@@ -62,7 +61,6 @@ class CreditLayout(CreditWidget):
         res = get_current_credit()
         main_window.crdt_lbl.setText(f'Credit : {res["credit"]}')
 
-
 #8
 class PwdInitLayout(PwdInitWidget):
     def __init__(self):
@@ -83,7 +81,6 @@ class PwdInitLayout(PwdInitWidget):
         on_layout_convert_center(main_window, widget, 420, 180)
 
 # 비밀번호 찾기 화면 - widget_index_num : 7
-
 
 class FindPwdLayout(FindPwdWidget):
     def __init__(self):
@@ -222,7 +219,8 @@ class Login(LoginWidget):
         on_layout_convert_center(main_window, widget, 500, 300)
 
     def on_click_login_handler(self):
-        self.on_click_login()  # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        result = self.on_click_login()  # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        if(result == False): return
         self.open_mode_class()
         main_window.add_user_info_on_tool_bar()
 

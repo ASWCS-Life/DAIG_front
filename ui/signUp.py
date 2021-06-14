@@ -78,11 +78,12 @@ class SignUpWidget(QWidget):
         self.id = QLineEdit(self)
         self.id.setFixedWidth(150)
         set_edit_standard(self.id, 95, 30, '아이디')
+        self.id.setFont
 
         self.pwd = QLineEdit(self)
         self.pwd.setEchoMode(QLineEdit.Password)
         self.pwd.setFixedWidth(150)
-        set_edit_standard(self.pwd, 95, 70, '비밀번호')
+        set_edit_standard(self.pwd, 95, 70, '(최소 4자리 이상)')
 
         self.email = QLineEdit(self)
         self.email.setFixedWidth(220)
