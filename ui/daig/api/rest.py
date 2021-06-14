@@ -13,8 +13,8 @@ from tempfile import TemporaryFile
 
 import time
 
-base_url = 'http://118.67.130.33:8000'
-#base_url = 'http://127.0.0.1:8000'
+#base_url = 'http://118.67.130.33:8000'
+base_url = 'http://127.0.0.1:8000'
 
 class CustomCallback(tf.keras.callbacks.Callback): 
     stop_learning_tok = False
@@ -195,7 +195,7 @@ def start_learning(project_id, params = None):
     return 'SUCCESS'
 
 def report_error(project_id, params = None): 
-    res = requests.post(f'{base_url}/project/{project_id}/report/',data = params, headers = {'AUTH' : get_auth_header()})
+    res = requests.post(f'{base_url}/project/{project_id}/error/',data = params, headers = {'AUTH' : get_auth_header()})
     return res.json()['is_successful']
 
 # 학습 Task 선점하기
