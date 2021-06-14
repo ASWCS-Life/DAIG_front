@@ -5,7 +5,8 @@ from .daig.api.rest import login_req
 from .daig.api.auth import set_auth_header
 from .component.constants import set_label_style, set_button_style, set_login_button_style, set_edit_standard
 
-path=os.path.dirname(__file__)
+path = os.path.dirname(__file__)
+
 
 class LoginWidget(QWidget):
     def __init__(self):
@@ -14,7 +15,8 @@ class LoginWidget(QWidget):
 
     def initUI(self):
         # Daig 이미지
-        daig_img = QPixmap(os.path.join(path,'local_data/daig_img.png')) # 비율 10:4
+        daig_img = QPixmap(os.path.join(
+            path, 'local_data/daig_img.png'))  # 비율 10:4
         self.img_container = QLabel(self)
         self.img_container.setPixmap(QPixmap(daig_img))
         self.img_container.setScaledContents(True)
@@ -82,8 +84,8 @@ class LoginWidget(QWidget):
 
     def on_click_login(self):
         sender_data = {
-           "username" : self.id.text(),
-           "password" : self.pwd.text()
+            "username": self.id.text(),
+            "password": self.pwd.text()
         }
         print(sender_data)
         res = login_req(sender_data)

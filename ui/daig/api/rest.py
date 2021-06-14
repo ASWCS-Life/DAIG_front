@@ -3,7 +3,7 @@ from typing import Type
 import h5py
 import requests
 import tensorflow as tf
-
+from .alert import response_alert
 import tensorflow.keras as keras
 
 import numpy as np
@@ -40,8 +40,7 @@ def start_learning_internal():
 def login_req(data = None): 
     res = requests.post(f'{base_url}/auth/login/', data = data)
 
-    if res.status_code not in [200, 201, 204] : 
-        raise SystemExit(requests.exceptions.HTTPError)
+    response_alert(res.status_code)
     return res.json()
 
 
@@ -49,8 +48,7 @@ def login_req(data = None):
 def sign_up_req(data = None): 
     res = requests.post(f'{base_url}/auth/signup/', data = data)
 
-    if res.status_code not in [200, 201, 204] : 
-        raise SystemExit(requests.exceptions.HTTPError)
+    response_alert(res.status_code)
     return res.json()
 
 def create_project(initial_weight,data = None): 
@@ -58,11 +56,13 @@ def create_project(initial_weight,data = None):
         np.save(tf, np.array(initial_weight,dtype = object))
         _ = tf.seek(0)
         res = requests.post(f'{base_url}/project/create/', files = {'weight' : tf},data = data, headers = {'AUTH' : get_auth_header()})
+        response_alert(res.status_code)
 
     return res.json()
 
 def get_avaiable_project(params = None): 
     res = requests.get(f'{base_url}/project/get/project', params = params, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
     print(res.json())
     if(res.json()['is_successful']): 
         return res.json()['project_uid']
@@ -105,6 +105,7 @@ def upload_model(model_path, project_uid):
         'project_uid' : project_uid,
         'model' : 'model.json'
     }, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
 
     url = res.json()['model_url'] # presigned url
 
@@ -115,6 +116,7 @@ def upload_model(model_path, project_uid):
 
 def get_weight(project_id,params = None): 
     res = requests.get(f'{base_url}/project/{project_id}/project/weight', params = params, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
 
     with TemporaryFile() as tf : 
         tf.write(res.content)
@@ -128,6 +130,7 @@ def start_learning(project_id, params = None):
     callback.stop_learning_tok = False
 
     res = requests.get(f'{base_url}/project/{project_id}/task/get', params = params, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
     res_json = res.json()
     print(res_json)
 
@@ -196,51 +199,51 @@ def start_learning(project_id, params = None):
 
 def report_error(project_id, params = None): 
     res = requests.post(f'{base_url}/project/{project_id}/error/',data = params, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
+    
     return res.json()['is_successful']
 
 # 학습 Task 선점하기
 def occupy_task(project_id, params = None): 
     res = requests.post(f'{base_url}/project/{project_id}/task/start/',data = params, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
     return res.json()['is_successful']
 
 # 학습 결과 전송하기
 def update_learning(project_id, gradient, params = None): 
     res = requests.post(f'{base_url}/project/{project_id}/task/update/',files = gradient, data = params, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
     return res.json()['is_successful']
 
 def is_project_finished(project_id, params = None): 
     res = requests.get(f'{base_url}/project/{project_id}/finished', params = params, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
 
-    # if res.status_code not in [200, 201, 204] : 
-    # raise exc.ResponseException(res)
     return res.status_code !=  270
 
 # 결과 요청
 def result_learning(project_id, params = None): 
     res = requests.get(f'{base_url}/project/{project_id}/result', params = params, headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
 
     with TemporaryFile() as tf : 
         tf.write(res.content)
         _ = tf.seek(0)
         weight = np.load(tf,allow_pickle = True)
-    # if res.status_code not in [200, 201, 204] : 
-    # raise exc.ResponseException(res)
     return weight
 
 # 중단 요청
 def stop_learning(path, params, data = None): 
     res = requests.put(f'{base_url}/{path}', params = params, json = data, headers = get_auth_header())
 
-    # if res.status_code not in [200, 201, 204] : 
-    # raise exc.ResponseException(res)
+    response_alert(res.status_code)
     return res.json()
 
 # 진행 상태 요청
 def status_req(path, params): 
     res = requests.get(f'{base_url}/{path}', params = params, headers = get_auth_header())
 
-    # if res.status_code not in [200, 201, 204] : 
-    # raise exc.ResponseException(res)
+    response_alert(res.status_code)
     return res.json()
 
 
@@ -256,40 +259,41 @@ def validate(project_id):
 
 def get_all_progress(): 
     res = requests.get(f'{base_url}/project/progress/', headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
     return res.json()
 
 def get_current_credit(): 
     res = requests.get(f'{base_url}/credit/remains/', headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
     print(res.json())
     return res.json()
 
 def get_credit_log(): 
     res = requests.get(f'{base_url}/credit/log/', headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
     print(res)
     return res.json()
 
 def get_owned_projects(): 
     res = requests.get(f'{base_url}/project/owned/', headers = {'AUTH' : get_auth_header()})
+    response_alert(res.status_code)
     return res.json()
 
 def verify_email(data = None): 
     res = requests.post(f'{base_url}/auth/send/email/', data = data)
 
-    if res.status_code not in [200, 201, 204] : 
-        raise SystemExit(requests.exceptions.HTTPError)
+    response_alert(res.status_code)
     return res.json()
 
 def verify_code(data = None): 
     res = requests.post(f'{base_url}/auth/check/code/', data = data)
 
-    if res.status_code not in [200, 201, 204] : 
-        raise SystemExit(requests.exceptions.HTTPError)
+    response_alert(res.status_code)
     return res.json()
 
 def verify_username(data = None): 
     res = requests.post(f'{base_url}/auth/check/username/', data = data)
 
-    if res.status_code not in [200, 201, 204] : 
-        raise SystemExit(requests.exceptions.HTTPError)
+    response_alert(res.status_code)
     return res.json()
 
