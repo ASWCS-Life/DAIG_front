@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox, QWidget, QPushButton, QLineEdit, QLabel
+
 from daig.api.rest import sign_up_req, verify_email, verify_code, verify_username
-from component.constants import setLabelStyle, setButtonStyle, setEditStandard
+from component.constants import set_label_style, set_button_style, set_edit_standard
 
 class SignUpWidget(QWidget):
     # don't touch
@@ -16,12 +17,12 @@ class SignUpWidget(QWidget):
     # 가입완료 버튼
         self.sign_submit = QPushButton('가입완료', self)
         self.sign_submit.move(255, 165)
-        setButtonStyle(self.sign_submit)
+        set_button_style(self.sign_submit)
 
     # 돌아가기 버튼
         self.go_back = QPushButton('돌아가기', self)
         self.go_back.move(375, 165)
-        setButtonStyle(self.go_back)
+        set_button_style(self.go_back)
 
     # 중복 아이디 확인 버튼
         self.code = ''
@@ -54,21 +55,21 @@ class SignUpWidget(QWidget):
         font_id = sign_id.font()
         font_id.setBold(True)
         font_id.setPointSize(20)
-        setLabelStyle(sign_id)
+        set_label_style(sign_id)
 
         sign_pwd = QLabel('Password', self)
         sign_pwd.move(20, 75)
         font_pwd = sign_pwd.font()
         font_pwd.setBold(True)
         font_pwd.setPointSize(20)
-        setLabelStyle(sign_pwd)
+        set_label_style(sign_pwd)
 
         sign_email = QLabel('Email', self)
         sign_email.move(20, 115)
         font_email = sign_email.font()
         font_email.setBold(True)
         font_email.setPointSize(20)
-        setLabelStyle(sign_email)
+        set_label_style(sign_email)
 
         sign_code = QLabel('Code', self)
         sign_code.move(20, 155)
@@ -84,12 +85,12 @@ class SignUpWidget(QWidget):
     # 아이디, 비밀번호, 이메일 작성
         self.id = QLineEdit(self)
         self.id.setFixedWidth(150)
-        setEditStandard(self.id, 95, 30, '아이디')
+        set_edit_standard(self.id, 95, 30, '아이디')
 
         self.pwd = QLineEdit(self)
         self.pwd.setEchoMode(QLineEdit.Password)
         self.pwd.setFixedWidth(150)
-        setEditStandard(self.pwd, 95, 70, '비밀번호')
+        set_edit_standard(self.pwd, 95, 70, '비밀번호')
 
         # self.email_front = QLineEdit(self)
         # self.email_front.setFixedWidth(150)
@@ -145,8 +146,6 @@ class SignUpWidget(QWidget):
         self.pwd.adjustSize()
         self.email_front.setText(text)
         self.email_front.adjustSize()
-        # self.email_back.setText(text)
-        # self.email_back.adjustSize()
 
     def onClickSignUp(self):
         if(self.is_username_available == False):
