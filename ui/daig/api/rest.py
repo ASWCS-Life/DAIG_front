@@ -173,7 +173,7 @@ def start_learning(project_id, params = None):
         return 'STOP'
     
     try : 
-        model.fit(train_data, train_label, batch_size = batch_size, epochs = epoch, validation_split = valid_rate, callbacks = [callback], verbose = 2)    
+        model.fit(train_data, train_label, batch_size = batch_size, epochs = epoch, validation_split = valid_rate, callbacks = [callback], verbose = 0)    
     except ValueError as e : 
         report_error(project_id = project_id,params = {'error_message' : e})
         return 'ERROR'
