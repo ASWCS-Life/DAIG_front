@@ -1,6 +1,6 @@
 import sys
 import os
-from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplication, QStackedWidget, QAction
+from PyQt5.QtWidgets import QSizePolicy, QWidget, QLabel, QMainWindow, QApplication, QStackedWidget, QAction
 from PyQt5.QtGui import QIcon
 from .component.constants import enter_pressed_handler
 from .component.center import on_layout_convert_center
@@ -18,19 +18,25 @@ from .credit import CreditWidget
 from .creditWebView import WebViewWidget
 from .daig.api.rest import get_current_credit
 
-path=os.path.dirname(__file__)
+path = os.path.dirname(__file__)
 
 #11
+
+
 class WebViewLayout(WebViewWidget):
     def __init__(self):
         super().__init__()
 
 #10
+
+
 class BrDownLayout(BrDownWidget):
     def __init__(self):
         super().__init__()
 
 #9
+
+
 class CreditLayout(CreditWidget):
     def __init__(self):
         super().__init__()
@@ -39,7 +45,6 @@ class CreditLayout(CreditWidget):
         self.refresh.clicked.connect(self.on_refresh_button)
 
     def open_br_down_class(self):
-        self.all_btn_clicked()
         widget.setCurrentIndex(10)
         widget.currentWidget().call_credit_log()
         on_layout_convert_center(main_window, widget, 400, 500)
@@ -54,7 +59,7 @@ class CreditLayout(CreditWidget):
         res = get_current_credit()
         main_window.crdt_lbl.setText(f'Credit : {res["credit"]}')
 
-        
+
 #8
 class PwdInitLayout(PwdInitWidget):
     def __init__(self):
@@ -75,6 +80,8 @@ class PwdInitLayout(PwdInitWidget):
         on_layout_convert_center(main_window, widget, 420, 180)
 
 # 비밀번호 찾기 화면 - widget_index_num : 7
+
+
 class FindPwdLayout(FindPwdWidget):
     def __init__(self):
         super().__init__()
@@ -93,6 +100,8 @@ class FindPwdLayout(FindPwdWidget):
         on_layout_convert_center(main_window, widget, 400, 430)
 
 # 아이디 찾기 화면 - widget_index_num : 6
+
+
 class FindIdLayout(FindIdWidget):
     def __init__(self):
         super().__init__()
@@ -109,21 +118,27 @@ class FindIdLayout(FindIdWidget):
         on_layout_convert_center(main_window, widget, 400, 430)
 
 # 데이터 업로드 화면 - widget_index_num : 5
+
+
 class DataUploadLayout(DataUploadWidget):
     def __init__(self):
         super().__init__()
 
     def complete_upload(self):
-    # 성공적으로 프로젝트가 생성되면
+        # 성공적으로 프로젝트가 생성되면
         widget.setCurrentIndex(3)
         on_layout_convert_center(main_window, widget, 700, 500)
 
 # 제공자 화면 - widget_index_num : 4
+
+
 class ProviderLayout(ProviderWidget):
     def __init__(self):
         super().__init__()
 
 # 요청자 화면 - widget_index_num : 3
+
+
 class ReqUserLayout(UserFrameWidget):
     def __init__(self):
         super().__init__()
@@ -136,6 +151,8 @@ class ReqUserLayout(UserFrameWidget):
         on_layout_convert_center(main_window, widget, 700, 500)
 
 # 요청자 / 제공자 모드 선택 화면 - widget_index_num : 2
+
+
 class Mode(ModeChoiceWidget):
     def __init__(self):
         super().__init__()
@@ -149,7 +166,6 @@ class Mode(ModeChoiceWidget):
     def open_provider_class(self):
         widget.setCurrentIndex(4)
         on_layout_convert_center(main_window, widget, 700, 500)
-
 
 
 # 회원가입 화면 - widget_index_num : 1
@@ -166,13 +182,13 @@ class SignUp(SignUpWidget):
         if(result):
             self.open_login_class()
 
-
     def open_login_class(self):
         widget.setCurrentIndex(widget.currentIndex() - 1)
         on_layout_convert_center(main_window, widget, 400, 430)
 
-
 # 로그인 화면 - widget_index_num : 0
+
+
 class Login(LoginWidget):
     # don't touch
     def __init__(self):
@@ -182,8 +198,8 @@ class Login(LoginWidget):
         # 로그인 버튼 눌렀을 경우
         self.login.clicked.connect(self.on_click_login_handler)
 
-        enter_pressed_handler(self.id, self.on_click_login_handler) #####
-        enter_pressed_handler(self.pwd, self.on_click_login_handler)# ####
+        enter_pressed_handler(self.id, self.on_click_login_handler)
+        enter_pressed_handler(self.pwd, self.on_click_login_handler)
 
         # 회원가입 버튼 눌렀을 경우
         self.sign_up.clicked.connect(self.open_sign_up_class)
@@ -208,7 +224,7 @@ class Login(LoginWidget):
         on_layout_convert_center(main_window, widget, 500, 300)
 
     def on_click_login_handler(self):
-        self.on_click_login() # 서버로 로그인 req... 결과로 res["auth"] 리턴
+        self.on_click_login()  # 서버로 로그인 req... 결과로 res["auth"] 리턴
         self.open_mode_class()
         main_window.add_user_info_on_tool_bar()
 
@@ -225,26 +241,32 @@ class Login(LoginWidget):
         # 여기서 크레딧페이지 생성
         on_layout_convert_center(main_window, widget, 450, 250)
 
+
 class MyMainWindow(QMainWindow):
   def __init__(self):
     super().__init__()
-    self.setWindowIcon(QIcon(os.path.join(path,'local_data/daig_icon.png')))
+    self.setWindowIcon(QIcon(os.path.join(path, 'local_data/daig_icon.png')))
 
-    self.id_lbl = QLabel(self) #
+    self.id_lbl = QLabel(self)
     self.space = QLabel("  ", self)
     self.space_ = QLabel("  ", self)
-    self.crdt_lbl = QLabel(self) #
+    self.crdt_lbl = QLabel(self)
 
     # 중앙 공백
-    self.center_space = QWidget() #
-    self.center_space.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) #
+    self.center_space = QWidget()
+    self.center_space.setSizePolicy(
+        QSizePolicy.Expanding, QSizePolicy.Expanding)
 
     # 툴바 아이콘 지정 및 행동 지정
-    self.go_home = QAction(QIcon(os.path.join(path,'local_data/home.png')), 'Home', self)
-    self.create_project = QAction(QIcon(os.path.join(path,'local_data/create.png')), 'New Project', self)
-    self.credit = QAction(QIcon(os.path.join(path,'local_data/credit.png')), 'Credit Info', self)
+    self.go_home = QAction(
+        QIcon(os.path.join(path, 'local_data/home.png')), 'Home', self)
+    self.create_project = QAction(
+        QIcon(os.path.join(path, 'local_data/create.png')), 'New Project', self)
+    self.credit = QAction(
+        QIcon(os.path.join(path, 'local_data/credit.png')), 'Credit Info', self)
     self.go_home.setStatusTip('Home')
-    self.go_home.triggered.connect(self.on_tool_bar_triggered_handler) # 아이콘 클릭시 mode설정 화면으로 돌아감
+    self.go_home.triggered.connect(
+        self.on_tool_bar_triggered_handler)  # 아이콘 클릭시 mode설정 화면으로 돌아감
     self.toolbar = self.addToolBar('Home')
     self.toolbar.addAction(self.go_home)
     self.toolbar.addAction(self.create_project)
@@ -252,6 +274,7 @@ class MyMainWindow(QMainWindow):
 
     self.create_project.triggered.connect(self.open_data_upload_class)
     self.credit.triggered.connect(self.on_credit_triggered_handler)
+
   def open_data_upload_class(self):
       widget.setCurrentIndex(5)
       widget.currentWidget().on_clean_line_edit()
@@ -259,13 +282,13 @@ class MyMainWindow(QMainWindow):
 
     # 로그인 시 툴바에 id와 credit 정보 추가
   def add_user_info_on_tool_bar(self):
-    res_data=get_current_credit()
+    res_data = get_current_credit()
     self.id_lbl.setText(f'ID : {res_data["id"]}')
     self.crdt_lbl.setText(f'Credit : {res_data["credit"]}')
-    self.toolbar.addWidget(self.center_space) #
-    self.toolbar.addWidget(self.id_lbl) #
+    self.toolbar.addWidget(self.center_space)
+    self.toolbar.addWidget(self.id_lbl)
     self.toolbar.addWidget(self.space)
-    self.toolbar.addWidget(self.crdt_lbl) #
+    self.toolbar.addWidget(self.crdt_lbl)
     self.toolbar.addWidget(self.space_)
 
   def tool_bar_trigger_handler(self):
@@ -284,6 +307,7 @@ class MyMainWindow(QMainWindow):
   def on_tool_bar_triggered_handler(self):
     widget.setCurrentIndex(2)
     on_layout_convert_center(self, widget, 450, 250)
+
   def on_credit_triggered_handler(self):
     widget.setCurrentIndex(9)
     on_layout_convert_center(self, widget, 600, 500)
@@ -303,75 +327,30 @@ FdId_ly = FindIdLayout()
 FdPwd_ly = FindPwdLayout()
 PwdInit_ly = PwdInitLayout()
 
-
-
-#Progress_ly = Progress()
-#TrainRslt_ly = TrainResult()
-
 #레이아웃 스택 추가
-widget.addWidget(Login_ly) #0
-widget.addWidget(SignUp_ly) #1
-widget.addWidget(Mode_ly) #2
-widget.addWidget(User_ly) #3
-widget.addWidget(Prov_ly) #4
-widget.addWidget(DtUp_ly) #5
-widget.addWidget(FdId_ly) #6
-widget.addWidget(FdPwd_ly) #7
-widget.addWidget(PwdInit_ly) #8
+widget.addWidget(Login_ly)  # 0
+widget.addWidget(SignUp_ly)  # 1
+widget.addWidget(Mode_ly)  # 2
+widget.addWidget(User_ly)  # 3
+widget.addWidget(Prov_ly)  # 4
+widget.addWidget(DtUp_ly)  # 5
+widget.addWidget(FdId_ly)  # 6
+widget.addWidget(FdPwd_ly)  # 7
+widget.addWidget(PwdInit_ly)  # 8
 
 main_window = MyMainWindow()
 main_window.setWindowTitle("DAIG")
 
 # 윈도우 크기 설정 -> 화면 중앙 배치 -> 윈도우 열기
-on_layout_convert_center(main_window, widget, 400, 430) ##########
+on_layout_convert_center(main_window, widget, 400, 430)
 main_window.tool_bar_trigger_handler()
 
-def main():   
+
+def main():
     main_window.show()
 
     sys.exit(app.exec_())
 
+
 if __name__ == '__main__':
     main()
-
-# # don't touch
-# if __name__ == '__main__':
-#     #QApplication : 프로그램을 실행시켜주는 클래스
-#     app = QApplication(sys.argv)
-
-#     #화면 전환용 Widget 설정
-#     widget = QStackedWidget()
-
-#     #레이아웃 인스턴스 생성
-#     Login_ly = Login()
-#     SignUp_ly = SignUp()
-#     Mode_ly = Mode()
-#     User_ly = ReqUserLayout()
-#     Prov_ly = ProviderLayout()
-#     DtUp_ly = DataUploadLayout()
-#     FdId_ly = FindIdLayout()
-#     FdPwd_ly = FindPwdLayout()
-#     PwdInit_ly = PwdInitLayout()
-
-#     #레이아웃 스택 추가
-#     widget.addWidget(Login_ly) #0
-#     widget.addWidget(SignUp_ly) #1
-#     widget.addWidget(Mode_ly) #2
-#     widget.addWidget(User_ly) #3
-#     widget.addWidget(Prov_ly) #4
-#     widget.addWidget(DtUp_ly) #5
-#     widget.addWidget(FdId_ly) #6
-#     widget.addWidget(FdPwd_ly) #7
-#     widget.addWidget(PwdInit_ly) #8
-
-
-#     #윈도우 객체 생성 및 타이틀 설정
-#     main_window = MyMainWindow()
-#     main_window.setWindowTitle("DAIG")
-
-#     # 윈도우 크기 설정 -> 화면 중앙 배치 -> 윈도우 열기
-#     on_layout_convert_center(main_window, widget, 400, 430)
-#     main_window.tool_bar_trigger_handler()
-#     main_window.show()
-
-#     sys.exit(app.exec_())

@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QPushButton
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
 from .component.constants import set_label_style, set_button_style
 import os
 
-path=os.path.dirname(__file__)
+path = os.path.dirname(__file__)
+
 
 class ModeChoiceWidget(QWidget):
     def __init__(self):
@@ -13,8 +13,8 @@ class ModeChoiceWidget(QWidget):
 
     def init_ui(self):
         # 파일 객체 생성
-        req_pic = QPixmap(os.path.join(path,'local_data/user.png'))
-        shr_pic = QPixmap(os.path.join(path,'local_data/cloud.png'))
+        req_pic = QPixmap(os.path.join(path, 'local_data/user.png'))
+        shr_pic = QPixmap(os.path.join(path, 'local_data/cloud.png'))
 
     # 이미지 설정
         self.req_img = QLabel(self)

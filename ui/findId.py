@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit
 from .component.constants import set_label_style, set_edit_standard, set_button_style
+
 
 class FindIdWidget(QWidget):
     def __init__(self):
@@ -41,7 +42,7 @@ class FindIdWidget(QWidget):
         self.pwd.adjustSize()
 
     def on_email_alert(self):
-        self.email = self.email_front.text() + '@' + self.email_back
+        self.email = self.email_front.text() + '@' + self.email_back.text()
 
     def on_clean_line_edit(self):
         self.email_front.setText("")

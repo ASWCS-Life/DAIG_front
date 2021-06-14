@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from .daig.api.rest import get_credit_log
 
+
 class BrDownWidget(QWidget):
   def __init__(self):
     super().__init__()
@@ -11,7 +12,6 @@ class BrDownWidget(QWidget):
     self.form_layout.setSpacing(20)
     groupBox = QGroupBox()
     #groupBox.setStyleSheet()
-
 
     groupBox.setLayout(self.form_layout)
     scroll = QScrollArea()
@@ -25,7 +25,6 @@ class BrDownWidget(QWidget):
     layout = QVBoxLayout(self)
     layout.addWidget(scroll)
 
-
   def call_credit_log(self):
     self.p_date = []
 
@@ -34,10 +33,9 @@ class BrDownWidget(QWidget):
       self.formLayout.removeRow(i)
     self.creditLog_list = get_credit_log()
 
-
     for i in range(len(self.creditLog_list)):
       self.p_date.append(
-        QLabel('  ' + self.creditLog_list[i]["details"] + '\t' +self.creditLog_list[i]["date"] + '\t' + str(self.creditLog_list[i]["amount"]) + '원'))
+          QLabel('  ' + self.creditLog_list[i]["details"] + '\t' + self.creditLog_list[i]["date"] + '\t' + str(self.creditLog_list[i]["amount"]) + '원'))
       self.form_layout.addRow(self.p_date[i])
       self.p_date[i].setStyleSheet('border: 1px solid #FFB914;'
                                    'font-size: 18px;'

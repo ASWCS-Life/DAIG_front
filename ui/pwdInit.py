@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QMessageBox
 from .component.constants import set_label_style, set_edit_standard, set_button_style
 
+
 class PwdInitWidget(QWidget):
     def __init__(self):
         super().__init__()
