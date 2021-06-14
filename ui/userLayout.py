@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from .component.constants import set_button_style
 
-from .daig.api.rest import get_owned_projects
+from .daig.api.rest import get_owned_projects, result_learning
 
 class UserFrameWidget(QWidget):
   def __init__(self):
@@ -149,8 +149,11 @@ class UserFrameWidget(QWidget):
 
   # 현재 선택한 모델 다운로드
   def download_model(self):
+    project_id=self.pro_table.selectedItems()[0].text()
+    model=result_learning(project_id)
     file_save = QFileDialog.getSaveFileName(self, 'Save File', './', filter='*.h5')
     file_save_path = file_save[0]
+    model.save(file_save_path)
 
     
 

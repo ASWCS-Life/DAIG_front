@@ -226,11 +226,23 @@ def result_learning(project_id, params = None):
     res = requests.get(f'{base_url}/project/{project_id}/result', params = params, headers = {'AUTH' : get_auth_header()})
     response_alert(res.status_code)
 
+    data=res.json()
+    model_url=data['model_url']
+    result_url=data['result_url']
+
     with TemporaryFile() as tf : 
-        tf.write(res.content)
+        tf.write(requests.get(url = model_url).content)
         _ = tf.seek(0)
-        weight = np.load(tf,allow_pickle = True)
-    return weight
+        model = keras.models.load_model(h5py.File(tf,mode = 'r'))
+
+    with TemporaryFile() as tf : 
+        tf.write(requests.get(url = result_url).content)
+        _ = tf.seek(0)
+        result = np.asarray(np.load(tf,allow_pickle = True))
+
+    model.set_weights(result.tolist())
+
+    return model
 
 # 중단 요청
 def stop_learning(path, params, data = None): 
