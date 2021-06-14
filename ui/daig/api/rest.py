@@ -200,7 +200,7 @@ def start_learning(project_id, params = None):
 def report_error(project_id, params = None): 
     res = requests.post(f'{base_url}/project/{project_id}/error/',data = params, headers = {'AUTH' : get_auth_header()})
     response_alert(res.status_code)
-    
+
     return res.json()['is_successful']
 
 # 학습 Task 선점하기
@@ -219,7 +219,7 @@ def is_project_finished(project_id, params = None):
     res = requests.get(f'{base_url}/project/{project_id}/finished', params = params, headers = {'AUTH' : get_auth_header()})
     response_alert(res.status_code)
 
-    return res.status_code !=  270
+    return res.status_code != 270
 
 # 결과 요청
 def result_learning(project_id, params = None): 
