@@ -1,12 +1,12 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
-from component.constants import set_button_style
+from .component.constants import set_button_style
 import time
 
-from daig.api.rest import get_avaiable_project, start_learning, start_learning_internal, stop_learning_internal, is_project_finished
+from .daig.api.rest import get_avaiable_project, start_learning, start_learning_internal, stop_learning_internal, is_project_finished
 
-from daig.api.auth import get_auth_header, set_auth_header
+from .daig.api.auth import get_auth_header, set_auth_header
 
 class Worker(QThread):
   stop_learning = False

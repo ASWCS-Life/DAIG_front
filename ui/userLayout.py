@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import *
-from component.constants import set_button_style
+from .component.constants import set_button_style
 from tensorflow import keras
 
-from daig.api.rest import get_owned_projects
+from .daig.api.rest import get_owned_projects
 
 class UserFrameWidget(QWidget):
   def __init__(self):
