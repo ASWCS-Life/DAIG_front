@@ -16,37 +16,42 @@ class SignUpWidget(QWidget):
     
     # 가입완료 버튼
         self.sign_submit = QPushButton('가입완료', self)
+<<<<<<< HEAD
         self.sign_submit.move(255, 165)
+=======
+        self.sign_submit.move(255, 205)
+>>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
         set_button_style(self.sign_submit)
 
     # 돌아가기 버튼
         self.go_back = QPushButton('돌아가기', self)
+<<<<<<< HEAD
         self.go_back.move(375, 165)
+=======
+        self.go_back.move(375, 205)
+>>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
         set_button_style(self.go_back)
 
     # 중복 아이디 확인 버튼
         self.code = ''
         self.dup_username = QPushButton('중복확인', self)
-        self.dup_username.move(250, 22)
-        setButtonStyle(self.dup_username)
-        self.dup_username.setFixedWidth(50)
+        self.dup_username.move(375, 27)
+        set_button_style(self.dup_username)
         self.dup_username.clicked.connect(self.check_username)
 
 
     # 이메일 인증 버튼
         self.email = ''
-        self.send_email = QPushButton('인증', self)
-        self.send_email.move(250, 107)
-        setButtonStyle(self.send_email)
-        self.send_email.setFixedWidth(50)
+        self.send_email = QPushButton('인증하기', self)
+        self.send_email.move(375, 107)
+        set_button_style(self.send_email)
         self.send_email.clicked.connect(self.check_email)
 
     # 이메일 인증 버튼
         self.code = ''
-        self.auth_code = QPushButton('확인', self)
-        self.auth_code.move(170, 147)
-        setButtonStyle(self.auth_code)
-        self.auth_code.setFixedWidth(50)
+        self.auth_code = QPushButton('코드확인', self)
+        self.auth_code.move(375, 147)
+        set_button_style(self.auth_code)
         self.auth_code.clicked.connect(self.check_code)
 
     # 아이디, 비밀번호, 이메일 알리기
@@ -76,11 +81,7 @@ class SignUpWidget(QWidget):
         font_code = sign_code.font()
         font_code.setBold(True)
         font_code.setPointSize(20)
-        setLabelStyle(sign_code)
-
-        # alpha = QLabel('@', self)
-        # alpha.move(248, 113)
-
+        set_label_style(sign_code)
 
     # 아이디, 비밀번호, 이메일 작성
         self.id = QLineEdit(self)
@@ -91,18 +92,21 @@ class SignUpWidget(QWidget):
         self.pwd.setEchoMode(QLineEdit.Password)
         self.pwd.setFixedWidth(150)
         set_edit_standard(self.pwd, 95, 70, '비밀번호')
+<<<<<<< HEAD
 
         # self.email_front = QLineEdit(self)
         # self.email_front.setFixedWidth(150)
         # setEditStandard(self.email_front, 95, 110, '이메일')
+=======
+>>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
 
         self.email = QLineEdit(self)
-        self.email.setFixedWidth(150)
-        setEditStandard(self.email, 95, 110, '이메일')
+        self.email.setFixedWidth(220)
+        set_edit_standard(self.email, 95, 110, '이메일')
 
         self.code = QLineEdit(self)
-        self.code.setFixedWidth(70)
-        setEditStandard(self.code, 95, 150, '인증 코드')
+        self.code.setFixedWidth(80)
+        set_edit_standard(self.code, 95, 150, '인증 코드')
 
 
     # 이메일 인증
@@ -147,7 +151,11 @@ class SignUpWidget(QWidget):
         self.email_front.setText(text)
         self.email_front.adjustSize()
 
-    def onClickSignUp(self):
+    def on_click_sign_up(self):
+        if(len(self.pwd.text()) < 4):
+            QMessageBox.about(self, 'DAIG', '비밀번호가 너무 짧습니다.\n(최소 4자리 이상)')
+            return
+
         if(self.is_username_available == False):
             QMessageBox.about(self, 'DAIG', 'ID 중복확인을 해주세요.')
             return
@@ -171,5 +179,6 @@ class SignUpWidget(QWidget):
     def on_clean_line_edit(self):
         self.id.setText("")
         self.pwd.setText("")
-        self.email_front.setText("")
-        self.email_back.setText("")
+        self.email.setText("")
+        self.code.setText("")
+

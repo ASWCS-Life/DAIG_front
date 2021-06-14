@@ -50,17 +50,6 @@ class PwdInitWidget(QWidget):
         if(self.pwd.text() != self.check_pwd.text()):
             QMessageBox.about(self, 'DAIG', '비밀번호가 서로 일치하지 않습니다.')
         pass
-        # -----   self.pwd.text() 로 비밀번호 변경 요청
-        #
-        # res[is_successful] == True면 비밀번호 변경화면 레이아웃으로 이동하게 만듬
-
-        # res["is_successful"] == True 면 다시 로그인 화면으로 돌아가도록 해놓음
-        # if (res["is_successful"] == True):
-        #    QMessageBox.about(self, 'DAIG', res['message'])
-        #    return True
-        # else:
-        #    QMessageBox.about(self, 'DAIG', res['message'])
-        #    return False
 
     def on_clean_line_edit(self):
         self.check_pwd.setText("")

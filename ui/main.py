@@ -2,9 +2,12 @@ import sys
 from PyQt5.QtWidgets import QSizePolicy,QWidget, QLabel,QMainWindow, QApplication, QStackedWidget, QAction
 from PyQt5.QtGui import QIcon
 from component.constants import enter_pressed_handler
+<<<<<<< HEAD
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, pyqtSlot
 
+=======
+>>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
 from component.center import on_layout_convert_center
 
 from pwdInit import PwdInitWidget
@@ -40,6 +43,10 @@ class CreditLayout(CreditWidget):
         self.refresh.clicked.connect(self.on_refresh_button)
 
     def open_br_down_class(self):
+<<<<<<< HEAD
+=======
+        self.all_btn_clicked()
+>>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
         widget.setCurrentIndex(10)
         widget.currentWidget().call_credit_log()
         on_layout_convert_center(main_window, widget, 400, 500)
@@ -143,13 +150,17 @@ class Mode(ModeChoiceWidget):
         self.shr_size.clicked.connect(self.open_provider_class)
 
     def open_req_user_class(self):
+<<<<<<< HEAD
         #main_window.create_project.setEnabled(True)
+=======
+>>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
         widget.setCurrentIndex(3)
         on_layout_convert_center(main_window, widget, 700, 500)
 
     def open_provider_class(self):
         widget.setCurrentIndex(4)
         on_layout_convert_center(main_window, widget, 700, 500)
+
 
 
 # 회원가입 화면 - widget_index_num : 1
@@ -170,6 +181,10 @@ class SignUp(SignUpWidget):
     def open_login_class(self):
         widget.setCurrentIndex(widget.currentIndex() - 1)
         on_layout_convert_center(main_window, widget, 400, 430)
+<<<<<<< HEAD
+=======
+
+>>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
 
 # 로그인 화면 - widget_index_num : 0
 class Login(LoginWidget):
@@ -204,7 +219,11 @@ class Login(LoginWidget):
     def open_sign_up_class(self):
         widget.setCurrentIndex(1)
         widget.currentWidget().on_clean_line_edit()
+<<<<<<< HEAD
         on_layout_convert_center(main_window, widget, 500, 250)
+=======
+        on_layout_convert_center(main_window, widget, 500, 300)
+>>>>>>> ce51583a938820c60be55005cd5805ecc59876e5
 
     def on_click_login_handler(self):
         self.on_click_login() # 서버로 로그인 req... 결과로 res["auth"] 리턴

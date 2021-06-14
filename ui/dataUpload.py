@@ -31,22 +31,12 @@ class UploadThread(QThread):
   def run(self):
     model = tf.keras.models.load_model(self.model_path)
 
-    total_parameters = 0
-    for variable in tf.trainable_variables():
-        shape = variable.get_shape()
-        variable_parameters = 1
-        for dim in shape:
-            variable_parameters *= dim.value
-        total_parameters += variable_parameters
-
-
     res = self.create_project(model.get_weights(), data = {
         'total_task' : self.task_num,
         'step_size' : self.step_num,
         'epoch': self.epoch,
         'batch_size': self.batch_size,
         'valid_rate': self.valid_rate,
-        'parameter_number': total_parameters,
         'max_contributor': self.contributor
     })
 
@@ -262,10 +252,20 @@ class DataUploadWidget(QWidget):
         self, './', filter="*.npy")
     self.train_lbl_path.setText(self.train_lbl_file[0])
 
+    #self.train_lbl_path.text() : 받아온 학습 레이블 경로
+
+  # '프로젝트 생성' 버튼을 눌렀을 때 설정한 task, step 수 및 모델, 훈련 데이터를 받아와서...
+  # 프로젝트 생성 버튼에 '프로젝트 생성' 요청
+
+  
+
   def train_start_clicked(self):
-    format_check = self.input_format_check()
-    if(format_check):
-      QMessageBox.about(self, 'DAIG', format_check)
+    if(int(self.cho_task.text()) < 10 or int(self.cho_step.text()) > 100):
+      QMessageBox.about(self, 'DAIG', "task의 숫자가 너무 크거나 작습니다.")
+      return 
+    if(int(self.cho_step.text()) < 1 or int(self.cho_step.text()) > 20):
+      QMessageBox.about(self, 'DAIG', "step의 숫자가 너무 크거나 작습니다.")
+      return
 
     self.train_start.setEnabled(False)
     self.upload_thread=UploadThread(get_auth_header(),self)
