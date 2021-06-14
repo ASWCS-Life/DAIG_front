@@ -139,7 +139,7 @@ class ProviderLayout(ProviderWidget):
 class ReqUserLayout(UserFrameWidget):
     def __init__(self):
         super().__init__()
-        self.aten_btn.clicked.connect(self.on_project_create_handler)
+        #self.aten_btn.clicked.connect(self.on_project_create_handler)
 
     def on_project_create_handler(self):
         widget.setCurrentIndex(4)
