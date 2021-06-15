@@ -119,6 +119,8 @@ class UserFrameWidget(QWidget):
     if(len(self.pro_table.selectedItems()) < 1): return #
     project_id=self.pro_table.selectedItems()[0].text()
     model=result_learning(project_id)
+    if(not model):
+      return
     file_save = QFileDialog.getSaveFileName(self, 'Save File', './', filter='*.h5')
     file_save_path = file_save[0]
     model.save(file_save_path)

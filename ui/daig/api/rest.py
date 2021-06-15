@@ -1,4 +1,5 @@
 from os import truncate
+from pickle import FALSE
 from typing import Type
 import h5py
 import requests
@@ -224,7 +225,8 @@ def is_project_finished(project_id, params = None):
 # 결과 요청
 def result_learning(project_id, params = None): 
     res = requests.get(f'{base_url}/project/{project_id}/result', params = params, headers = {'AUTH' : get_auth_header()})
-    response_alert(res.status_code)
+    if(response_alert(res.status_code)):
+        return False
 
     data=res.json()
     model_url=data['model_url']
